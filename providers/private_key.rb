@@ -30,7 +30,10 @@ def create_keys(regenerate)
   # Create private key file
   #
   new_private_key = nil
-  if Array(current_resource.action) == [ :delete ] || regenerate
+  if Array(current_resource.action) == [ :delete ] || regenerate ||
+    (new_resource.regenerate_if_different &&
+      (current_resource.size != new_resource.size ||
+       current_resource.type != new_resource.type))
     action = ::File.exists?(current_resource.path) ? "overwrite" : "create"
     converge_by "#{action} #{new_resource.type} private key #{new_resource.path} (#{new_resource.size} bits#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
       case new_resource.type
@@ -47,7 +50,13 @@ def create_keys(regenerate)
       create_private_key(new_private_key)
     end
   else
-    # TODO verify the existing key's attributes do not mismatch.  Warn if they do!
+    # Warn if existing key has different characteristics than expected
+    if current_resource.size != new_resource.size
+      Chef::Log.warn("Mismatched key size!  #{current_resource.path} is #{current_resource.size} bytes, desired is #{new_resource.size} bytes.  Use action :regenerate to force key regeneration.")
+    elsif current_resource.type != new_resource.type
+      Chef::Log.warn("Mismatched key size!  #{current_resource.path} is #{current_resource.size} bytes, desired is #{new_resource.size} bytes.  Use action :regenerate to force key regeneration.")
+    end
+
     if current_resource.format != new_resource.format
       converge_by "change format of #{new_resource.type} private key #{new_resource.path} from #{current_resource.format} to #{new_resource.format}" do
         create_private_key(current_private_key)

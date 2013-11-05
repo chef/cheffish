@@ -15,3 +15,6 @@ attribute :exponent, :kind_of => Integer # For RSA
 # PEM-only
 attribute :pass_phrase, :kind_of => String
 attribute :cipher, :kind_of => String, :default => 'DES-EDE3-CBC', :equal_to => OpenSSL::Cipher.ciphers
+
+# Set this to regenerate the key if it does not have the desired characteristics (like size, type, etc.)
+attribute :regenerate_if_different, :kind_of => [TrueClass, FalseClass]
