@@ -2,10 +2,9 @@ actions :create, :delete, :regenerate, :nothing
 default_action :create
 
 attribute :path, :kind_of => String, :name_attribute => true
-attribute :public_key_path, :kind_of => String
-# TODO support :ec
-attribute :type, :kind_of => Symbol, :default => :rsa, :equal_to => [ :rsa, :dsa ]
 attribute :format, :kind_of => Symbol, :default => :pem, :equal_to => [ :pem, :der ]
+attribute :type, :kind_of => Symbol, :default => :rsa, :equal_to => [ :rsa, :dsa ] # TODO support :ec
+attribute :public_key_path, :kind_of => String
 
 # RSA and DSA
 attribute :size, :kind_of => Integer, :default => 2048

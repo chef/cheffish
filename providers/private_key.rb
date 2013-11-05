@@ -29,93 +29,130 @@ def create_keys(regenerate)
   #
   # Create private key file
   #
+  new_private_key = nil
   if Array(current_resource.action) == [ :delete ] || regenerate
     action = ::File.exists?(current_resource.path) ? "overwrite" : "create"
     converge_by "#{action} #{new_resource.type} private key #{new_resource.path} (#{new_resource.size} bits#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
       case new_resource.type
       when :rsa
         if new_resource.exponent
-          pkey = OpenSSL::PKey::RSA.generate(new_resource.size, new_resource.exponent)
+          new_private_key = OpenSSL::PKey::RSA.generate(new_resource.size, new_resource.exponent)
         else
-          pkey = OpenSSL::PKey::RSA.generate(new_resource.size)
+          new_private_key = OpenSSL::PKey::RSA.generate(new_resource.size)
         end
       when :dsa
-        pkey = OpenSSL::PKey::DSA.generate(new_resource.size)
+        new_private_key = OpenSSL::PKey::DSA.generate(new_resource.size)
       end
 
-      case new_format
-      when :pem
-        if new_resource.pass_phrase
-          private_key_contents = pkey.to_pem(OpenSSL::Cipher.new(new_resource.cipher), new_resource.pass_phrase)
-        else
-          private_key_contents = pkey.to_pem
-        end
-      when :der
-        private_key_contents = pkey.to_der
-      end
-
-      ::File.open(new_resource.path, 'w') do |file|
-        file.write(private_key_contents)
+      create_private_key(new_private_key)
+    end
+  else
+    # TODO verify the existing key's attributes do not mismatch.  Warn if they do!
+    if current_resource.format != new_resource.format
+      converge_by "change format of #{new_resource.type} private key #{new_resource.path} from #{current_resource.format} to #{new_resource.format}" do
+        create_private_key(current_private_key)
       end
     end
-    regenerate = true # We will be regenerating the public key if we regenerated the private key
-  else
-    # TODO verify the existing key's attributes do not mismatch.  Exit if they do!
   end
+
+  # Read in the existing private key if we didn't change it
+  new_private_key = current_private_key if !new_private_key
 
   #
   # Create public key file
   #
   if new_resource.public_key_path
-    if !current_resource.public_key_path || regenerate
-      action = ::File.exist?(new_resource.public_key_path) ? "overwrite" : "create"
+    if !current_resource.public_key_path || # If it's new ...
+       new_resource.format != current_public_key_format || # Or the format has changed
+       (new_private_key && new_private_key.public_key.to_s != current_public_key.to_s) # Or the public key has changed
+      action = current_resource.public_key_path ? "overwrite" : "create"
       converge_by "#{action} #{new_resource.type} public key #{new_resource.public_key_path}" do
-        ::File.open(new_resource.path) do |private_key_file|
-          pkey = OpenSSL::PKey.read(private_key_file, new_resource.pass_phrase)
-
-          case new_format
-          when :pem
-            public_key_contents = pkey.public_key.to_pem
-          when :der
-            public_key_contents = pkey.public_key.to_der
-          end
-
-          ::File.open(new_resource.public_key_path, 'w') do |file|
-            file.write(public_key_contents)
-          end
-        end
+        create_public_key(new_private_key.public_key)
       end
-    else
-      # TODO verify stuff--at LEAST verify that it matches the pem in the private key file
     end
   end
 end
 
-def new_format
-  new_resource.format || (new_resource.path =~ /.der$/ ? :der : :pem)
+def create_private_key(pkey)
+  case new_resource.format
+  when :pem
+    if new_resource.pass_phrase
+      private_key_contents = pkey.to_pem(OpenSSL::Cipher.new(new_resource.cipher), new_resource.pass_phrase)
+    else
+      private_key_contents = pkey.to_pem
+    end
+  when :der
+    private_key_contents = pkey.to_der
+  end
+
+  ::File.open(new_resource.path, 'w') do |file|
+    file.write(private_key_contents)
+  end
 end
+
+def create_public_key(pkey)
+  case new_resource.format
+  when :pem
+    public_key_contents = pkey.public_key.to_pem
+  when :der
+    public_key_contents = pkey.public_key.to_der
+  end
+
+  ::File.open(new_resource.public_key_path, 'w') do |file|
+    file.write(public_key_contents)
+  end
+end
+
+def format_of(key_contents)
+  if key_contents.start_with?('-----BEGIN ')
+    :pem
+  else
+    :der
+  end
+end
+
+def type_of(pkey)
+  case pkey.class
+  when OpenSSL::PKey::RSA
+    :rsa
+  when OpenSSL::PKey::DSA
+    :dsa
+  end
+end
+
+attr_reader :current_private_key
+attr_reader :current_public_key
+attr_reader :current_public_key_format
 
 def load_current_resource
   if ::File.exist?(new_resource.path)
-    ::File.open(new_resource.path) do |private_key_file|
-      pkey = OpenSSL::PKey.read(private_key_file, new_resource.pass_phrase)
-      resource = Chef::Resource::CheffishPrivateKey.new(new_resource.path)
-      if new_resource.public_key_path && ::File.exist?(new_resource.public_key_path)
-        resource.public_key_path new_resource.public_key_path
-      end
-      resource.size pkey.n.num_bytes * 8
+    # Detect private key info
+    private_key_contents = ::File.read(new_resource.path)
+    resource = Chef::Resource::CheffishPrivateKey.new(new_resource.path)
+    begin
+      @current_private_key = OpenSSL::PKey.read(private_key_contents, new_resource.pass_phrase)
+      resource.size current_private_key.n.num_bytes * 8
       #resource.pass_phrase
       #resource.cipher?  Not sure how to get this from pem file
-      resource.type case pkey.class
-                    when OpenSSL::PKey::RSA
-                      :rsa
-                    when OpenSSL::PKey::DSA
-                      :dsa
-                    end 
-      # TODO if user stores a der inside a pem file, we won't know it!  Not sure how to find out, either.
-      resource.format new_format
-      @current_resource = resource
+      resource.format format_of(private_key_contents)
+      resource.type type_of(current_private_key)
+    rescue
+      # If there's an error reading, we assume format and type are wrong and don't futz with them
     end
+
+    # Detect public key info
+    if new_resource.public_key_path && ::File.exist?(new_resource.public_key_path)
+      resource.public_key_path new_resource.public_key_path
+      public_key_contents = ::File.read(new_resource.public_key_path)
+      begin
+        @current_public_key = OpenSSL::PKey.read(public_key_contents)
+        @current_public_key_format = format_of(public_key_contents)
+      rescue
+        # If there's an error reading, we assume format will be wrong and don't futz with them
+      end
+    end
+
+    @current_resource = resource
   else
     not_found_resource = Chef::Resource::CheffishPrivateKey.new(new_resource.path)
     not_found_resource.action :delete
