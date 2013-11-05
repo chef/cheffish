@@ -43,7 +43,7 @@ def create_keys(regenerate)
         pkey = OpenSSL::PKey::DSA.generate(new_resource.size)
       end
 
-      case new_file_type
+      case new_format
       when :pem
         if new_resource.pass_phrase
           private_key_contents = pkey.to_pem(OpenSSL::Cipher.new(new_resource.cipher), new_resource.pass_phrase)
@@ -73,11 +73,11 @@ def create_keys(regenerate)
         ::File.open(new_resource.path) do |private_key_file|
           pkey = OpenSSL::PKey.read(private_key_file, new_resource.pass_phrase)
 
-          case new_file_type
+          case new_format
           when :pem
-            public_key_contents = pkey.to_pem
+            public_key_contents = pkey.public_key.to_pem
           when :der
-            public_key_contents = pkey.to_der
+            public_key_contents = pkey.public_key.to_der
           end
 
           ::File.open(new_resource.public_key_path, 'w') do |file|
@@ -91,8 +91,8 @@ def create_keys(regenerate)
   end
 end
 
-def new_file_type
-  new_resource.file_type || (new_resource.path =~ /.der$/ ? :der : :pem)
+def new_format
+  new_resource.format || (new_resource.path =~ /.der$/ ? :der : :pem)
 end
 
 def load_current_resource
@@ -113,7 +113,7 @@ def load_current_resource
                       :dsa
                     end 
       # TODO if user stores a der inside a pem file, we won't know it!  Not sure how to find out, either.
-      resource.file_type new_file_type
+      resource.format new_format
       @current_resource = resource
     end
   else

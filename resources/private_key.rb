@@ -5,7 +5,7 @@ attribute :path, :kind_of => String, :name_attribute => true
 attribute :public_key_path, :kind_of => String
 # TODO support :ec
 attribute :type, :kind_of => Symbol, :default => :rsa, :equal_to => [ :rsa, :dsa ]
-attribute :file_type, :kind_of => Symbol, :default => :pem, :equal_to => [ :pem, :der ]
+attribute :format, :kind_of => Symbol, :default => :pem, :equal_to => [ :pem, :der ]
 
 # RSA and DSA
 attribute :size, :kind_of => Integer, :default => 2048
