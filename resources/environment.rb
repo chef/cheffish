@@ -3,8 +3,6 @@ require 'chef/environment'
 actions :create, :delete, :nothing
 default_action :create
 
-attribute :complete, :kind_of => [TrueClass, FalseClass]
-
 attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
 attribute :description, :kind_of => String
 attribute :cookbook_versions, :kind_of => Hash, :callbacks => {
@@ -20,3 +18,6 @@ attribute :override_attributes, :kind_of => Hash
 # default_attribute 'ip_address', :delete
 # override_attribute 'ip_address', '127.0.0.1'
 # override_attribute [ 'pushy', 'port' ], '8000'
+
+# Control options
+attribute :complete, :kind_of => [TrueClass, FalseClass]
