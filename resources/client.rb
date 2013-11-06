@@ -1,4 +1,4 @@
-actions :create, :delete, :regenerate_key, :nothing
+actions :create, :delete, :regenerate_keys, :nothing
 default_action :create
 
 # Client attributes

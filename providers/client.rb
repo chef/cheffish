@@ -6,7 +6,7 @@ action :create do
   create_client(false)
 end
 
-action :regenerate_key do
+action :regenerate_keys do
   create_client(true)
 end
 
