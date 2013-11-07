@@ -17,38 +17,41 @@ attribute :complete, :kind_of => [TrueClass, FalseClass]
 
 NOT_PASSED=Object.new
 
-# default_attribute 'ip_address', '127.0.0.1'
-# default_attribute [ 'pushy', 'port' ], '9000'
-# default_attribute 'ip_addresses' do |existing_value|
+# default 'ip_address', '127.0.0.1'
+# default [ 'pushy', 'port' ], '9000'
+# default 'ip_addresses' do |existing_value|
 #   (existing_value || []) + [ '127.0.0.1' ]
 # end
-# default_attribute 'ip_address', :delete
+# default 'ip_address', :delete
 attr_reader :default_attribute_modifiers
-def default_attribute(attribute_path, value=NOT_PASSED, &block)
+def default(attribute_path, value=NOT_PASSED, &block)
   @default_attribute_modifiers ||= []
   if value != NOT_PASSED
     @default_attribute_modifiers << [ attribute_path, value ]
   elsif block
     @default_attribute_modifiers << [ attribute_path, block ]
   else
-    raise "default_attribute requires either a value or a block"
+    raise "default requires either a value or a block"
   end
 end
 
-# override_attribute 'ip_address', '127.0.0.1'
-# override_attribute [ 'pushy', 'port' ], '9000'
-# override_attribute 'ip_addresses' do |existing_value|
+# override 'ip_address', '127.0.0.1'
+# override [ 'pushy', 'port' ], '9000'
+# override 'ip_addresses' do |existing_value|
 #   (existing_value || []) + [ '127.0.0.1' ]
 # end
-# override_attribute 'ip_address', :delete
+# override 'ip_address', :delete
 attr_reader :override_attribute_modifiers
-def override_attribute(attribute_path, value=NOT_PASSED, &block)
+def override(attribute_path, value=NOT_PASSED, &block)
   @override_attribute_modifiers ||= []
   if value != NOT_PASSED
     @override_attribute_modifiers << [ attribute_path, value ]
   elsif block
     @override_attribute_modifiers << [ attribute_path, block ]
   else
-    raise "override_attribute requires either a value or a block"
+    raise "override requires either a value or a block"
   end
 end
+
+alias :attributes :default_attributes
+alias :attribute :default
