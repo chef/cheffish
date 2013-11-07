@@ -13,6 +13,15 @@ attribute :automatic_attributes, :kind_of => Hash
 # reset to their defaults)
 attribute :complete, :kind_of => [TrueClass, FalseClass]
 
+# Grab environment from with_environment
+def initialize(*args)
+  super
+  if Cheffish.enclosing_environment
+    chef_environment Cheffish.enclosing_environment
+  end
+end
+
+
 NOT_PASSED=Object.new
 
 # default 'ip_address', '127.0.0.1'

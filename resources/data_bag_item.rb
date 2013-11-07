@@ -3,6 +3,9 @@ require 'chef/environment'
 def initialize(*args)
   super
   name @name
+  if !data_bag && Cheffish.enclosing_data_bag
+    data_bag Cheffish.enclosing_data_bag
+  end
 end
 
 def name(*args)
