@@ -151,15 +151,17 @@ module Cheffish
 
     # Needed to be able to use DataHandler classes
     def fake_entry
-      FakeEntry.new(new_resource.send(keys.values.first))
+      FakeEntry.new("#{new_resource.send(keys.values.first)}.json")
     end
 
     class FakeEntry
-      def initialize(name)
-        @name = "#{name}.json"
+      def initialize(name, parent = nil)
+        @name = name
+        @parent = parent
       end
 
       attr_reader :name
+      attr_reader :parent
     end
   end
 end
