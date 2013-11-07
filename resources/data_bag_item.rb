@@ -1,10 +1,46 @@
 require 'chef/environment'
 
+def initialize(*args)
+  super
+  name @name
+end
+
+def name(*args)
+  result = super(*args)
+  if args.size == 1
+    parts = name.split('/')
+    if parts.size == 1
+      @id = parts[0]
+    elsif parts.size == 2
+      @data_bag = parts[0]
+      @id = parts[1]
+    else
+      raise "Name #{args[0].inspect} must be a string with 1 or 2 parts, either 'id' or 'data_bag/id"
+    end
+  end
+  result
+end
+
 actions :create, :delete, :nothing
 default_action :create
 
-attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-attribute :data_bag, :kind_of => String, :regex => Cheffish::NAME_REGEX, :required => true
+NOT_PASSED = Object.new
+def id(value = NOT_PASSED)
+  if value == NOT_PASSED
+    @id
+  else
+    @id = value
+    name data_bag ? "#{data_bag}/#{id}" : id
+  end
+end
+def data_bag(value = NOT_PASSED)
+  if value == NOT_PASSED
+    @data_bag
+  else
+    @data_bag = value
+    name data_bag ? "#{data_bag}/#{id}" : id
+  end
+end
 attribute :raw_data, :kind_of => Hash
 
 # TODO support encryption
@@ -15,8 +51,6 @@ attribute :raw_data, :kind_of => Hash
 # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
 # reset to their defaults)
 attribute :complete, :kind_of => [TrueClass, FalseClass]
-
-NOT_PASSED = Object.new
 
 # value 'ip_address', '127.0.0.1'
 # value [ 'pushy', 'port' ], '9000'

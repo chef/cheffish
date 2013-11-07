@@ -10,14 +10,14 @@ class Chef::Provider::CheffishDataBagItem < Cheffish::ChefProviderBase
 
     if current_resource_exists?
       if different_fields.size > 0
-        description = [ "update data bag item #{new_resource.name} at #{rest.url}" ]
+        description = [ "update data bag item #{new_resource.id} at #{rest.url}" ]
         description += different_fields.map { |field| "change #{field} from #{current_json[field].inspect} to #{new_json[field].inspect}" }
         converge_by description do
-          rest.put("data/#{new_resource.data_bag}/#{new_resource.name}", normalize_for_put(new_json))
+          rest.put("data/#{new_resource.data_bag}/#{new_resource.id}", normalize_for_put(new_json))
         end
       end
     else
-      description = [ "create data bag item #{new_resource.name} at #{rest.url}" ]
+      description = [ "create data bag item #{new_resource.id} at #{rest.url}" ]
       description += different_fields.map { |field| "set #{field} to #{new_json[field].inspect}"}
       converge_by description do
         rest.post("data/#{new_resource.data_bag}", normalize_for_post(new_json))
@@ -27,15 +27,15 @@ class Chef::Provider::CheffishDataBagItem < Cheffish::ChefProviderBase
 
   action :delete do
     if current_resource_exists?
-      converge_by "delete data bag item #{new_resource.name} at #{rest.url}" do
-        rest.delete("data/#{new_resource.data_bag}/#{new_resource.name}")
+      converge_by "delete data bag item #{new_resource.id} at #{rest.url}" do
+        rest.delete("data/#{new_resource.data_bag}/#{new_resource.id}")
       end
     end
   end
 
   def load_current_resource
     begin
-      @current_resource = json_to_resource(rest.get("data/#{new_resource.data_bag}/#{new_resource.name}"))
+      @current_resource = json_to_resource(rest.get("data/#{new_resource.data_bag}/#{new_resource.id}"))
     rescue Net::HTTPServerException => e
       if e.response.code == "404"
         @current_resource = not_found_resource
@@ -70,7 +70,7 @@ class Chef::Provider::CheffishDataBagItem < Cheffish::ChefProviderBase
 
   def keys
     {
-      'name' => :name,
+      'id' => :id,
       'data_bag' => :data_bag,
       'raw_data' => :raw_data
     }
@@ -83,7 +83,7 @@ class Chef::Provider::CheffishDataBagItem < Cheffish::ChefProviderBase
   end
 
   def fake_entry
-    FakeEntry.new("#{new_resource.name}.json", FakeEntry.new(new_resource.data_bag))
+    FakeEntry.new("#{new_resource.id}.json", FakeEntry.new(new_resource.data_bag))
   end
 
 end
