@@ -5,20 +5,17 @@ class Chef::Provider::CheffishRole < Cheffish::ChefProviderBase
   end
 
   action :create do
-    # TODO nice json diff of field internals for attrs and run list and such
-    different_fields = new_json.keys.select { |key| new_json[key] != current_json[key] }.to_a
+    differences = json_differences(current_json, new_json)
 
     if current_resource_exists?
-      if different_fields.size > 0
-        description = [ "update role #{new_resource.name} at #{rest.url}" ]
-        description += different_fields.map { |field| "change #{field} from #{current_json[field].inspect} to #{new_json[field].inspect}" }
+      if differences.size > 0
+        description = [ "update role #{new_resource.name} at #{rest.url}" ] + differences
         converge_by description do
           rest.put("roles/#{new_resource.name}", normalize_for_put(new_json))
         end
       end
     else
-      description = [ "create role #{new_resource.name} at #{rest.url}" ]
-      description += different_fields.map { |field| "set #{field} to #{new_json[field].inspect}"}
+      description = [ "create role #{new_resource.name} at #{rest.url}" ] + differences
       converge_by description do
         rest.post("roles", normalize_for_post(new_json))
       end

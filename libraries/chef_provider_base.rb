@@ -62,6 +62,31 @@ module Cheffish
       data_handler.normalize(json, fake_entry)
     end
 
+    def json_differences(old_json, new_json, name = '')
+      if old_json == new_json
+        []
+      elsif old_json.kind_of?(Hash) && old_json.kind_of?(Hash)
+        result = []
+        removed_keys = old_json.keys.inject({}) { |hash, key| hash[key] = true; hash }
+        new_json.each_pair do |new_key, new_value|
+          if old_json.has_key?(new_key)
+            removed_keys.delete(new_key)
+            if new_value != old_json[new_key]
+              result += json_differences(old_json[new_key], new_value, name == '' ? new_key : "#{name}.#{new_key}")
+            end
+          else
+            result << "add #{name == '' ? new_key : "#{name}.#{new_key}"} = #{new_value.inspect}"
+          end
+        end
+        removed_keys.keys.each do |removed_key|
+          result << "remove #{name == '' ? removed_key : "#{name}.#{removed_key}"}"
+        end
+        result
+      else
+        return [ "update #{name} from #{old_json.inspect} to #{new_json.inspect}" ]
+      end
+    end
+
     def apply_modifiers(modifiers, json)
       return json if !modifiers || modifiers.size == 0
 

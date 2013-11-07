@@ -57,12 +57,11 @@ class Chef::Provider::CheffishClient < Cheffish::ChefProviderBase
       end
     end
 
-    # TODO nice json diff of field internals for attrs and run list and such
-    different_fields = new_json.keys.select { |key| new_json[key] != current_json[key] }.to_a
+    differences = json_differences(current_json, new_json)
 
     if current_resource_exists?
       # Update the client if it's different
-      if different_fields.size > 0 || regenerate
+      if differences.size > 0 || regenerate
         if regenerate
           new_json['private_key'] = true
           new_json.delete('public_key')
@@ -71,7 +70,7 @@ class Chef::Provider::CheffishClient < Cheffish::ChefProviderBase
         else
           description = [ "update client #{new_resource.name} at #{rest.url}" ]
         end
-        description += different_fields.map { |field| "change #{field} from #{current_json[field].inspect} to #{new_json[field].inspect}" }
+        description += differences
         converge_by description do
           result = rest.put("clients/#{new_resource.name}", normalize_for_put(new_json))
           if result['private_key']
@@ -84,8 +83,7 @@ class Chef::Provider::CheffishClient < Cheffish::ChefProviderBase
       end
     else
       # Create the client if it's missing
-      description = [ "create client #{new_resource.name} at #{rest.url}" ]
-      description += different_fields.map { |field| "set #{field} to #{new_json[field].inspect}"}
+      description = [ "create client #{new_resource.name} at #{rest.url}" ] + differences
       converge_by description do
         result = rest.post("clients", normalize_for_post(new_json))
         if result['private_key']

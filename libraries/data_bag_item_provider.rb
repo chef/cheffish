@@ -5,20 +5,17 @@ class Chef::Provider::CheffishDataBagItem < Cheffish::ChefProviderBase
   end
 
   action :create do
-    # TODO nice json diff of field internals instead of this coarse thing
-    different_fields = new_json.keys.select { |key| new_json[key] != current_json[key] }.to_a
+    differences = json_differences(current_json, new_json)
 
     if current_resource_exists?
-      if different_fields.size > 0
-        description = [ "update data bag item #{new_resource.id} at #{rest.url}" ]
-        description += different_fields.map { |field| "change #{field} from #{current_json[field].inspect} to #{new_json[field].inspect}" }
+      if differences.size > 0
+        description = [ "update data bag item #{new_resource.id} at #{rest.url}" ] + differences
         converge_by description do
           rest.put("data/#{new_resource.data_bag}/#{new_resource.id}", normalize_for_put(new_json))
         end
       end
     else
-      description = [ "create data bag item #{new_resource.id} at #{rest.url}" ]
-      description += different_fields.map { |field| "set #{field} to #{new_json[field].inspect}"}
+      description = [ "create data bag item #{new_resource.id} at #{rest.url}" ] + differences
       converge_by description do
         rest.post("data/#{new_resource.data_bag}", normalize_for_post(new_json))
       end
