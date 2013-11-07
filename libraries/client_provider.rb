@@ -201,7 +201,11 @@ class Chef::Provider::CheffishClient < Cheffish::ChefProviderBase
   end
 
   def keys
-    %w(name admin validator)
+    {
+      'name' => :name,
+      'admin' => :admin,
+      'validator' => :validator
+    }
   end
 
 end

@@ -14,7 +14,6 @@ class Chef::Provider::CheffishEnvironment < Cheffish::ChefProviderBase
         description += different_fields.map { |field| "change #{field} from #{current_json[field].inspect} to #{new_json[field].inspect}" }
         converge_by description do
           rest.put("environments/#{new_resource.name}", normalize_for_put(new_json))
-          Chef::Log.info("#{new_resource} updated environment #{new_resource.name} at #{rest.url}")
         end
       end
     else
@@ -22,7 +21,6 @@ class Chef::Provider::CheffishEnvironment < Cheffish::ChefProviderBase
       description += different_fields.map { |field| "set #{field} to #{new_json[field].inspect}"}
       converge_by description do
         rest.post("environments", normalize_for_post(new_json))
-        Chef::Log.info("#{new_resource} created environment #{new_resource.name} at #{rest.url}")
       end
     end
   end
@@ -31,7 +29,6 @@ class Chef::Provider::CheffishEnvironment < Cheffish::ChefProviderBase
     if current_resource_exists?
       converge_by "delete environment #{new_resource.name} at #{rest.url}" do
         rest.delete("environments/#{new_resource.name}")
-        Chef::Log.info("#{new_resource} deleted environment #{new_resource.name} at #{rest.url}")
       end
     end
   end
@@ -73,7 +70,13 @@ class Chef::Provider::CheffishEnvironment < Cheffish::ChefProviderBase
   end
 
   def keys
-    %w(name description cookbook_versions default_attributes override_attributes)
+    {
+      'name' => :name,
+      'description' => :description,
+      'cookbook_versions' => :cookbook_versions,
+      'default_attributes' => :default_attributes,
+      'override_attributes' => :override_attributes
+    }
   end
 
 end

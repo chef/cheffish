@@ -29,18 +29,12 @@ module Cheffish
     def new_json
       @new_json ||= begin
         if new_resource.complete
-          result = normalize(resource_to_json(new_resource))
+          normalize(resource_to_json(new_resource))
         else
           # If resource is incomplete, use current json to fill any holes
-          result = current_json.merge(resource_to_json(new_resource))
+          current_json.merge(resource_to_json(new_resource))
         end
-        result = new_json_override(result)
-        result
       end
-    end
-
-    def new_json_override(result)
-      result
     end
 
     def current_json
@@ -49,17 +43,17 @@ module Cheffish
 
     def resource_to_json(resource)
       json = {}
-      keys.each do |key|
-        value = resource.send(key.to_sym)
-        json[key] = value if value
+      keys.each do |json_key, resource_key|
+        value = resource.send(resource_key)
+        json[json_key] = value if value
       end
       json
     end
 
     def json_to_resource(json)
       resource = resource_class.new(new_resource.name)
-      keys.each do |key|
-        resource.send(key.to_sym, json[key])
+      keys.each do |json_key, resource_key|
+        resource.send(resource_key, json[json_key])
       end
       resource
     end
@@ -157,7 +151,7 @@ module Cheffish
 
     # Needed to be able to use DataHandler classes
     def fake_entry
-      FakeEntry.new(new_resource.send(keys[0].to_sym))
+      FakeEntry.new(new_resource.send(keys.values.first))
     end
 
     class FakeEntry
