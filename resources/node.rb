@@ -96,6 +96,42 @@ def automatic(attribute_path, value=NOT_PASSED, &block)
   end
 end
 
+# Patchy tags
+# tag 'webserver', 'apache', 'myenvironment'
+def tag(*tags)
+  normal 'tags' do |existing_tags|
+    existing_tags ||= []
+    tags.each do |tag|
+      if !existing_tags.include?(tag.to_s)
+        existing_tags << tag.to_s
+      end
+    end
+    existing_tags
+  end
+end
+def remove_tag(*tags)
+  normal 'tags' do |existing_tags|
+    if existing_tags
+      tags.each do |tag|
+        existing_tags.delete(tag.to_s)
+      end
+    end
+    existing_tags
+  end
+end
+
+# NON-patchy tags
+# tags :a, :b, :c # removes all other tags
+def tags(*tags)
+  if tags.size == 0
+    normal('tags')
+  else
+    tags = tags[0] if tags.size == 1 && tags[0].kind_of?(Array)
+    normal 'tags', tags.map { |tag| tag.to_s }
+  end
+end
+
+
 alias :attributes :normal_attributes
 alias :attribute :normal
 

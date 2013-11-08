@@ -63,9 +63,7 @@ module Cheffish
     end
 
     def json_differences(old_json, new_json, name = '')
-      if old_json == new_json
-        []
-      elsif old_json.kind_of?(Hash) && old_json.kind_of?(Hash)
+      if old_json.kind_of?(Hash) && old_json.kind_of?(Hash)
         result = []
         removed_keys = old_json.keys.inject({}) { |hash, key| hash[key] = true; hash }
         new_json.each_pair do |new_key, new_value|
@@ -82,8 +80,10 @@ module Cheffish
           result << "remove #{name == '' ? removed_key : "#{name}.#{removed_key}"}"
         end
         result
+      elsif old_json == new_json
+        []
       else
-        return [ "update #{name} from #{old_json.inspect} to #{new_json.inspect}" ]
+        [ "update #{name} from #{old_json.inspect} to #{new_json.inspect}" ]
       end
     end
 
@@ -99,6 +99,7 @@ module Cheffish
 
       modifiers.each do |path, value|
         path = [path] if !path.kind_of?(Array)
+        path = path.map { |path_part| path_part.to_s }
         parent = path[0..-2].inject(json) { |hash, path_part| hash ? hash[path_part] : nil }
         existing_value = parent ? parent[path[-1]] : nil
 
