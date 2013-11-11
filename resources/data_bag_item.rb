@@ -1,10 +1,20 @@
-require 'chef/environment'
+actions :create, :delete, :nothing
+default_action :create
 
 def initialize(*args)
   super
   name @name
   if !data_bag && Cheffish.enclosing_data_bag
     data_bag Cheffish.enclosing_data_bag
+  end
+  if Cheffish.enclosing_data_bag_item_encryption
+    @encrypt = true if Cheffish.enclosing_data_bag_item_encryption[:encrypt_all]
+    @secret = Cheffish.enclosing_data_bag_item_encryption[:secret]
+    @secret_path = Cheffish.enclosing_data_bag_item_encryption[:secret_path] || Chef::Config[:encrypted_data_bag_secret]
+    @encryption_cipher = Cheffish.enclosing_data_bag_item_encryption[:encryption_cipher]
+    @encryption_version = Cheffish.enclosing_data_bag_item_encryption[:encryption_version]
+    @old_secret = Cheffish.enclosing_data_bag_item_encryption[:old_secret]
+    @old_secret_path = Cheffish.enclosing_data_bag_item_encryption[:old_secret_path]
   end
 end
 
@@ -23,9 +33,6 @@ def name(*args)
   end
   result
 end
-
-actions :create, :delete, :nothing
-default_action :create
 
 NOT_PASSED = Object.new
 def id(value = NOT_PASSED)
@@ -46,10 +53,31 @@ def data_bag(value = NOT_PASSED)
 end
 attribute :raw_data, :kind_of => Hash
 
-# TODO support encryption
-#attribute :encryption_key, :kind_of => String
-#attribute :encryption_key_path, :kind_of => String
-#attribute :encryption_version, :kind_of => Integer, :equal_to => [ 0, 1, 2 ], :default => 1
+# If secret or secret_path are set, encrypt is assumed true.  encrypt exists mainly for with_secret and with_secret_path
+attribute :encrypt, :kind_of => [TrueClass, FalseClass]
+#attribute :secret, :kind_of => String
+def secret(new_secret = nil)
+  if !new_secret
+    @secret
+  else
+    @secret = new_secret
+    @encrypt = true if @encrypt.nil?
+  end
+end
+#attribute :secret_path, :kind_of => String
+def secret_path(new_secret_path = nil)
+  if !new_secret_path
+    @secret_path
+  else
+    @secret_path = new_secret_path
+    @encrypt = true if @encrypt.nil?
+  end
+end
+attribute :encryption_version, :kind_of => Integer, :default => Chef::Config[:data_bag_encrypt_version]
+
+# Old secret (or secrets) to read the old data bag when we are changing keys and re-encrypting data
+attribute :old_secret, :kind_of => [String, Array]
+attribute :old_secret_path, :kind_of => [String, Array]
 
 # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
 # reset to their defaults)

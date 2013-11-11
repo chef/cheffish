@@ -62,28 +62,38 @@ module Cheffish
       data_handler.normalize(json, fake_entry)
     end
 
-    def json_differences(old_json, new_json, name = '')
+    def json_differences(old_json, new_json, print_values=true, name = '', result = nil)
+      result ||= []
+      json_differences_internal(old_json, new_json, print_values, name, result)
+      result
+    end
+
+    def json_differences_internal(old_json, new_json, print_values, name, result)
       if old_json.kind_of?(Hash) && old_json.kind_of?(Hash)
-        result = []
         removed_keys = old_json.keys.inject({}) { |hash, key| hash[key] = true; hash }
         new_json.each_pair do |new_key, new_value|
           if old_json.has_key?(new_key)
             removed_keys.delete(new_key)
             if new_value != old_json[new_key]
-              result += json_differences(old_json[new_key], new_value, name == '' ? new_key : "#{name}.#{new_key}")
+              json_differences_internal(old_json[new_key], new_value, print_values, name == '' ? new_key : "#{name}.#{new_key}", result)
             end
           else
-            result << "add #{name == '' ? new_key : "#{name}.#{new_key}"} = #{new_value.inspect}"
+            if print_values
+              result << "add #{name == '' ? new_key : "#{name}.#{new_key}"} = #{new_value.inspect}"
+            else
+              result << "add #{name == '' ? new_key : "#{name}.#{new_key}"}"
+            end
           end
         end
         removed_keys.keys.each do |removed_key|
           result << "remove #{name == '' ? removed_key : "#{name}.#{removed_key}"}"
         end
-        result
-      elsif old_json == new_json
-        []
-      else
-        [ "update #{name} from #{old_json.inspect} to #{new_json.inspect}" ]
+      elsif old_json != new_json
+        if print_values
+          result << "update #{name} from #{old_json.inspect} to #{new_json.inspect}"
+        else
+          result << "update #{name}"
+        end
       end
     end
 

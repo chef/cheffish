@@ -16,4 +16,12 @@ module Cheffish
   def self.enclosing_environment=(name)
     @@enclosing_environment = name
   end
+
+  @@enclosing_data_bag_item_encryption = nil
+  def self.enclosing_data_bag_item_encryption
+    @@enclosing_data_bag_item_encryption
+  end
+  def self.enclosing_data_bag_item_encryption=(options)
+    @@enclosing_data_bag_item_encryption = options
+  end
 end
