@@ -1,6 +1,6 @@
 class Chef
   class Recipe
-    def with_data_bag(name, &block)
+    def with_chef_data_bag(name, &block)
       old_enclosing_data_bag = Cheffish.enclosing_data_bag
       Cheffish.enclosing_data_bag = name
       if block
@@ -12,7 +12,7 @@ class Chef
       end
     end
 
-    def with_environment(name, &block)
+    def with_chef_environment(name, &block)
       old_enclosing_environment = Cheffish.enclosing_environment
       Cheffish.enclosing_environment = name
       if block
@@ -24,7 +24,7 @@ class Chef
       end
     end
 
-    def with_data_bag_item_encryption(encryption_options, &block)
+    def with_chef_data_bag_item_encryption(encryption_options, &block)
       old_enclosing_data_bag_item_encryption = Cheffish.enclosing_data_bag_item_encryption
       Cheffish.enclosing_data_bag_item_encryption = encryption_options
       if block

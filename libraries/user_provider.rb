@@ -1,4 +1,4 @@
-class Chef::Provider::CheffishUser < Cheffish::ActorProviderBase
+class Chef::Provider::ChefUser < Cheffish::ActorProviderBase
 
   def whyrun_supported?
     true
@@ -27,7 +27,7 @@ class Chef::Provider::CheffishUser < Cheffish::ActorProviderBase
   end
 
   def resource_class
-    Chef::Resource::CheffishUser
+    Chef::Resource::ChefUser
   end
 
   def data_handler

@@ -1,4 +1,4 @@
-class Chef::Provider::CheffishDataBag < Cheffish::ChefProviderBase
+class Chef::Provider::ChefDataBag < Cheffish::ChefProviderBase
 
   def whyrun_supported?
     true
@@ -38,10 +38,10 @@ class Chef::Provider::CheffishDataBag < Cheffish::ChefProviderBase
   # Gives us new_json, current_json, not_found_json, etc.
 
   def resource_class
-    Chef::Resource::CheffishDataBag
+    Chef::Resource::ChefDataBag
   end
 
   def json_to_resource(json)
-    Chef::Resource::CheffishDataBag.new(json['name'])
+    Chef::Resource::ChefDataBag.new(json['name'])
   end
 end

@@ -1,6 +1,6 @@
 require 'chef/encrypted_data_bag_item'
 
-class Chef::Provider::CheffishDataBagItem < Cheffish::ChefProviderBase
+class Chef::Provider::ChefDataBagItem < Cheffish::ChefProviderBase
 
   def whyrun_supported?
     true
@@ -35,7 +35,7 @@ class Chef::Provider::CheffishDataBagItem < Cheffish::ChefProviderBase
   def load_current_resource
     begin
       json = rest.get("data/#{new_resource.data_bag}/#{new_resource.id}")
-      resource = Chef::Resource::CheffishDataBagItem.new(new_resource.name)
+      resource = Chef::Resource::ChefDataBagItem.new(new_resource.name)
       resource.raw_data json
       @current_resource = resource
     rescue Net::HTTPServerException => e
@@ -243,7 +243,7 @@ class Chef::Provider::CheffishDataBagItem < Cheffish::ChefProviderBase
   require 'chef/chef_fs/data_handler/data_bag_item_data_handler'
 
   def resource_class
-    Chef::Resource::CheffishDataBagItem
+    Chef::Resource::ChefDataBagItem
   end
 
   def data_handler

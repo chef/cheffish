@@ -1,4 +1,4 @@
-class Chef::Provider::CheffishEnvironment < Cheffish::ChefProviderBase
+class Chef::Provider::ChefEnvironment < Cheffish::ChefProviderBase
 
   def whyrun_supported?
     true
@@ -59,7 +59,7 @@ class Chef::Provider::CheffishEnvironment < Cheffish::ChefProviderBase
   require 'chef/chef_fs/data_handler/environment_data_handler'
 
   def resource_class
-    Chef::Resource::CheffishEnvironment
+    Chef::Resource::ChefEnvironment
   end
 
   def data_handler

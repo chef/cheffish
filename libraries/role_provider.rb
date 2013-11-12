@@ -1,4 +1,4 @@
-class Chef::Provider::CheffishRole < Cheffish::ChefProviderBase
+class Chef::Provider::ChefRole < Cheffish::ChefProviderBase
 
   def whyrun_supported?
     true
@@ -60,7 +60,7 @@ class Chef::Provider::CheffishRole < Cheffish::ChefProviderBase
   require 'chef/chef_fs/data_handler/role_data_handler'
 
   def resource_class
-    Chef::Resource::CheffishRole
+    Chef::Resource::ChefRole
   end
 
   def data_handler
