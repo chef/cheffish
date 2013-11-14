@@ -7,7 +7,17 @@ class Chef::Provider::Machine < Cheffish::ChefProviderBase
   end
 
   action :create do
-    new_machine = new_resource.bootstrapper.new_machine
+    create_machine(false)
+  end
+
+  action :converge do
+    create_machine(true)
+  end
+
+  def create_machine(converge)
+    retrieved_node = nil
+
+    machine_context = new_resource.bootstrapper.machine_context(self, new_resource.name)
 
     # Create the node
     chef_node new_resource.name do
@@ -24,78 +34,103 @@ class Chef::Provider::Machine < Cheffish::ChefProviderBase
       self.run_list_modifiers = new_resource.run_list_modifiers
       self.run_list_removers = new_resource.run_list_removers
       complete new_resource.complete
-      filter { |node| new_machine.filter_node(node) }
+      filter { |node| machine_context.filter_node(node) }
 
-#      notifies :converge, "machine_converge[#{new_resource.name}]"
+      notifies :converge, machine_context.converge_resource_name
     end
 
-    # TODO don't make a tempfile path, download to a string
-    if new_resource.private_key_path
-      tempfile = nil
-      private_key_path = new_resource.private_key_path
+    #
+    # Create the machine
+    #
+    machine_context.raw_machine do
+      notifies :converge, machine_context.converge_resource_name
+    end
+
+    # Create or update the client
+    final_private_key = nil
+    chef_client new_resource.name do
+      public_key_path new_resource.public_key_path
+      private_key_path private_key_path
+      admin new_resource.admin
+      validator new_resource.validator
+      key_owner true
+      notifies :converge, machine_context.converge_resource_name
+
+      before do |resource|
+        resource.private_key machine_context.read_file("#{machine_context.configuration_path}/#{new_resource.name}.pem")
+      end
+      # Capture the private key
+      after { |resource, json, private_key, public_key| final_private_key = private_key.to_pem }
+    end
+
+    #
+    # Configure the client
+    #
+    machine_context.chef_client_setup do
+      client_name new_resource.name
+      notifies :converge, machine_context.converge_resource_name
+
+      before do |resource|
+        resource.client_key final_private_key
+      end
+    end
+
+    #
+    # Upload extra files
+    #
+    if new_resource.extra_files
+      new_resource.extra_files.each do |remote_path, local_path|
+        # Unknown files are relative to the configuration path
+        remote_path = File.expand_path(remote_path, machine_context.configuration_path)
+        machine_context.file remote_path do
+          source local_path
+          notifies :converge, machine_context.converge_resource_name
+        end
+      end
+    end
+
+    #
+    # Converge the client if anything changed
+    #
+    if converge
+      machine_context.converge
     else
-      tempfile = Tempfile.new('private_key')
-      private_key_path = tempfile.path
+      machine_context.converge do
+        action :nothing
+      end
     end
 
-    begin
-      # Get the remote pem so we can avoid disturbing the key unnecessarily
-      machine_file "#{new_machine.configuration_path}/#{new_resource.name}.pem" do
-        machine new_machine
-        source private_key_path
-        delete_if_missing true
-        action :copy_to_source
-      end
-
-      # Create or update the client
-      chef_client new_resource.name do
-        public_key_path new_resource.public_key_path
-        private_key_path private_key_path
-        admin new_resource.admin
-        validator new_resource.validator
-        key_owner true
-  #      notifies :converge, "machine_converge[#{new_resource.name}]"
-      end
-
-      #
-      # Create the machine
-      #
-  #    raw_machine new_resource.name, new_machine do
-  #      notifies :converge, "machine_converge[#{new_resource.name}]"
-  #    end
-
-      #
-      # Configure the client
-      #
-  #    machine_configuration new_resource.name, new_machine do
-  #      client_name new_resource.name
-  #      client_key new_resource.private_key_path
-  #      extra_files new_resource.extra_files
-  #      notifies :converge, "machine_converge[#{new_resource.name}]"
-  #    end
-
-      # Converge the client if anything changed
-  #    converge_machine new_resource.name, new_machine do
-  #      action :nothing
-  #    end
-    ensure
-      tempfile.unlink if tempfile
-    end
+    #
+    # Terminate the machine context (creates a resource that does this)
+    #
+    machine_context.disconnect
   end
 
   action :delete do
-    new_machine = bootstrapper.machine(chef_server_url, new_resource.chef_environment, new_resource.name)
-
-    # Destroy the machine
-    raw_machine new_resource.name, new_machine do
-      action :delete
+    begin
+      node_json = rest.get("nodes/#{new_resource.name}")
+    rescue Net::HTTPServerException => e
+      if e.response.code == "404"
+        node_json = nil
+      else
+        raise
+      end
     end
 
-    chef_client new_resource.name do
-      action :delete
-    end
-    chef_node new_resource.name do
-      action :delete
+    if node_json
+      machine_context = new_resource.bootstrapper.machine_context(self, node_json)
+
+      # Destroy the machine
+      machine_context.raw new_resource.name do
+        action :delete
+      end
+
+      chef_client new_resource.name do
+        action :delete
+      end
+      chef_node new_resource.name do
+        action :delete
+      end
     end
   end
 

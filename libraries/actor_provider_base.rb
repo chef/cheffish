@@ -6,78 +6,25 @@ end
 
 class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
 
-  def delete_actor
-    if current_resource_exists?
-      converge_by "delete #{actor_type} #{new_resource.name} at #{rest.url}" do
-        rest.delete("#{actor_type}s/#{new_resource.name}")
-        Chef::Log.info("#{new_resource} deleted #{actor_type} #{new_resource.name} at #{rest.url}")
-      end
-    end
-    if current_resource.public_key_path
-      converge_by "delete public key #{current_resource.public_key_path}" do
-        ::File.unlink(current_resource.public_key_path)
-      end
-    end
-    if current_resource.private_key_path
-      converge_by "delete private key #{current_resource.private_key_path}" do
-        ::File.unlink(current_resource.private_key_path)
-      end
-    end
-  end
-
-  def current_private_key
-    if current_resource.private_key_path
-      @current_private_key ||= read_key(::File.read(current_resource.private_key_path))
-    else
-      nil
-    end
-  end
-
-  def current_public_key
-    if current_resource.public_key_path
-      @current_public_key ||= read_key(::File.read(current_resource.public_key_path))
-    else
-      nil
-    end
-  end
-
-  def augment_new_json(json)
-    # As key owner, we will do what we must to ensure our keys match the server,
-    # including blowing away keys on one or the other.
-    if new_resource.key_owner
-      # If we have a private key on hand, we'll send the public for that to the server.
-      if current_private_key
-        @server_public_key = current_private_key.public_key
-        json['public_key'] = server_public_key.to_pem
-      # If we *need* a private key but don't have one, we have to regenerate one, 
-      elsif new_resource.private_key_path
-        regenerate = true
-      end
-    end
-    json
-  end
-
-  def augment_current_json(json)
-    # As key owner, we will do what we must to ensure our keys match the server,
-    # including blowing away keys on one or the other.
-    if new_resource.key_owner
-      # If we have a private key on hand, we'll send the public for that to the server.
-      if current_private_key
-        json['public_key'] = server_public_key.to_pem if server_public_key
-      end
-    end
-    json
-  end
-
   def create_actor(regenerate)
+    if new_resource.before
+      new_resource.before.call(self)
+    end
+
+    if new_resource.private_key && regenerate
+      raise "Cannot regenerate key when private_key is specified"
+    end
+
     # As key owner, we will do what we must to ensure our keys match the server,
     # including blowing away keys on one or the other.
     if new_resource.key_owner
       # If we *need* a private key but don't have one, we have to regenerate one, 
-      if !current_private_key && new_resource.private_key_path
+      if new_resource.private_key_path && !new_private_key
         regenerate = true
       end
     end
+
+    # Create or update the client/user
 
     differences = json_differences(current_json, new_json)
 
@@ -117,6 +64,7 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
     end
 
     # Write out the private key
+
     if new_resource.private_key_path
       if server_private_key
         # Create or update the private key
@@ -143,19 +91,14 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
     end
 
     # Write out the public key
+
+    @server_public_key = new_private_key.public_key if !server_public_key
+
     if new_resource.public_key_path
       if server_public_key
-        new_public_key = server_public_key
-      elsif current_private_key
-        new_public_key = current_private_key.public_key
-      else
-        new_public_key = nil
-      end
-
-      if new_public_key
         if !current_resource.public_key_path
           action = 'create'
-        elsif !current_public_key || new_public_key.to_s != current_public_key.to_s
+        elsif !current_public_key || server_public_key.to_s != current_public_key.to_s
           action = 'overwrite'
         else
           action = nil
@@ -164,12 +107,91 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
         if action
           converge_by "#{action} public key #{new_resource.public_key_path}" do
             ::File.open(new_resource.public_key_path, 'w') do |file|
-              file.write(new_public_key.to_pem)
+              file.write(server_public_key.to_pem)
             end
           end
         end
       end
+
+      if new_resource.after
+        new_resource.after.call(self, new_json, server_private_key, server_public_key)
+      end
     end
+  end
+
+  def delete_actor
+    if current_resource_exists?
+      converge_by "delete #{actor_type} #{new_resource.name} at #{rest.url}" do
+        rest.delete("#{actor_type}s/#{new_resource.name}")
+        Chef::Log.info("#{new_resource} deleted #{actor_type} #{new_resource.name} at #{rest.url}")
+      end
+    end
+    if current_resource.public_key_path
+      converge_by "delete public key #{current_resource.public_key_path}" do
+        ::File.unlink(current_resource.public_key_path)
+      end
+    end
+    if current_resource.private_key_path
+      converge_by "delete private key #{current_resource.private_key_path}" do
+        ::File.unlink(current_resource.private_key_path)
+      end
+    end
+  end
+
+  def current_private_key
+    if current_resource.private_key_path
+      @current_private_key ||= read_key(::File.read(current_resource.private_key_path))
+    else
+      nil
+    end
+  end
+
+  def current_public_key
+    if current_resource.public_key_path
+      @current_public_key ||= read_key(::File.read(current_resource.public_key_path))
+    else
+      nil
+    end
+  end
+
+  def new_private_key
+    if new_resource.private_key
+      if new_resource.private_key.respond_to?(:call)
+        new_resource.private_key.call
+      else
+        new_resource.private_key
+      end
+    else
+      current_private_key
+    end
+  end
+
+  def augment_new_json(json)
+    # As key owner, we will do what we must to ensure our keys match the server,
+    # including blowing away keys on one or the other.
+    if new_resource.key_owner
+      # If we have a private key on hand, we'll send the public for that to the server.
+      if new_private_key
+        @server_public_key = new_private_key.public_key
+        json['public_key'] = server_public_key.to_pem
+      # If we *need* a private key but don't have one, we have to regenerate one, 
+      elsif new_resource.private_key_path
+        regenerate = true
+      end
+    end
+    json
+  end
+
+  def augment_current_json(json)
+    # As key owner, we will do what we must to ensure our keys match the server,
+    # including blowing away keys on one or the other.
+    if new_resource.key_owner
+      # If we have a private key on hand, we'll send the public for that to the server.
+      if current_private_key
+        json['public_key'] = server_public_key.to_pem if server_public_key
+      end
+    end
+    json
   end
 
   def read_key(str)

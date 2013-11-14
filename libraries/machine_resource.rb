@@ -11,7 +11,7 @@ class Chef::Resource::Machine < Chef::Resource::LWRPBase
     @bootstrapper = Cheffish.enclosing_bootstrapper
   end
 
-  actions :create, :delete, :nothing
+  actions :create, :delete, :converge, :nothing
   default_action :create
 
   Cheffish.node_attributes(self)
