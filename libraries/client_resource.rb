@@ -16,4 +16,7 @@ class Chef::Resource::ChefClient < Chef::Resource::LWRPBase
   attribute :complete, :kind_of => [TrueClass, FalseClass]
   # If key_owner is set, our disk set of keys is considered canonical and keys on the server blown away.
   attribute :key_owner, :kind_of => [TrueClass, FalseClass]
+
+  # Proc to filter json.  We pass in the desired json before it is PUT/POST
+  attribute :filter, :kind_of => Proc
 end

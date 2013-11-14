@@ -42,14 +42,11 @@ class Chef::Provider::ChefEnvironment < Cheffish::ChefProviderBase
     end
   end
 
-  def new_json
-    @new_json ||= begin
-      json = super
-      # Apply modifiers
-      json['default_attributes'] = apply_modifiers(new_resource.default_attribute_modifiers, json['default_attributes'])
-      json['override_attributes'] = apply_modifiers(new_resource.override_attribute_modifiers, json['override_attributes'])
-      json
-    end
+  def augment_new_json(json)
+    # Apply modifiers
+    json['default_attributes'] = apply_modifiers(new_resource.default_attribute_modifiers, json['default_attributes'])
+    json['override_attributes'] = apply_modifiers(new_resource.override_attribute_modifiers, json['override_attributes'])
+    json
   end
 
   #

@@ -118,10 +118,14 @@ class Chef::Provider::ChefDataBagItem < Cheffish::ChefProviderBase
     @new_json ||= begin
       if new_encrypt
         # Encrypt new stuff
-        encrypt(new_decrypted, new_secret, new_resource.encryption_version)
+        result = encrypt(new_decrypted, new_secret, new_resource.encryption_version)
       else
-        new_decrypted
+        result = new_decrypted
       end
+      if new_resource.filter
+        result = new_resource.filter.call(result)
+      end
+      result
     end
   end
 

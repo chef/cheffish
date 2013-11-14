@@ -58,4 +58,7 @@ class Chef::Resource::ChefEnvironment < Chef::Resource::LWRPBase
 
   alias :attributes :default_attributes
   alias :attribute :default
+
+  # Proc to filter json.  We pass in the desired json before it is PUT/POST
+  attribute :filter, :kind_of => Proc
 end

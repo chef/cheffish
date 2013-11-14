@@ -19,26 +19,45 @@ module Cheffish
     end
 
     def normalize_for_put(json)
-      data_handler.normalize(json, fake_entry)
+      data_handler.normalize_for_put(json, fake_entry)
     end
 
     def normalize_for_post(json)
-      data_handler.normalize(json, fake_entry)
+      data_handler.normalize_for_post(json, fake_entry)
     end
 
     def new_json
       @new_json ||= begin
         if new_resource.complete
-          normalize(resource_to_json(new_resource))
+          result = normalize(resource_to_json(new_resource))
         else
           # If resource is incomplete, use current json to fill any holes
-          current_json.merge(resource_to_json(new_resource))
+          result = current_json.merge(resource_to_json(new_resource))
         end
+        result = augment_new_json(result)
+        if new_resource.filter
+          result = new_resource.filter.call(result)
+        end
+        result
       end
     end
 
+    # Meant to be overridden
+    def augment_new_json(json)
+      json
+    end
+
     def current_json
-      @current_json ||= normalize(resource_to_json(current_resource))
+      @current_json ||= begin
+        result = normalize(resource_to_json(current_resource))
+        result = augment_current_json(result)
+        result
+      end
+    end
+
+    # Meant to be overridden
+    def augment_current_json(json)
+      json
     end
 
     def resource_to_json(resource)

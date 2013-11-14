@@ -25,6 +25,14 @@ module Cheffish
     @@enclosing_data_bag_item_encryption = options
   end
 
+  @@enclosing_bootstrapper = nil
+  def self.enclosing_bootstrapper
+    @@enclosing_bootstrapper
+  end
+  def self.enclosing_bootstrapper=(bootstrapper)
+    @@enclosing_bootstrapper = bootstrapper
+  end
+
   NOT_PASSED=Object.new
 
   def self.node_attributes(klass)
@@ -40,15 +48,6 @@ module Cheffish
       # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
       # reset to their defaults)
       attribute :complete, :kind_of => [TrueClass, FalseClass]
-
-      # Grab environment from with_environment
-      def initialize(*args)
-        super
-        if Cheffish.enclosing_environment
-          chef_environment Cheffish.enclosing_environment
-        end
-      end
-
 
       # default 'ip_address', '127.0.0.1'
       # default [ 'pushy', 'port' ], '9000'
@@ -166,8 +165,8 @@ module Cheffish
       # recipe 'recipe@version'
       # recipe 'recipe'
       # role ''
-      attr_reader :run_list_modifiers
-      attr_reader :run_list_removers
+      attr_accessor :run_list_modifiers
+      attr_accessor :run_list_removers
       def recipe(*recipes)
         if recipes.size == 0
           raise ArgumentError, "At least one recipe must be specified"

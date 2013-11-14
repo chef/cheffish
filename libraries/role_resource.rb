@@ -88,4 +88,7 @@ class Chef::Resource::ChefRole < Chef::Resource::LWRPBase
     @run_list_removers ||= []
     @run_list_removers += roles.map { |recipe| Chef::RunList::RunListItem.new("role[#{role}]") }
   end
+
+  # Proc to filter json.  We pass in the desired json before it is PUT/POST
+  attribute :filter, :kind_of => Proc
 end
