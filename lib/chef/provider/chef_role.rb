@@ -1,3 +1,7 @@
+require 'cheffish/chef_provider_base'
+require 'chef/resource/chef_role'
+require 'chef/chef_fs/data_handler/role_data_handler'
+
 class Chef::Provider::ChefRole < Cheffish::ChefProviderBase
 
   def whyrun_supported?
@@ -53,8 +57,6 @@ class Chef::Provider::ChefRole < Cheffish::ChefProviderBase
   #
   # Helpers
   #
-  # Gives us new_json, current_json, not_found_json, etc.
-  require 'chef/chef_fs/data_handler/role_data_handler'
 
   def resource_class
     Chef::Resource::ChefRole

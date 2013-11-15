@@ -1,3 +1,7 @@
+require 'cheffish/actor_provider_base'
+require 'chef/resource/chef_client'
+require 'chef/chef_fs/data_handler/client_data_handler'
+
 class Chef::Provider::ChefClient < Cheffish::ActorProviderBase
 
   def whyrun_supported?
@@ -23,8 +27,6 @@ class Chef::Provider::ChefClient < Cheffish::ActorProviderBase
   #
   # Helpers
   #
-  # Gives us new_json, current_json, not_found_json, etc.
-  require 'chef/chef_fs/data_handler/client_data_handler'
 
   def resource_class
     Chef::Resource::ChefClient

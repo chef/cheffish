@@ -1,3 +1,5 @@
+require 'cheffish'
+require 'chef/resource/lwrp_base'
 require 'chef/environment'
 
 class Chef::Resource::ChefEnvironment < Chef::Resource::LWRPBase

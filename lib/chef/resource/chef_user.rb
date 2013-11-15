@@ -1,3 +1,6 @@
+require 'cheffish'
+require 'chef/resource/lwrp_base'
+
 class Chef::Resource::ChefUser < Chef::Resource::LWRPBase
   self.resource_name = 'chef_user'
 

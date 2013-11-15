@@ -1,3 +1,7 @@
+require 'cheffish/actor_provider_base'
+require 'chef/resource/chef_user'
+require 'chef/chef_fs/data_handler/user_data_handler'
+
 class Chef::Provider::ChefUser < Cheffish::ActorProviderBase
 
   def whyrun_supported?
@@ -20,7 +24,6 @@ class Chef::Provider::ChefUser < Cheffish::ActorProviderBase
   # Helpers
   #
   # Gives us new_json, current_json, not_found_json, etc.
-  require 'chef/chef_fs/data_handler/user_data_handler'
 
   def actor_type
     'user'

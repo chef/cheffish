@@ -1,3 +1,7 @@
+require 'cheffish'
+require 'chef/resource/lwrp_base'
+require 'chef/run_list/run_list_item'
+
 class Chef::Resource::ChefRole < Chef::Resource::LWRPBase
   self.resource_name = 'chef_role'
 

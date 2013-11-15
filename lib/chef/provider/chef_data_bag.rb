@@ -1,3 +1,6 @@
+require 'cheffish/chef_provider_base'
+require 'chef/resource/chef_data_bag'
+
 class Chef::Provider::ChefDataBag < Cheffish::ChefProviderBase
 
   def whyrun_supported?

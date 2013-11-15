@@ -1,3 +1,7 @@
+require 'cheffish/chef_provider_base'
+require 'chef/resource/chef_environment'
+require 'chef/chef_fs/data_handler/environment_data_handler'
+
 class Chef::Provider::ChefEnvironment < Cheffish::ChefProviderBase
 
   def whyrun_supported?
@@ -52,8 +56,6 @@ class Chef::Provider::ChefEnvironment < Cheffish::ChefProviderBase
   #
   # Helpers
   #
-  # Gives us new_json, current_json, not_found_json, etc.
-  require 'chef/chef_fs/data_handler/environment_data_handler'
 
   def resource_class
     Chef::Resource::ChefEnvironment

@@ -1,3 +1,6 @@
+require 'cheffish/chef_provider_base'
+require 'chef/resource/chef_data_bag_item'
+require 'chef/chef_fs/data_handler/data_bag_item_data_handler'
 require 'chef/encrypted_data_bag_item'
 
 class Chef::Provider::ChefDataBagItem < Cheffish::ChefProviderBase
@@ -243,8 +246,6 @@ class Chef::Provider::ChefDataBagItem < Cheffish::ChefProviderBase
   #
   # Helpers
   #
-  # Gives us new_json, current_json, not_found_json, etc.
-  require 'chef/chef_fs/data_handler/data_bag_item_data_handler'
 
   def resource_class
     Chef::Resource::ChefDataBagItem

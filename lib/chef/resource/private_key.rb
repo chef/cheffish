@@ -1,3 +1,6 @@
+require 'openssl/cipher'
+require 'chef/resource/lwrp_base'
+
 class Chef::Resource::PrivateKey < Chef::Resource::LWRPBase
   self.resource_name = 'private_key'
 

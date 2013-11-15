@@ -1,8 +1,5 @@
-# We have to do this because "actor_provider_base.rb" is loaded before "chef_provider_base.rb" :(
-module Cheffish
-  class ChefProviderBase < Chef::Provider::LWRPBase
-  end
-end
+require 'openssl/pkey'
+require 'cheffish/chef_provider_base'
 
 class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
 

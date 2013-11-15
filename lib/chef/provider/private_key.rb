@@ -1,3 +1,6 @@
+require 'chef/provider/lwrp_base'
+require 'openssl/pkey/rsa'
+
 class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
 
   action :create do
