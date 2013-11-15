@@ -35,17 +35,5 @@ class Chef
         end
       end
     end
-
-    def with_bootstrapper(bootstrapper)
-      old_bootstrapper = Cheffish.enclosing_bootstrapper
-      Cheffish.enclosing_bootstrapper = bootstrapper
-      if block_given?
-        begin
-          yield
-        ensure
-          Cheffish.enclosing_bootstrapper = old_bootstrapper
-        end
-      end
-    end
   end
 end

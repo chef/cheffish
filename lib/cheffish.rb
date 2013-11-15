@@ -25,14 +25,6 @@ module Cheffish
     @@enclosing_data_bag_item_encryption = options
   end
 
-  @@enclosing_bootstrapper = nil
-  def self.enclosing_bootstrapper
-    @@enclosing_bootstrapper
-  end
-  def self.enclosing_bootstrapper=(bootstrapper)
-    @@enclosing_bootstrapper = bootstrapper
-  end
-
   NOT_PASSED=Object.new
 
   def self.node_attributes(klass)
