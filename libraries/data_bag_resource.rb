@@ -7,5 +7,7 @@ class Chef::Resource::ChefDataBag < Chef::Resource::LWRPBase
   attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
 
   # Proc to filter json.  We pass in the desired json before it is PUT/POST
-  attribute :filter, :kind_of => Proc
+  def filter(&block)
+    block ? @filter = block : @filter
+  end
 end

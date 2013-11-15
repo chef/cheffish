@@ -8,7 +8,10 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
 
   def create_actor(regenerate)
     if new_resource.before
-      new_resource.before.call(self)
+      new_resource.before.call(new_resource)
+      if new_resource.action == [ :regenerate_keys ]
+        regenerate = true
+      end
     end
 
     if new_resource.private_key && regenerate
@@ -65,6 +68,15 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
 
     # Write out the private key
 
+    @server_private_key = new_private_key if !server_private_key
+    if server_public_key
+      if server_private_key && server_private_key.public_key.to_s != server_public_key.to_s
+        raise "Desired private key does not match #{actor_type} #{new_resource.name} on #{rest.url}.  Set key_owner to true or send action :regenerate_key to fix."
+      end
+    else
+      @server_public_key = new_private_key.public_key if !server_public_key
+    end
+
     if new_resource.private_key_path
       if server_private_key
         # Create or update the private key
@@ -83,16 +95,10 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
             end
           end
         end
-      elsif server_public_key
-        if current_private_key.public_key.to_s != server_public_key.to_s
-          raise "Private key #{current_resource.private_key_path} does not match #{actor_type} #{new_resource.name} on #{rest.url}.  Set key_owner to true or send action :regenerate_key to fix."
-        end
       end
     end
 
     # Write out the public key
-
-    @server_public_key = new_private_key.public_key if !server_public_key
 
     if new_resource.public_key_path
       if server_public_key
@@ -112,10 +118,10 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
           end
         end
       end
+    end
 
-      if new_resource.after
-        new_resource.after.call(self, new_json, server_private_key, server_public_key)
-      end
+    if new_resource.after
+      new_resource.after.call(self, new_json, server_private_key, server_public_key)
     end
   end
 
@@ -156,11 +162,7 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
 
   def new_private_key
     if new_resource.private_key
-      if new_resource.private_key.respond_to?(:call)
-        new_resource.private_key.call
-      else
-        new_resource.private_key
-      end
+      read_key(new_resource.private_key)
     else
       current_private_key
     end
@@ -187,8 +189,8 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
     # including blowing away keys on one or the other.
     if new_resource.key_owner
       # If we have a private key on hand, we'll send the public for that to the server.
-      if current_private_key
-        json['public_key'] = server_public_key.to_pem if server_public_key
+      if new_private_key
+        json['public_key'] = new_private_key.public_key.to_pem
       end
     end
     json

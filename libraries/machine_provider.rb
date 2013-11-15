@@ -17,7 +17,9 @@ class Chef::Provider::Machine < Cheffish::ChefProviderBase
   def create_machine(converge)
     retrieved_node = nil
 
-    machine_context = new_resource.bootstrapper.machine_context(self, new_resource.name)
+    machine_context = new_resource.bootstrapper.machine_context(new_resource.name)
+
+    on_machine = machine_context.resources(self)
 
     # Create the node
     chef_node new_resource.name do
@@ -36,29 +38,42 @@ class Chef::Provider::Machine < Cheffish::ChefProviderBase
       complete new_resource.complete
       filter { |node| machine_context.filter_node(node) }
 
-      notifies :converge, machine_context.converge_resource_name
+      notifies :converge, on_machine.converge_resource_name
     end
 
     #
     # Create the machine
     #
-    machine_context.raw_machine do
-      notifies :converge, machine_context.converge_resource_name
+    on_machine.raw_machine do
+      notifies :converge, on_machine.converge_resource_name
     end
 
     # Create or update the client
     final_private_key = nil
     chef_client new_resource.name do
       public_key_path new_resource.public_key_path
-      private_key_path private_key_path
+      private_key_path new_resource.private_key_path
       admin new_resource.admin
       validator new_resource.validator
       key_owner true
-      notifies :converge, machine_context.converge_resource_name
+      notifies :converge, on_machine.converge_resource_name
 
+      # Pass the private key on the way in
       before do |resource|
-        resource.private_key machine_context.read_file("#{machine_context.configuration_path}/#{new_resource.name}.pem")
+        private_key = machine_context.read_file("#{machine_context.configuration_path}/#{new_resource.name}.pem")
+        # Verify private key can be parsed
+        begin
+          OpenSSL::PKey.read(private_key)
+        rescue
+          private_key = nil
+        end
+        if private_key
+          resource.private_key private_key
+        else
+          resource.action :regenerate_keys
+        end
       end
+
       # Capture the private key
       after { |resource, json, private_key, public_key| final_private_key = private_key.to_pem }
     end
@@ -66,9 +81,9 @@ class Chef::Provider::Machine < Cheffish::ChefProviderBase
     #
     # Configure the client
     #
-    machine_context.chef_client_setup do
+    on_machine.chef_client_setup do
       client_name new_resource.name
-      notifies :converge, machine_context.converge_resource_name
+      notifies :converge, on_machine.converge_resource_name
 
       before do |resource|
         resource.client_key final_private_key
@@ -82,9 +97,9 @@ class Chef::Provider::Machine < Cheffish::ChefProviderBase
       new_resource.extra_files.each do |remote_path, local_path|
         # Unknown files are relative to the configuration path
         remote_path = File.expand_path(remote_path, machine_context.configuration_path)
-        machine_context.file remote_path do
+        on_machine.file remote_path do
           source local_path
-          notifies :converge, machine_context.converge_resource_name
+          notifies :converge, on_machine.converge_resource_name
         end
       end
     end
@@ -93,9 +108,9 @@ class Chef::Provider::Machine < Cheffish::ChefProviderBase
     # Converge the client if anything changed
     #
     if converge
-      machine_context.converge
+      on_machine.chef_converge
     else
-      machine_context.converge do
+      on_machine.chef_converge do
         action :nothing
       end
     end
@@ -103,7 +118,7 @@ class Chef::Provider::Machine < Cheffish::ChefProviderBase
     #
     # Terminate the machine context (creates a resource that does this)
     #
-    machine_context.disconnect
+    on_machine.disconnect
   end
 
   action :delete do
@@ -118,10 +133,10 @@ class Chef::Provider::Machine < Cheffish::ChefProviderBase
     end
 
     if node_json
-      machine_context = new_resource.bootstrapper.machine_context(self, node_json)
+      on_machine = new_resource.bootstrapper.machine_context(new_resource.name).resources(self)
 
       # Destroy the machine
-      machine_context.raw new_resource.name do
+      on_machine.raw_machine new_resource.name do
         action :delete
       end
 

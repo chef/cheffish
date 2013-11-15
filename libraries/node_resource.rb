@@ -15,5 +15,7 @@ class Chef::Resource::ChefNode < Chef::Resource::LWRPBase
   Cheffish.node_attributes(self)
 
   # Proc to filter json.  We pass in the desired json before it is PUT/POST
-  attribute :filter, :kind_of => Proc
+  def filter(&block)
+    block ? @filter = block : @filter
+  end
 end

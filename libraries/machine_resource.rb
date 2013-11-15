@@ -1,7 +1,3 @@
-# Due to the order in which things are loaded, we have to predeclare this class
-class Chef::Resource::ChefNode < Chef::Resource::LWRPBase
-end
-
 class Chef::Resource::Machine < Chef::Resource::LWRPBase
   self.resource_name = 'machine'
 
