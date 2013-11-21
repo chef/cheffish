@@ -1,23 +1,4 @@
-# Include all recipe objects so require 'cheffish' brings in the whole recipe DSL
-
 require 'chef/run_list/run_list_item'
-require 'cheffish/recipe_dsl'
-require 'chef/resource/chef_client'
-require 'chef/resource/chef_data_bag'
-require 'chef/resource/chef_data_bag_item'
-require 'chef/resource/chef_environment'
-require 'chef/resource/chef_node'
-require 'chef/resource/chef_role'
-require 'chef/resource/chef_user'
-require 'chef/resource/private_key'
-require 'chef/provider/chef_client'
-require 'chef/provider/chef_data_bag'
-require 'chef/provider/chef_data_bag_item'
-require 'chef/provider/chef_environment'
-require 'chef/provider/chef_node'
-require 'chef/provider/chef_role'
-require 'chef/provider/chef_user'
-require 'chef/provider/private_key'
 
 module Cheffish
   NAME_REGEX = /^[.\-[:alnum:]_]+$/
@@ -210,5 +191,24 @@ module Cheffish
       end
     end
   end
-
 end
+
+# Include all recipe objects so require 'cheffish' brings in the whole recipe DSL
+
+require 'cheffish/recipe_dsl'
+require 'chef/resource/chef_client'
+require 'chef/resource/chef_data_bag'
+require 'chef/resource/chef_data_bag_item'
+require 'chef/resource/chef_environment'
+require 'chef/resource/chef_node'
+require 'chef/resource/chef_role'
+require 'chef/resource/chef_user'
+require 'chef/resource/private_key'
+require 'chef/provider/chef_client'
+require 'chef/provider/chef_data_bag'
+require 'chef/provider/chef_data_bag_item'
+require 'chef/provider/chef_environment'
+require 'chef/provider/chef_node'
+require 'chef/provider/chef_role'
+require 'chef/provider/chef_user'
+require 'chef/provider/private_key'

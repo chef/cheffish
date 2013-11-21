@@ -1,4 +1,4 @@
-require 'openssl/pkey'
+require 'openssl'
 require 'cheffish/chef_provider_base'
 
 class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase

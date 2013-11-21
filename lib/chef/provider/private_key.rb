@@ -1,5 +1,5 @@
 require 'chef/provider/lwrp_base'
-require 'openssl/pkey/rsa'
+require 'openssl'
 
 class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
 
