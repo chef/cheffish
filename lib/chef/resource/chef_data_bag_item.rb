@@ -107,9 +107,4 @@ class Chef::Resource::ChefDataBagItem < Chef::Resource::LWRPBase
       raise "value requires either a value or a block"
     end
   end
-
-  # Proc to filter json.  We pass in the desired json before it is PUT/POST
-  def filter(&block)
-    block ? @filter = block : @filter
-  end
 end

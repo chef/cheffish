@@ -60,9 +60,4 @@ class Chef::Resource::ChefEnvironment < Chef::Resource::LWRPBase
 
   alias :attributes :default_attributes
   alias :attribute :default
-
-  # Proc to filter json.  We pass in the desired json before it is PUT/POST
-  def filter(&block)
-    block ? @filter = block : @filter
-  end
 end

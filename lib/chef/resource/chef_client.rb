@@ -21,11 +21,6 @@ class Chef::Resource::ChefClient < Chef::Resource::LWRPBase
   # If key_owner is set, our disk set of keys is considered canonical and keys on the server blown away.
   attribute :key_owner, :kind_of => [TrueClass, FalseClass]
 
-  # Proc to filter json.  We pass in the desired json before it is PUT/POST
-  def filter(&block)
-    block ? @filter = block : @filter
-  end
-
   # Proc that runs just before the resource executes.  Called with (resource)
   def before(&block)
     block ? @before = block : @before

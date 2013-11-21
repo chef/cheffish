@@ -125,9 +125,6 @@ class Chef::Provider::ChefDataBagItem < Cheffish::ChefProviderBase
       else
         result = new_decrypted
       end
-      if new_resource.filter
-        result = new_resource.filter.call(result)
-      end
       result
     end
   end

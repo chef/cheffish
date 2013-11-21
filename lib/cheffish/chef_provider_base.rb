@@ -34,11 +34,7 @@ module Cheffish
           # If resource is incomplete, use current json to fill any holes
           result = current_json.merge(resource_to_json(new_resource))
         end
-        result = augment_new_json(result)
-        if new_resource.filter
-          result = new_resource.filter.call(result)
-        end
-        result
+        augment_new_json(result)
       end
     end
 
