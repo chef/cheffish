@@ -57,7 +57,7 @@ module Cheffish
     end
 
     def resource_to_json(resource)
-      json = {}
+      json = resource.raw_json || {}
       keys.each do |json_key, resource_key|
         value = resource.send(resource_key)
         json[json_key] = value if value
@@ -103,11 +103,15 @@ module Cheffish
         removed_keys.keys.each do |removed_key|
           result << "remove #{name == '' ? removed_key : "#{name}.#{removed_key}"}"
         end
-      elsif old_json != new_json
-        if print_values
-          result << "update #{name} from #{old_json.inspect} to #{new_json.inspect}"
-        else
-          result << "update #{name}"
+      else
+        old_json = old_json.to_s if old_json.kind_of?(Symbol)
+        new_json = new_json.to_s if new_json.kind_of?(Symbol)
+        if old_json != new_json
+          if print_values
+            result << "update #{name} from #{old_json.inspect} to #{new_json.inspect}"
+          else
+            result << "update #{name}"
+          end
         end
       end
     end

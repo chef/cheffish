@@ -43,6 +43,8 @@ module Cheffish
       # reset to their defaults)
       attribute :complete, :kind_of => [TrueClass, FalseClass]
 
+      attribute :raw_json, :kind_of => Hash
+
       # default 'ip_address', '127.0.0.1'
       # default [ 'pushy', 'port' ], '9000'
       # default 'ip_addresses' do |existing_value|

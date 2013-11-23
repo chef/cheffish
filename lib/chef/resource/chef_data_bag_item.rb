@@ -90,6 +90,8 @@ class Chef::Resource::ChefDataBagItem < Chef::Resource::LWRPBase
   # reset to their defaults)
   attribute :complete, :kind_of => [TrueClass, FalseClass]
 
+  attribute :raw_json, :kind_of => Hash
+
   # value 'ip_address', '127.0.0.1'
   # value [ 'pushy', 'port' ], '9000'
   # value 'ip_addresses' do |existing_value|

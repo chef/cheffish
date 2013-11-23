@@ -19,6 +19,8 @@ class Chef::Resource::ChefRole < Chef::Resource::LWRPBase
   # reset to their defaults)
   attribute :complete, :kind_of => [TrueClass, FalseClass]
 
+  attribute :raw_json, :kind_of => Hash
+
   NOT_PASSED=Object.new
 
   # default_attribute 'ip_address', '127.0.0.1'

@@ -27,6 +27,8 @@ class Chef::Resource::ChefUser < Chef::Resource::LWRPBase
   # If key_owner is set, our disk set of keys is considered canonical and keys on the server blown away.
   attribute :key_owner, :kind_of => [TrueClass, FalseClass]
 
+  attribute :raw_json, :kind_of => Hash
+
   # Proc that runs just before the resource executes.  Called with (resource)
   def before(&block)
     block ? @before = block : @before
