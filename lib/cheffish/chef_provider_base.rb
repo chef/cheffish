@@ -84,7 +84,7 @@ module Cheffish
     end
 
     def json_differences_internal(old_json, new_json, print_values, name, result)
-      if old_json.kind_of?(Hash) && old_json.kind_of?(Hash)
+      if old_json.kind_of?(Hash) && new_json.kind_of?(Hash)
         removed_keys = old_json.keys.inject({}) { |hash, key| hash[key] = true; hash }
         new_json.each_pair do |new_key, new_value|
           if old_json.has_key?(new_key)
