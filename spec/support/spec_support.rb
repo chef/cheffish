@@ -18,20 +18,24 @@ module SpecSupport
       def chef_run
         @event_sink.events
       end
+
+      def run_recipe(&block)
+        node = Chef::Node.new
+        node.name 'test'
+        node.automatic[:platform] = 'test'
+        node.automatic[:platform_version] = 'test'
+        @event_sink ||= EventSink.new
+        run_context = Chef::RunContext.new(node, {}, Chef::EventDispatch::Dispatcher.new(@event_sink))
+        recipe = Chef::Recipe.new('test', 'test', run_context)
+        recipe.instance_eval(&block)
+        Chef::Runner.new(run_context).converge
+      end
     end
   end
 
   def run_recipe_before(&block)
     before :each do
-      node = Chef::Node.new
-      node.name 'test'
-      node.automatic[:platform] = 'test'
-      node.automatic[:platform_version] = 'test'
-      @event_sink ||= EventSink.new
-      run_context = Chef::RunContext.new(node, {}, Chef::EventDispatch::Dispatcher.new(@event_sink))
-      recipe = Chef::Recipe.new('test', 'test', run_context)
-      recipe.instance_eval(&block)
-      Chef::Runner.new(run_context).converge
+      run_recipe(&block)
     end
   end
 
