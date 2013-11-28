@@ -41,6 +41,13 @@ module Cheffish
     @@enclosing_chef_server = chef_server
   end
 
+  def self.reset
+    @@enclosing_data_bag = nil
+    @@enclosing_environment = nil
+    @@enclosing_data_bag_item_encryption = nil
+    @@enclosing_chef_server = nil
+  end
+
   NOT_PASSED=Object.new
 
   def self.node_attributes(klass)

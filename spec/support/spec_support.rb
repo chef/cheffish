@@ -33,7 +33,7 @@ module SpecSupport
     end
   end
 
-  def run_recipe_before(&block)
+  def with_recipe(&block)
     before :each do
       run_recipe(&block)
     end
@@ -58,6 +58,16 @@ RSpec::Matchers.define :have_updated do |resource_name, expected_action|
   end
 end
 
+RSpec.configure do |config|
+  config.filter_run :focus => true
+  config.run_all_when_everything_filtered = true
+  config.treat_symbols_as_metadata_keys_with_true_values = true
+
+  config.before :each do
+    Chef::Config.reset
+    Cheffish.reset
+  end
+end
 
 # Stuff that should have been required in Chef, but wasn't (Chef will be fixed)
 require 'chef/platform'

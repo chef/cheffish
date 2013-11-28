@@ -9,7 +9,7 @@ module Cheffish
   # Just like ServerAPI, except it does not default the server URL or options
   class CheffishServerAPI < Chef::HTTP
     def initialize(chef_server)
-      super(chef_server[:chef_server_url], chef_server[:options])
+      super(chef_server[:chef_server_url], chef_server[:options] || {})
     end
 
     use Chef::HTTP::JSONInput
