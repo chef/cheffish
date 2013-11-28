@@ -35,5 +35,17 @@ class Chef
         end
       end
     end
+
+    def with_chef_server(server_url, options = {})
+      old_enclosing_chef_server = Cheffish.enclosing_chef_server
+      Cheffish.enclosing_chef_server = { :url => server_url, :options => options }
+      if block_given?
+        begin
+          yield
+        ensure
+          Cheffish.enclosing_chef_server = old_enclosing_chef_server
+        end
+      end
+    end
   end
 end

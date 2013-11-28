@@ -17,7 +17,7 @@ describe Chef::Resource::ChefNode do
       end
     end
 
-    # why-run mode
+    # TODO why-run mode
   end
 
   when_the_chef_server 'has a node named "blah"' do

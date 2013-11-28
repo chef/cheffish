@@ -7,6 +7,12 @@ class Chef::Resource::ChefUser < Chef::Resource::LWRPBase
   actions :create, :delete, :regenerate_keys, :nothing
   default_action :create
 
+  # Grab environment from with_environment
+  def initialize(*args)
+    super
+    chef_server Cheffish.enclosing_chef_server
+  end
+
   # Client attributes
   attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
   attribute :admin, :kind_of => [TrueClass, FalseClass]
@@ -28,6 +34,7 @@ class Chef::Resource::ChefUser < Chef::Resource::LWRPBase
   attribute :key_owner, :kind_of => [TrueClass, FalseClass]
 
   attribute :raw_json, :kind_of => Hash
+  attribute :chef_server, :kind_of => Hash
 
   # Proc that runs just before the resource executes.  Called with (resource)
   def before(&block)

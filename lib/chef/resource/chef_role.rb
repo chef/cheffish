@@ -8,6 +8,12 @@ class Chef::Resource::ChefRole < Chef::Resource::LWRPBase
   actions :create, :delete, :nothing
   default_action :create
 
+  # Grab environment from with_environment
+  def initialize(*args)
+    super
+    chef_server Cheffish.enclosing_chef_server
+  end
+
   attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
   attribute :description, :kind_of => String
   attribute :run_list, :kind_of => Array # We should let them specify it as a series of parameters too
@@ -20,6 +26,7 @@ class Chef::Resource::ChefRole < Chef::Resource::LWRPBase
   attribute :complete, :kind_of => [TrueClass, FalseClass]
 
   attribute :raw_json, :kind_of => Hash
+  attribute :chef_server, :kind_of => Hash
 
   NOT_PASSED=Object.new
 

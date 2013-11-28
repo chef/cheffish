@@ -27,6 +27,20 @@ module Cheffish
     @@enclosing_data_bag_item_encryption = options
   end
 
+  @@enclosing_chef_server = nil
+  def self.enclosing_chef_server
+    @@enclosing_chef_server || {
+      :chef_server_url => Chef::Config[:chef_server_url],
+      :options => {
+        :client_name => Chef::Config[:node_name],
+        :signing_key_filename => Chef::Config[:client_key]
+      }
+    }
+  end
+  def self.enclosing_chef_server=(chef_server)
+    @@enclosing_chef_server = chef_server
+  end
+
   NOT_PASSED=Object.new
 
   def self.node_attributes(klass)
@@ -44,6 +58,7 @@ module Cheffish
       attribute :complete, :kind_of => [TrueClass, FalseClass]
 
       attribute :raw_json, :kind_of => Hash
+      attribute :chef_server, :kind_of => Hash
 
       # default 'ip_address', '127.0.0.1'
       # default [ 'pushy', 'port' ], '9000'

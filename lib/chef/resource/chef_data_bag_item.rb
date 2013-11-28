@@ -11,7 +11,7 @@ class Chef::Resource::ChefDataBagItem < Chef::Resource::LWRPBase
   def initialize(*args)
     super
     name @name
-    if !data_bag && Cheffish.enclosing_data_bag
+    if !data_bag
       data_bag Cheffish.enclosing_data_bag
     end
     if Cheffish.enclosing_data_bag_item_encryption
@@ -23,6 +23,7 @@ class Chef::Resource::ChefDataBagItem < Chef::Resource::LWRPBase
       @old_secret = Cheffish.enclosing_data_bag_item_encryption[:old_secret]
       @old_secret_path = Cheffish.enclosing_data_bag_item_encryption[:old_secret_path]
     end
+    chef_server Cheffish.enclosing_chef_server
   end
 
   def name(*args)
@@ -91,6 +92,7 @@ class Chef::Resource::ChefDataBagItem < Chef::Resource::LWRPBase
   attribute :complete, :kind_of => [TrueClass, FalseClass]
 
   attribute :raw_json, :kind_of => Hash
+  attribute :chef_server, :kind_of => Hash
 
   # value 'ip_address', '127.0.0.1'
   # value [ 'pushy', 'port' ], '9000'
