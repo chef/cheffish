@@ -38,7 +38,7 @@ class Chef
 
     def with_chef_server(server_url, options = {})
       old_enclosing_chef_server = Cheffish.enclosing_chef_server
-      Cheffish.enclosing_chef_server = { :url => server_url, :options => options }
+      Cheffish.enclosing_chef_server = { :chef_server_url => server_url, :options => options }
       if block_given?
         begin
           yield
