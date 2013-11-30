@@ -19,8 +19,6 @@ describe Chef::Resource::ChefNode do
 
     # TODO why-run mode
 
-    # Effect of with_chef_serve
-    # Effect of chef_server
     context 'and another chef server is running on port 8899' do
       before :each do
         @server = ChefZero::Server.new(:port => 8899)
