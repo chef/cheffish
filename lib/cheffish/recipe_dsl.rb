@@ -86,7 +86,6 @@ class Chef
       Chef::Log.info("Starting chef-zero on port #{options[:port]} with repository at #{options[:data_store].chef_fs.fs_description}")
       chef_zero_server = ChefZero::Server.new(options)
       chef_zero_server.start_background
-      Chef::Config.chef_server_url = chef_zero_server.url
 
       @@local_servers ||= []
       @@local_servers << chef_zero_server
