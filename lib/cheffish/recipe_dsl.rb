@@ -56,7 +56,7 @@ class Chef
 
     def with_chef_local_server(options, &block)
       # By default, finds the computer's ip address and binds to it
-      options[:host] ||= node['ipaddress'] || '127.0.0.1'
+      options[:host] ||= '127.0.0.1'
       options[:data_store] ||= begin
         if !options[:chef_repo_path]
           raise "chef_repo_path must be specified to with_chef_local_server"
