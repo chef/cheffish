@@ -55,8 +55,11 @@ class Chef
     end
 
     def with_chef_local_server(options, &block)
-      # By default, finds the computer's ip address and binds to it
       options[:host] ||= '127.0.0.1'
+      options[:log_level] ||= Chef::Log.level
+      options[:port] ||= 8900
+
+      # Create the data store chef-zero will use
       options[:data_store] ||= begin
         if !options[:chef_repo_path]
           raise "chef_repo_path must be specified to with_chef_local_server"
@@ -76,13 +79,12 @@ class Chef
           options["#{type}_path"] = options["#{type}_path".to_sym]
         end
 
-        # Create the data store chef-zero will use
         chef_fs = Chef::ChefFS::Config.new(options).local_fs
         chef_fs.write_pretty_json = true
         Chef::ChefFS::ChefFSDataStore.new(chef_fs)
       end
-      options[:log_level] ||= Chef::Log.level
-      options[:port] ||= 8900
+
+      # Start the chef-zero server
       Chef::Log.info("Starting chef-zero on port #{options[:port]} with repository at #{options[:data_store].chef_fs.fs_description}")
       chef_zero_server = ChefZero::Server.new(options)
       chef_zero_server.start_background
