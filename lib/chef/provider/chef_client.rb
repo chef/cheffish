@@ -13,11 +13,7 @@ class Chef::Provider::ChefClient < Cheffish::ActorProviderBase
   end
 
   action :create do
-    create_actor(false)
-  end
-
-  action :regenerate_keys do
-    create_actor(true)
+    create_actor
   end
 
   action :delete do

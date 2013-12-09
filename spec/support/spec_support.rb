@@ -60,7 +60,7 @@ RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
   end
   failure_message_for_should do |actual|
     updates = actual.select { |event, resource, action| event == :resource_updated }.to_a
-    result = "expected that the chef_run would #{expected_action.join(',')} #{resource_name}."
+    result = "expected that the chef_run would #{expected_actions.join(',')} #{resource_name}."
     if updates.size > 0
       result << " Actual updates were #{updates.map { |event, resource, action| "#{resource.to_s} => #{action.inspect}" }.join(', ')}"
     else

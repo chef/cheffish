@@ -17,14 +17,17 @@ class Chef::Resource::ChefClient < Chef::Resource::LWRPBase
   attribute :admin, :kind_of => [TrueClass, FalseClass]
   attribute :validator, :kind_of => [TrueClass, FalseClass]
 
-  attribute :public_key_path, :kind_of => String
-  attribute :private_key, :kind_of => String
-  attribute :private_key_path, :kind_of => String
+  # Input key
+  attribute :public_key # String or OpenSSL::PKey::*
+  attribute :source_key_path, :kind_of => String
+  attribute :source_key_pass_phrase
+
+  # Output public key (if so desired)
+  attribute :output_key_path, :kind_of => String
+  attribute :output_key_format, :kind_of => Symbol, :default => :openssh, :equal_to => [ :pem, :der, :openssh ]
 
   # If this is set, client is not patchy
   attribute :complete, :kind_of => [TrueClass, FalseClass]
-  # If key_owner is set, our disk set of keys is considered canonical and keys on the server blown away.
-  attribute :key_owner, :kind_of => [TrueClass, FalseClass]
 
   attribute :raw_json, :kind_of => Hash
   attribute :chef_server, :kind_of => Hash
