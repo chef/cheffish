@@ -1,11 +1,11 @@
 require 'support/spec_support'
 require 'support/key_support'
-require 'chef/resource/chef_user'
-require 'chef/provider/chef_user'
+require 'cheffish/resource/chef_user'
+require 'cheffish/provider/chef_user'
 
 repo_path = Dir.mktmpdir('chef_repo')
 
-describe Chef::Resource::ChefUser do
+describe Cheffish::Resource::ChefUser do
   extend SpecSupport
 
   when_the_chef_server 'is empty' do

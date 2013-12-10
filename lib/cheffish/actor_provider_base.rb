@@ -65,7 +65,7 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
     end
     if current_resource.output_key_path
       converge_by "delete public key #{current_resource.output_key_path}" do
-        ::File.unlink(current_resource.output_key_path)
+        File.unlink(current_resource.output_key_path)
       end
     end
   end
@@ -112,7 +112,7 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
       end
     end
 
-    if new_resource.output_key_path && ::File.exist?(new_resource.output_key_path)
+    if new_resource.output_key_path && File.exist?(new_resource.output_key_path)
       current_resource.output_key_path = new_resource.output_key_path
     end
   end

@@ -1,13 +1,13 @@
 require 'support/spec_support'
-require 'chef/resource/private_key'
-require 'chef/provider/private_key'
-require 'chef/resource/public_key'
-require 'chef/provider/public_key'
+require 'cheffish/resource/private_key'
+require 'cheffish/provider/private_key'
+require 'cheffish/resource/public_key'
+require 'cheffish/provider/public_key'
 require 'support/key_support'
 
 repo_path = Dir.mktmpdir('chef_repo')
 
-describe Chef::Resource::PrivateKey do
+describe Cheffish::Resource::PrivateKey do
   extend SpecSupport
 
   before :each do

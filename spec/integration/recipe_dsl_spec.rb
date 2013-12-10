@@ -1,6 +1,6 @@
 require 'support/spec_support'
-require 'chef/resource/chef_node'
-require 'chef/provider/chef_node'
+require 'cheffish/resource/chef_node'
+require 'cheffish/provider/chef_node'
 require 'tmpdir'
 
 describe 'Cheffish Recipe DSL' do

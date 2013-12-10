@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.email = 'jkeiser@opscode.com'
   s.homepage = 'http://wiki.opscode.com/display/chef'
 
-  s.add_dependency 'chef'
+  s.add_dependency 'chef', '11.10.0.alpha.1'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'

@@ -1,8 +1,8 @@
 require 'support/spec_support'
-require 'chef/resource/chef_node'
-require 'chef/provider/chef_node'
+require 'cheffish/resource/chef_node'
+require 'cheffish/provider/chef_node'
 
-describe Chef::Resource::ChefNode do
+describe Cheffish::Resource::ChefNode do
   extend SpecSupport
 
   when_the_chef_server 'is empty' do
