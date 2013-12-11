@@ -6,7 +6,7 @@ class Chef::Provider::PublicKey < Chef::Provider::LWRPBase
 
   action :create do
     # TODO test this with source key that has a password
-    source_key, source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source), new_resource.source_pass_phrase, new_resource.source)
+    source_key, source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
     if source_key.private?
       source_key_publicity = 'private'
       source_key = source_key.public_key
@@ -16,7 +16,7 @@ class Chef::Provider::PublicKey < Chef::Provider::LWRPBase
 
     desired_output = encode_public_key(source_key)
     if Array(current_resource.action) == [ :delete ] || desired_output != IO.read(new_resource.path)
-      converge_by "write #{new_resource.format} public key #{new_resource.path} from #{source_key_publicity} key #{new_resource.source}" do
+      converge_by "write #{new_resource.format} public key #{new_resource.path} from #{source_key_publicity} key #{new_resource.source_key_path}" do
         IO.write(new_resource.path, desired_output)
         # TODO permissions on file?
       end

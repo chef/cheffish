@@ -10,6 +10,7 @@ class Chef::Resource::PublicKey < Chef::Resource::LWRPBase
   attribute :path, :kind_of => String, :name_attribute => true
   attribute :format, :kind_of => Symbol, :default => :openssh, :equal_to => [ :pem, :der, :openssh ]
 
-  attribute :source, :kind_of => String
-  attribute :source_pass_phrase
+  attribute :source_key
+  attribute :source_key_path, :kind_of => String
+  attribute :source_key_pass_phrase
 end

@@ -15,10 +15,10 @@ end
 RSpec::Matchers.define :match_private_key do |expected, pass_phrase|
   match do |actual|
     if expected.is_a?(String)
-      expected = Cheffish::KeyFormatter.decode(IO.read(File.expand_path(expected)), pass_phrase, expected)
+      expected, format = Cheffish::KeyFormatter.decode(IO.read(File.expand_path(expected)), pass_phrase, expected)
     end
     if actual.is_a?(String)
-      actual = Cheffish::KeyFormatter.decode(IO.read(File.expand_path(actual)), pass_phrase, actual)
+      actual, format = Cheffish::KeyFormatter.decode(IO.read(File.expand_path(actual)), pass_phrase, actual)
     end
 
     encrypted = actual.public_encrypt('hi there')

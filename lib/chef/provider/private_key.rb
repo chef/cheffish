@@ -27,15 +27,13 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
   protected
 
   def create_key(regenerate)
-    if new_resource.source
+    if new_source_key
       #
       # Create private key from source
       #
-      source_key, source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source), new_resource.source_pass_phrase, new_resource.source)
-
-      desired_output = encode_private_key(source_key)
+      desired_output = encode_private_key(new_source_key)
       if Array(current_resource.action) == [ :delete ] || desired_output != IO.read(new_resource.path)
-        converge_by "reformat key at #{new_resource.source} to #{source_key_format[:format]} private key #{new_resource.path} (#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
+        converge_by "reformat key at #{new_resource.source_key_path} to #{new_resource.format} private key #{new_resource.path} (#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
           IO.write(new_resource.path, desired_output)
         end
       end
@@ -92,6 +90,22 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
   def write_private_key(key)
     IO.write(new_resource.path, encode_private_key(key))
     # TODO permissions on file?
+  end
+
+  def new_source_key
+    @new_source_key ||= begin
+      if new_resource.source_key.is_a?(String)
+        source_key, source_key_format = Cheffish::KeyFormatter.decode(new_resource.source_key, new_resource.source_key_pass_phrase)
+        source_key
+      elsif new_resource.source_key
+        new_resource.source_key
+      elsif new_resource.source_key_path
+        source_key, source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
+        source_key
+      else
+        nil
+      end
+    end
   end
 
   attr_reader :current_private_key

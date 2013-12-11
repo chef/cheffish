@@ -2,6 +2,7 @@ require 'openssl'
 require 'net/ssh'
 require 'etc'
 require 'socket'
+require 'digest/md5'
 
 module Cheffish
   class KeyFormatter
@@ -43,6 +44,8 @@ module Cheffish
         end
       when :der
         key.to_der
+      when :fingerprint
+        Digest::MD5.hexdigest(key.to_der)
       else
         raise "Unrecognized key format #{format}"
       end

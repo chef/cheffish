@@ -14,7 +14,7 @@ describe Chef::Resource::ChefUser do
         private_key "#{repo_path}/blah.pem"
       end
 
-      context 'and we run a recipe that creates user "blah"' do
+      context 'and we run a recipe that creates user "blah"'do
         with_recipe do
           chef_user 'blah' do
             source_key_path "#{repo_path}/blah.pem"
@@ -23,9 +23,9 @@ describe Chef::Resource::ChefUser do
 
         it 'the user gets created' do
           chef_run.should have_updated 'chef_user[blah]', :create
-          client = get('/clients/blah')
-          client['name'].should == 'blah'
-          key, format = Cheffish::KeyFormatter.decode(client['public_key'])
+          user = get('/users/blah')
+          user['name'].should == 'blah'
+          key, format = Cheffish::KeyFormatter.decode(user['public_key'])
           key.should be_public_key_for("#{repo_path}/blah.pem")
         end
       end
