@@ -102,6 +102,34 @@ describe Chef::Resource::PrivateKey do
         end
       end
 
+      context 'and another public_key based off the first public_key in-memory in a string' do
+        with_recipe do
+          public_key "#{repo_path}/blah.pub2" do
+            source_key IO.read("#{repo_path}/blah.pub")
+          end
+        end
+
+        it 'the second public_key is created' do
+          chef_run.should have_updated "public_key[#{repo_path}/blah.pub2]", :create
+          IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
+          "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah"
+        end
+      end
+
+      it 'and another public_key based off the first public_key in-memory in a key, the second public_key is created' do
+        key, format = Cheffish::KeyFormatter.decode(IO.read("#{repo_path}/blah.pub"))
+
+        run_recipe do
+          public_key "#{repo_path}/blah.pub2" do
+            source_key key
+          end
+        end
+
+        chef_run.should have_updated "public_key[#{repo_path}/blah.pub2]", :create
+        IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
+        "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah"
+      end
+
       context 'and another public_key in :pem format based off the first public_key' do
         with_recipe do
           public_key "#{repo_path}/blah.pub2" do
@@ -247,6 +275,22 @@ describe Chef::Resource::PrivateKey do
       with_recipe do
         public_key "#{repo_path}/blah.pub" do
           source_key_path "#{repo_path}/blah"
+          source_key_pass_phrase 'hello'
+        end
+      end
+
+      it 'the public_key is created in openssh format' do
+        chef_run.should have_updated "private_key[#{repo_path}/blah]", :create
+        chef_run.should have_updated "public_key[#{repo_path}/blah.pub]", :create
+        IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
+        "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah", 'hello'
+      end
+    end
+
+    context 'and a public_key derived from the private key in an in-memory string' do
+      with_recipe do
+        public_key "#{repo_path}/blah.pub" do
+          source_key IO.read("#{repo_path}/blah")
           source_key_pass_phrase 'hello'
         end
       end

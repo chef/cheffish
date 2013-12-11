@@ -5,18 +5,9 @@ require 'cheffish/key_formatter'
 class Chef::Provider::PublicKey < Chef::Provider::LWRPBase
 
   action :create do
-    # TODO test this with source key that has a password
-    source_key, source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
-    if source_key.private?
-      source_key_publicity = 'private'
-      source_key = source_key.public_key
-    else
-      source_key_publicity = 'public'
-    end
-
-    desired_output = encode_public_key(source_key)
+    desired_output = encode_public_key(new_source_key)
     if Array(current_resource.action) == [ :delete ] || desired_output != IO.read(new_resource.path)
-      converge_by "write #{new_resource.format} public key #{new_resource.path} from #{source_key_publicity} key #{new_resource.source_key_path}" do
+      converge_by "write #{new_resource.format} public key #{new_resource.path} from #{new_source_key_publicity} key #{new_resource.source_key_path}" do
         IO.write(new_resource.path, desired_output)
         # TODO permissions on file?
       end
@@ -44,6 +35,29 @@ class Chef::Provider::PublicKey < Chef::Provider::LWRPBase
   end
 
   attr_reader :current_public_key
+  attr_reader :new_source_key_publicity
+
+  def new_source_key
+    @new_source_key ||= begin
+      if new_resource.source_key.is_a?(String)
+        source_key, source_key_format = Cheffish::KeyFormatter.decode(new_resource.source_key, new_resource.source_key_pass_phrase)
+      elsif new_resource.source_key
+        source_key = new_resource.source_key
+      elsif new_resource.source_key_path
+        source_key, source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
+      else
+        return nil
+      end
+
+      if source_key.private?
+        @new_source_key_publicity = 'private'
+        source_key.public_key
+      else
+        @new_source_key_publicity = 'public'
+        source_key
+      end
+    end
+  end
 
   def load_current_resource
     if ::File.exist?(new_resource.path)
