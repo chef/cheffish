@@ -7,9 +7,11 @@ class Chef::Resource::PrivateKey < Chef::Resource::LWRPBase
   actions :create, :delete, :regenerate, :nothing
   default_action :create
 
-  attribute :path, :kind_of => String, :name_attribute => true
+  # Path to private key.  Set to :none to create the key in memory and not on disk.
+  attribute :path, :kind_of => [ String, Symbol ], :name_attribute => true
   attribute :format, :kind_of => Symbol, :default => :pem, :equal_to => [ :pem, :der ]
   attribute :type, :kind_of => Symbol, :default => :rsa, :equal_to => [ :rsa, :dsa ] # TODO support :ec
+  # These specify an optional public_key you can spit out if you want.
   attribute :public_key_path, :kind_of => String
   attribute :public_key_format, :kind_of => Symbol, :default => :openssh, :equal_to => [ :openssh, :pem, :der ]
   # Specify this if you want to copy another private key but give it a different format / password
@@ -29,4 +31,9 @@ class Chef::Resource::PrivateKey < Chef::Resource::LWRPBase
 
   # Set this to regenerate the key if it does not have the desired characteristics (like size, type, etc.)
   attribute :regenerate_if_different, :kind_of => [TrueClass, FalseClass]
+
+  # Proc that runs after the resource completes.  Called with (resource, private_key)
+  def after(&block)
+    block ? @after = block : @after
+  end
 end

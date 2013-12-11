@@ -27,6 +27,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
   end
 
   def create_key(regenerate)
+    final_private_key = nil
     if new_source_key
       #
       # Create private key from source
@@ -38,29 +39,32 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
         end
       end
 
+      final_private_key = new_source_key
+
     else
       #
       # Create private key file
       #
-      new_private_key = nil
       if Array(current_resource.action) == [ :delete ] || regenerate ||
         (new_resource.regenerate_if_different &&
           (current_resource.size != new_resource.size ||
            current_resource.type != new_resource.type))
-        action = ::File.exists?(current_resource.path) ? "overwrite" : "create"
+        action = (current_resource.path == :none || ::File.exists?(current_resource.path)) ? "overwrite" : "create"
         converge_by "#{action} #{new_resource.type} private key #{new_resource.path} (#{new_resource.size} bits#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
           case new_resource.type
           when :rsa
             if new_resource.exponent
-              new_private_key = OpenSSL::PKey::RSA.generate(new_resource.size, new_resource.exponent)
+              final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size, new_resource.exponent)
             else
-              new_private_key = OpenSSL::PKey::RSA.generate(new_resource.size)
+              final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size)
             end
           when :dsa
-            new_private_key = OpenSSL::PKey::DSA.generate(new_resource.size)
+            final_private_key = OpenSSL::PKey::DSA.generate(new_resource.size)
           end
 
-          write_private_key(new_private_key)
+          if new_resource.path != :none
+            write_private_key(final_private_key)
+          end
         end
       else
         # Warn if existing key has different characteristics than expected
@@ -70,6 +74,8 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
           Chef::Log.warn("Mismatched key type!  #{current_resource.path} is #{current_resource.type}, desired is #{new_resource.type} bytes.  Use action :regenerate to force key regeneration.")
         end
 
+        final_private_key = current_private_key
+
         if current_resource.format != new_resource.format
           converge_by "change format of #{new_resource.type} private key #{new_resource.path} from #{current_resource.format} to #{new_resource.format}" do
             write_private_key(current_private_key)
@@ -78,16 +84,19 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
       end
     end
 
-    if new_resource.public_key_path && (new_private_key || current_private_key)
+    if new_resource.public_key_path
       public_key_path = new_resource.public_key_path
       public_key_format = new_resource.public_key_format
-      local_current_private_key = current_private_key
       Cheffish.inline_resource(self) do
         public_key public_key_path do
-          source_key (new_private_key || local_current_private_key)
+          source_key final_private_key
           format public_key_format
         end
       end
+    end
+
+    if new_resource.after
+      new_resource.after.call(new_resource, final_private_key)
     end
   end
 
@@ -123,8 +132,10 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
   attr_reader :current_private_key
 
   def load_current_resource
-    if ::File.exist?(new_resource.path)
-      resource = Chef::Resource::PrivateKey.new(new_resource.path)
+    resource = Chef::Resource::PrivateKey.new(new_resource.name)
+
+    if new_resource.path != :none && ::File.exist?(new_resource.path)
+      resource.path new_resource.path
 
       begin
         key, key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.path), new_resource.pass_phrase, new_resource.path)
@@ -140,12 +151,10 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
       rescue
         # If there's an error reading, we assume format and type are wrong and don't futz with them
       end
-  
-      @current_resource = resource
     else
-      not_found_resource = Chef::Resource::PrivateKey.new(new_resource.path)
-      not_found_resource.action :delete
-      @current_resource = not_found_resource
+      resource.action :delete
     end
+
+    @current_resource = resource
   end
 end

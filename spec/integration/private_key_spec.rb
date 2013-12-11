@@ -336,5 +336,21 @@ describe Chef::Resource::PrivateKey do
       "#{repo_path}/blah.pub.der".should be_public_key_for("#{repo_path}/blah")
     end
   end
+
+  context 'with a recipe with a private_key with path :none' do
+    it 'the private_key is created' do
+      got_private_key = nil
+      run_recipe do
+        private_key 'in_memory' do
+          path :none
+          after { |resource, private_key| got_private_key = private_key }
+        end
+      end
+
+      chef_run.should have_updated "private_key[in_memory]", :create
+      got_private_key.kind_of?(OpenSSL::PKey::RSA).should be_true
+    end
+  end
+
 end
 
