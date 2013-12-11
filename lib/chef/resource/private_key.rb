@@ -10,6 +10,8 @@ class Chef::Resource::PrivateKey < Chef::Resource::LWRPBase
   attribute :path, :kind_of => String, :name_attribute => true
   attribute :format, :kind_of => Symbol, :default => :pem, :equal_to => [ :pem, :der ]
   attribute :type, :kind_of => Symbol, :default => :rsa, :equal_to => [ :rsa, :dsa ] # TODO support :ec
+  attribute :public_key_path, :kind_of => String
+  attribute :public_key_format, :kind_of => Symbol, :default => :openssh, :equal_to => [ :openssh, :pem, :der ]
   # Specify this if you want to copy another private key but give it a different format / password
   attribute :source_key
   attribute :source_key_path, :kind_of => String

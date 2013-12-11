@@ -5,6 +5,9 @@ require 'cheffish/key_formatter'
 class Chef::Provider::PublicKey < Chef::Provider::LWRPBase
 
   action :create do
+    if !new_source_key
+      raise "No source key specified"
+    end
     desired_output = encode_public_key(new_source_key)
     if Array(current_resource.action) == [ :delete ] || desired_output != IO.read(new_resource.path)
       converge_by "write #{new_resource.format} public key #{new_resource.path} from #{new_source_key_publicity} key #{new_resource.source_key_path}" do
@@ -25,8 +28,6 @@ class Chef::Provider::PublicKey < Chef::Provider::LWRPBase
   def whyrun_supported?
     true
   end
-
-  protected
 
   def encode_public_key(key)
     key_format = {}

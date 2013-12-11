@@ -45,7 +45,9 @@ module Cheffish
       when :der
         key.to_der
       when :fingerprint
-        Digest::MD5.hexdigest(key.to_der)
+        hexes = Digest::MD5.hexdigest(key.to_der)
+        # Put : between every pair of hexes
+        hexes.scan(/../).join(':')
       else
         raise "Unrecognized key format #{format}"
       end

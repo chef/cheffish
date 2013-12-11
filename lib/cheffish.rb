@@ -1,4 +1,5 @@
 require 'chef/run_list/run_list_item'
+require 'cheffish/inline_resource'
 
 module Cheffish
   NAME_REGEX = /^[.\-[:alnum:]_]+$/
@@ -25,6 +26,10 @@ module Cheffish
   end
   def self.enclosing_data_bag_item_encryption=(options)
     @@enclosing_data_bag_item_encryption = options
+  end
+
+  def self.inline_resource(provider, &block)
+    InlineResource.new(provider).instance_eval(&block)
   end
 
   @@enclosing_chef_server = nil

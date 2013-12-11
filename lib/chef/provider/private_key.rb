@@ -20,11 +20,11 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
     end
   end
 
+  use_inline_resources
+
   def whyrun_supported?
     true
   end
-
-  protected
 
   def create_key(regenerate)
     if new_source_key
@@ -74,6 +74,18 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
           converge_by "change format of #{new_resource.type} private key #{new_resource.path} from #{current_resource.format} to #{new_resource.format}" do
             write_private_key(current_private_key)
           end
+        end
+      end
+    end
+
+    if new_resource.public_key_path && (new_private_key || current_private_key)
+      public_key_path = new_resource.public_key_path
+      public_key_format = new_resource.public_key_format
+      local_current_private_key = current_private_key
+      Cheffish.inline_resource(self) do
+        public_key public_key_path do
+          source_key (new_private_key || local_current_private_key)
+          format public_key_format
         end
       end
     end

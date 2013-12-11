@@ -303,5 +303,38 @@ describe Chef::Resource::PrivateKey do
       end
     end
   end
+
+  context 'with a recipe with a private_key and public_key_path' do
+    with_recipe do
+      private_key "#{repo_path}/blah" do
+        public_key_path "#{repo_path}/blah.pub"
+      end
+    end
+
+    it 'the private_key and public_key are created' do
+      chef_run.should have_updated "private_key[#{repo_path}/blah]", :create
+      IO.read("#{repo_path}/blah").should start_with('-----BEGIN')
+      OpenSSL::PKey.read(IO.read("#{repo_path}/blah")).kind_of?(OpenSSL::PKey::RSA).should be_true
+      IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
+      "#{repo_path}/blah.pub".should be_public_key_for("#{repo_path}/blah")
+    end
+  end
+
+  context 'with a recipe with a private_key and public_key_path and public_key_format' do
+    with_recipe do
+      private_key "#{repo_path}/blah" do
+        public_key_path "#{repo_path}/blah.pub.der"
+        public_key_format :der
+      end
+    end
+
+    it 'the private_key and public_key are created' do
+      chef_run.should have_updated "private_key[#{repo_path}/blah]", :create
+      IO.read("#{repo_path}/blah").should start_with('-----BEGIN')
+      OpenSSL::PKey.read(IO.read("#{repo_path}/blah")).kind_of?(OpenSSL::PKey::RSA).should be_true
+      IO.read("#{repo_path}/blah.pub.der").should_not start_with('ssh-rsa ')
+      "#{repo_path}/blah.pub.der".should be_public_key_for("#{repo_path}/blah")
+    end
+  end
 end
 
