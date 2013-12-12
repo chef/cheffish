@@ -40,7 +40,8 @@ class Chef::Provider::ChefUser < Cheffish::ActorProviderBase
       'email' => :email,
       'password' => :password,
       'external_authentication_uid' => :external_authentication_uid,
-      'recovery_authentication_enabled' => :recovery_authentication_enabled
+      'recovery_authentication_enabled' => :recovery_authentication_enabled,
+      'public_key' => :source_key
     }
   end
 

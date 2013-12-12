@@ -36,7 +36,8 @@ class Chef::Provider::ChefClient < Cheffish::ActorProviderBase
     {
       'name' => :name,
       'admin' => :admin,
-      'validator' => :validator
+      'validator' => :validator,
+      'public_key' => :source_key
     }
   end
 

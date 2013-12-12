@@ -18,7 +18,7 @@ class Chef::Resource::ChefClient < Chef::Resource::LWRPBase
   attribute :validator, :kind_of => [TrueClass, FalseClass]
 
   # Input key
-  attribute :public_key # String or OpenSSL::PKey::*
+  attribute :source_key # String or OpenSSL::PKey::*
   attribute :source_key_path, :kind_of => String
   attribute :source_key_pass_phrase
 

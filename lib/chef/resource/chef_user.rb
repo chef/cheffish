@@ -25,7 +25,7 @@ class Chef::Resource::ChefUser < Chef::Resource::LWRPBase
   #attribute :hash_type
 
   # Input key
-  attribute :public_key # String or OpenSSL::PKey::*
+  attribute :source_key # String or OpenSSL::PKey::*
   attribute :source_key_path, :kind_of => String
   attribute :source_key_pass_phrase
 
