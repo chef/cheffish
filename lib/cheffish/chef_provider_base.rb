@@ -1,5 +1,6 @@
 require 'chef/config'
 require 'chef/run_list'
+require 'chef/provider/lwrp_base'
 require 'cheffish/cheffish_server_api'
 
 module Cheffish
