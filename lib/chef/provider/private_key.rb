@@ -49,7 +49,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
         (new_resource.regenerate_if_different &&
           (current_resource.size != new_resource.size ||
            current_resource.type != new_resource.type))
-        action = (current_resource.path == :none || ::File.exists?(current_resource.path)) ? "overwrite" : "create"
+        action = (Array(current_resource.action) == [ :delete ]) ? "create" : "overwrite"
         converge_by "#{action} #{new_resource.type} private key #{new_resource.path} (#{new_resource.size} bits#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
           case new_resource.type
           when :rsa
@@ -80,6 +80,11 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
           converge_by "change format of #{new_resource.type} private key #{new_resource.path} from #{current_resource.format} to #{new_resource.format}" do
             write_private_key(current_private_key)
           end
+        elsif (@current_file_mode & 0077) != 0
+          new_mode = @current_file_mode & 07700
+          converge_by "change mode of private key #{new_resource.path} to #{new_mode.to_s(8)}" do
+            ::File.chmod(new_mode, new_resource.path)
+          end
         end
       end
     end
@@ -109,8 +114,10 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
   end
 
   def write_private_key(key)
-    IO.write(new_resource.path, encode_private_key(key))
-    # TODO permissions on file?
+    ::File.open(new_resource.path, 'w') do |file|
+      file.chmod(0600)
+      file.write(encode_private_key(key))
+    end
   end
 
   def new_source_key
@@ -148,6 +155,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
           resource.pass_phrase key_format[:pass_phrase]
           resource.cipher key_format[:cipher]
         end
+        @current_file_mode = ::File.stat(new_resource.path).mode
       rescue
         # If there's an error reading, we assume format and type are wrong and don't futz with them
       end
