@@ -1,4 +1,5 @@
 require 'chef/config'
+require 'chef/provider/lwrp_base'
 require 'chef/run_list'
 require 'chef/provider/lwrp_base'
 require 'cheffish/cheffish_server_api'
@@ -201,6 +202,86 @@ module Cheffish
       end
 
       a_name == b_name && a.type == b.type # We want to replace things with same name and different version
+    end
+
+    def create_permissions
+      #
+      # Grab existing permissions
+      #
+      existing_acl = rest.get("#{rest_path}/_acl")
+
+      #
+      # Create desired acl from object+existing permissions
+      #
+      if new_resource.acl # Complete permissions
+        desired_acl = new_resource.acl
+      else
+        if new_resource.permissions_complete
+          desired_acl = {}
+        else
+          desired_acl = Marshal.load(Marshal.dump(existing_acl)) # Deep copy
+          # TODO normalize string keys to symbol (or vice versa)
+        end
+
+        # Copy actor permissions over
+        new_resource.all_actor_permissions.each_pair do |actor, actor_permissions|
+          existing_acl.each_pair do |permission, types|
+            if actor_permissions.include?(permission)
+              if permission == :all || !types[:actors].include?(actor)
+                types[:actors] << actor
+              end
+            else
+              if types[:actors].include?(actor)
+                types[:actors].delete!(actor)
+              end
+            end
+          end
+        end
+
+        # Copy group permissions over
+        new_resource.all_group_permissions.each_pair do |group, group_permissions|
+          existing_acl.each_pair do |permission, types|
+            if permission == :all || group_permissions.include?(permission)
+              if !types[:groups].include?(group)
+                types[:groups] << group
+              end
+            else
+              if types[:groups].include?(group)
+                types[:groups].delete!(group)
+              end
+            end
+          end
+        end
+
+      end
+
+      #
+      # Diff desired and existing permissions
+      #
+      desired_acl.each_pair do |permission, desired_types|
+        differences = []
+        existing_types = existing_acl[permissions]
+        desired_types.each do |type, desired_grantees|
+          existing_grantees = existing_types[type]
+          new_grantees = desired_grantees - existing_grantees
+          if new_grantees.size > 0
+            differences << "Grant permission '#{permission} to #{type} #{new_grantees.join(', ')}"
+          end
+          deleted_grantees = existing_grantees - desired_grantees
+          if deleted_grantees.size > 0
+            differences << "Revoke permission '{permission}' from #{type} #{deleted_grantees.join(', ')}"
+          end
+        end
+
+        #
+        # Update permissions if different
+        #
+        if differences.size > 0
+          converge_by(differences) do
+            rest.put("#{rest_path}/_acl/#{permission}", { permission => desired_types })
+          end
+        end
+      end
     end
 
     private

@@ -28,6 +28,8 @@ class Chef::Resource::ChefEnvironment < Chef::Resource::LWRPBase
   attribute :raw_json, :kind_of => Hash
   attribute :chef_server, :kind_of => Hash
 
+  Cheffish.rights_attributes(self)
+
   NOT_PASSED=Object.new
 
   # default 'ip_address', '127.0.0.1'

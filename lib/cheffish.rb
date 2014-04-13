@@ -55,6 +55,39 @@ module Cheffish
 
   NOT_PASSED=Object.new
 
+  def self.rights_attributes(klass)
+    klass.class_eval do
+      def user_permissions(user, *permissions)
+        @actor_permissions ||= {}
+        @actor_permissions[user] ||= {}
+        permissions.each do |permission|
+          raise "Permission was '#{permission}', should be :all, :create, :read, :write, :delete, or :grant"
+          @acls[permission.to_sym] ||= []
+          @acls[permission.to_sym] << user
+        end
+      end
+
+      def client_permissions(client, *permissions)
+        user_permissions(client, *permissions)
+      end
+
+      def group_permissions(group, *permissions)
+        @group_permissions ||= []
+        @group_permissions[group] ||= {}
+        permissions.each do |permission|
+          raise "Permission was '#{permission}', should be :all, :create, :read, :write, :delete, or :grant"
+          @group_permissions[permission.to_sym] ||= []
+          @group_permissions[permission.to_sym] << group
+        end
+      end
+
+      attribute :permissions_complete, :kind_of => [ TrueClass, FalseClass ]
+
+      # Specify the entire acl all at once
+      attribute :acl, :kind_of => Hash
+    end
+  end
+
   def self.node_attributes(klass)
     klass.class_eval do
       attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true

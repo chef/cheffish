@@ -39,6 +39,8 @@ class Chef::Resource::ChefUser < Chef::Resource::LWRPBase
   attribute :raw_json, :kind_of => Hash
   attribute :chef_server, :kind_of => Hash
 
+  Cheffish.rights_attributes(self)
+
   # Proc that runs just before the resource executes.  Called with (resource)
   def before(&block)
     block ? @before = block : @before

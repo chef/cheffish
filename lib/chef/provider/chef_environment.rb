@@ -24,6 +24,8 @@ class Chef::Provider::ChefEnvironment < Cheffish::ChefProviderBase
         rest.post("environments", normalize_for_post(new_json))
       end
     end
+
+    #create_permissions
   end
 
   action :delete do

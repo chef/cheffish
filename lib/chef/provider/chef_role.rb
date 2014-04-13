@@ -24,6 +24,8 @@ class Chef::Provider::ChefRole < Cheffish::ChefProviderBase
         rest.post("roles", normalize_for_post(new_json))
       end
     end
+
+    #create_permissions
   end
 
   action :delete do

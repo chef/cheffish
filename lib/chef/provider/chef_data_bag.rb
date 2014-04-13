@@ -12,6 +12,8 @@ class Chef::Provider::ChefDataBag < Cheffish::ChefProviderBase
       converge_by "create data bag #{new_resource.name} at #{rest.url}" do
         rest.post("data", { 'name' => new_resource.name })
       end
+
+      #create_permissions
     end
   end
 

@@ -25,6 +25,8 @@ class Chef::Provider::ChefDataBagItem < Cheffish::ChefProviderBase
         rest.post("data/#{new_resource.data_bag}", normalize_for_post(new_json))
       end
     end
+
+    #create_permissions
   end
 
   action :delete do

@@ -15,4 +15,5 @@ class Chef::Resource::ChefNode < Chef::Resource::LWRPBase
   end
 
   Cheffish.node_attributes(self)
+  Cheffish.rights_attributes(self)
 end
