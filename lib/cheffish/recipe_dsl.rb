@@ -99,6 +99,7 @@ class Chef
       @@local_servers.each do |server|
         server.stop
       end
+      @@local_servers = []
     end
   end
 end
