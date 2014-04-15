@@ -94,5 +94,11 @@ class Chef
 
       with_chef_server(chef_zero_server.url, &block)
     end
+
+    def self.stop_local_servers
+      @@local_servers.each do |server|
+        server.stop
+      end
+    end
   end
 end
