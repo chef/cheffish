@@ -96,9 +96,15 @@ class Chef
     end
 
     def self.stop_local_servers
+      # Just in case we're running this out of order:
+      @@local_servers ||= []
+
+      # Stop the servers
       @@local_servers.each do |server|
         server.stop
       end
+
+      # Clean up after ourselves (don't want to stop a server twice)
       @@local_servers = []
     end
   end
