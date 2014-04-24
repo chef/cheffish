@@ -49,10 +49,11 @@ class Chef::Provider::ChefNode < Cheffish::ChefProviderBase
   def augment_new_json(json)
     # Apply modifiers
     json['run_list'] = apply_run_list_modifiers(new_resource.run_list_modifiers, new_resource.run_list_removers, json['run_list'])
-    json['default'] = apply_modifiers(new_resource.default_modifiers, json['default'])
-    json['normal'] = apply_modifiers(new_resource.normal_modifiers, json['normal'])
-    json['override'] = apply_modifiers(new_resource.override_modifiers, json['override'])
-    json['automatic'] = apply_modifiers(new_resource.automatic_modifiers, json['automatic'])
+    json['normal'] = apply_modifiers(new_resource.attribute_modifiers, json['normal'])
+    # Preserve default/override/automatic
+    json['default'] = current_json['default']
+    json['override'] = current_json['override']
+    json['automatic'] = current_json['automatic']
     json
   end
 
@@ -73,10 +74,7 @@ class Chef::Provider::ChefNode < Cheffish::ChefProviderBase
       'name' => :name,
       'chef_environment' => :chef_environment,
       'run_list' => :run_list,
-      'default' => :default_attributes,
-      'normal' => :normal_attributes,
-      'override' => :override_attributes,
-      'automatic' => :automatic_attributes
+      'normal' => :attributes
     }
   end
 end

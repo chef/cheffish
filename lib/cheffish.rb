@@ -60,10 +60,7 @@ module Cheffish
       attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
       attribute :chef_environment, :kind_of => String, :regex => Cheffish::NAME_REGEX
       attribute :run_list, :kind_of => Array # We should let them specify it as a series of parameters too
-      attribute :default_attributes, :kind_of => Hash
-      attribute :normal_attributes, :kind_of => Hash
-      attribute :override_attributes, :kind_of => Hash
-      attribute :automatic_attributes, :kind_of => Hash
+      attribute :attributes, :kind_of => Hash
 
       # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
       # reset to their defaults)
@@ -72,82 +69,28 @@ module Cheffish
       attribute :raw_json, :kind_of => Hash
       attribute :chef_server, :kind_of => Hash
 
-      # default 'ip_address', '127.0.0.1'
-      # default [ 'pushy', 'port' ], '9000'
-      # default 'ip_addresses' do |existing_value|
+      # attribute 'ip_address', '127.0.0.1'
+      # attribute [ 'pushy', 'port' ], '9000'
+      # attribute 'ip_addresses' do |existing_value|
       #   (existing_value || []) + [ '127.0.0.1' ]
       # end
-      # default 'ip_address', :delete
-      attr_accessor :default_modifiers
-      def default(attribute_path, value=Cheffish.NOT_PASSED, &block)
-        @default_modifiers ||= []
-        if value != Cheffish.NOT_PASSED
-          @default_modifiers << [ attribute_path, value ]
-        elsif block
-          @default_modifiers << [ attribute_path, block ]
-        else
-          raise "default requires either a value or a block"
-        end
-      end
-
-      # normal 'ip_address', '127.0.0.1'
-      # normal [ 'pushy', 'port' ], '9000'
-      # normal 'ip_addresses' do |existing_value|
-      #   (existing_value || []) + [ '127.0.0.1' ]
-      # end
-      # normal 'ip_address', :delete
-      attr_accessor :normal_modifiers
-      def normal(attribute_path, value=NOT_PASSED, &block)
-        @normal_modifiers ||= []
+      # attribute 'ip_address', :delete
+      attr_accessor :attribute_modifiers
+      def attribute(attribute_path, value=NOT_PASSED, &block)
+        @attribute_modifiers ||= []
         if value != NOT_PASSED
-          @normal_modifiers << [ attribute_path, value ]
+          @attribute_modifiers << [ attribute_path, value ]
         elsif block
-          @normal_modifiers << [ attribute_path, block ]
+          @attribute_modifiers << [ attribute_path, block ]
         else
-          raise "normal requires either a value or a block"
-        end
-      end
-
-      # override 'ip_address', '127.0.0.1'
-      # override [ 'pushy', 'port' ], '9000'
-      # override 'ip_addresses' do |existing_value|
-      #   (existing_value || []) + [ '127.0.0.1' ]
-      # end
-      # override 'ip_address', :delete
-      attr_accessor :override_modifiers
-      def override(attribute_path, value=NOT_PASSED, &block)
-        @override_modifiers ||= []
-        if value != NOT_PASSED
-          @override_modifiers << [ attribute_path, value ]
-        elsif block
-          @override_modifiers << [ attribute_path, block ]
-        else
-          raise "override requires either a value or a block"
-        end
-      end
-
-      # automatic 'ip_address', '127.0.0.1'
-      # automatic [ 'pushy', 'port' ], '9000'
-      # automatic 'ip_addresses' do |existing_value|
-      #   (existing_value || []) + [ '127.0.0.1' ]
-      # end
-      # automatic 'ip_address', :delete
-      attr_accessor :automatic_modifiers
-      def automatic(attribute_path, value=NOT_PASSED, &block)
-        @automatic_modifiers ||= []
-        if value != NOT_PASSED
-          @automatic_modifiers << [ attribute_path, value ]
-        elsif block
-          @automatic_modifiers << [ attribute_path, block ]
-        else
-          raise "automatic requires either a value or a block"
+          raise "attribute requires either a value or a block"
         end
       end
 
       # Patchy tags
       # tag 'webserver', 'apache', 'myenvironment'
       def tag(*tags)
-        normal 'tags' do |existing_tags|
+        attribute 'tags' do |existing_tags|
           existing_tags ||= []
           tags.each do |tag|
             if !existing_tags.include?(tag.to_s)
@@ -158,7 +101,7 @@ module Cheffish
         end
       end
       def remove_tag(*tags)
-        normal 'tags' do |existing_tags|
+        attribute 'tags' do |existing_tags|
           if existing_tags
             tags.each do |tag|
               existing_tags.delete(tag.to_s)
@@ -172,16 +115,12 @@ module Cheffish
       # tags :a, :b, :c # removes all other tags
       def tags(*tags)
         if tags.size == 0
-          normal('tags')
+          attribute('tags')
         else
           tags = tags[0] if tags.size == 1 && tags[0].kind_of?(Array)
-          normal 'tags', tags.map { |tag| tag.to_s }
+          attribute 'tags', tags.map { |tag| tag.to_s }
         end
       end
-
-
-      alias :attributes :normal_attributes
-      alias :attribute :normal
 
       # Order matters--if two things here are in the wrong order, they will be flipped in the run list
       # recipe 'apache', 'mysql'

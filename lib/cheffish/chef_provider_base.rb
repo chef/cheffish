@@ -69,8 +69,10 @@ module Cheffish
     def json_to_resource(json)
       resource = resource_class.new(new_resource.name)
       keys.each do |json_key, resource_key|
-        resource.send(resource_key, json[json_key])
+        resource.send(resource_key, json.delete(json_key))
       end
+      # Set the leftover to raw_json
+      resource.raw_json json
       resource
     end
 

@@ -68,8 +68,48 @@ describe Chef::Resource::ChefNode do
       chef_node 'blah'
     end
 
-    it 'the node "blah" does not get created or updated' do
+    it 'chef_node "blah" does not get created or updated' do
       chef_run.should_not have_updated 'chef_node[blah]', :create
+    end
+  end
+
+  when_the_chef_server 'has a node named "blah" with everything in it' do
+    node 'blah', {
+      'chef_environment' => 'blah',
+      'run_list' => [ 'recipe[bjork]' ],
+      'normal'    => { 'foo' => 'bar', 'tags' => [ 'a', 'b' ] },
+      'default'   => { 'foo2' => 'bar2' },
+      'automatic' => { 'foo3' => 'bar3' },
+      'override'  => { 'foo4' => 'bar4' }
+    }
+
+    context 'with chef_node "blah"' do
+      with_recipe do
+        chef_node 'blah'
+      end
+
+      it 'nothing gets updated' do
+        chef_run.should_not have_updated 'chef_node[blah]', :create
+      end
+    end
+
+    context 'with chef_node "blah" with complete true', :focus do
+      with_recipe do
+        chef_node 'blah' do
+          complete true
+        end
+      end
+
+      it 'default, automatic and override attributes are left alone' do
+        chef_run.should have_updated 'chef_node[blah]', :create
+        node = get('/nodes/blah')
+        node['chef_environment'].should == '_default'
+        node['run_list'].should == []
+        node['normal'].should == {}
+        node['default'].should == { 'foo2' => 'bar2'}
+        node['automatic'].should == { 'foo3' => 'bar3' }
+        node['override'].should == { 'foo4' => 'bar4' }
+      end
     end
   end
 end
