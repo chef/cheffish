@@ -47,10 +47,12 @@ class Chef::Provider::ChefNode < Cheffish::ChefProviderBase
   end
 
   def augment_new_json(json)
+    # Preserve tags even if "attributes" was overwritten directly
+    json['normal']['tags'] = current_json['normal']['tags'] unless json['normal']['tags']
     # Apply modifiers
     json['run_list'] = apply_run_list_modifiers(new_resource.run_list_modifiers, new_resource.run_list_removers, json['run_list'])
     json['normal'] = apply_modifiers(new_resource.attribute_modifiers, json['normal'])
-    # Preserve default/override/automatic
+    # Preserve default/override/automatic even when "complete true"
     json['default'] = current_json['default']
     json['override'] = current_json['override']
     json['automatic'] = current_json['automatic']

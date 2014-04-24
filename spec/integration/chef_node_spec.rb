@@ -73,10 +73,40 @@ describe Chef::Resource::ChefNode do
     end
   end
 
+  when_the_chef_server 'has a node named "blah" with tags' do
+    node 'blah', {
+      'normal' => { 'tags' => [ 'a', 'b' ] }
+    }
+
+    context 'with chef_node "blah" that sets attributes' do
+      with_recipe do
+        chef_node 'blah' do
+          attributes({})
+        end
+      end
+
+      it 'the tags in attributes are used' do
+        get('/nodes/blah')['normal']['tags'].should == [ 'a', 'b' ]
+      end
+    end
+
+    context 'with chef_node "blah" that sets attributes with tags in them' do
+      with_recipe do
+        chef_node 'blah' do
+          attributes 'tags' => [ 'c', 'd' ]
+        end
+      end
+
+      it 'the tags in attributes are used' do
+        get('/nodes/blah')['normal']['tags'].should == [ 'c', 'd' ]
+      end
+    end
+  end
+
   when_the_chef_server 'has a node named "blah" with everything in it' do
     node 'blah', {
       'chef_environment' => 'blah',
-      'run_list' => [ 'recipe[bjork]' ],
+      'run_list'  => [ 'recipe[bjork]' ],
       'normal'    => { 'foo' => 'bar', 'tags' => [ 'a', 'b' ] },
       'default'   => { 'foo2' => 'bar2' },
       'automatic' => { 'foo3' => 'bar3' },
@@ -93,7 +123,7 @@ describe Chef::Resource::ChefNode do
       end
     end
 
-    context 'with chef_node "blah" with complete true', :focus do
+    context 'with chef_node "blah" with complete true' do
       with_recipe do
         chef_node 'blah' do
           complete true
@@ -105,8 +135,8 @@ describe Chef::Resource::ChefNode do
         node = get('/nodes/blah')
         node['chef_environment'].should == '_default'
         node['run_list'].should == []
-        node['normal'].should == {}
-        node['default'].should == { 'foo2' => 'bar2'}
+        node['normal'].should == { 'tags' => [ 'a', 'b' ] }
+        node['default'].should == { 'foo2' => 'bar2' }
         node['automatic'].should == { 'foo3' => 'bar3' }
         node['override'].should == { 'foo4' => 'bar4' }
       end
