@@ -12,18 +12,18 @@ class Chef::Resource::ChefDataBagItem < Chef::Resource::LWRPBase
     super
     name @name
     if !data_bag
-      data_bag Cheffish.enclosing_data_bag
+      data_bag Cheffish.current_data_bag
     end
-    if Cheffish.enclosing_data_bag_item_encryption
-      @encrypt = true if Cheffish.enclosing_data_bag_item_encryption[:encrypt_all]
-      @secret = Cheffish.enclosing_data_bag_item_encryption[:secret]
-      @secret_path = Cheffish.enclosing_data_bag_item_encryption[:secret_path] || Chef::Config[:encrypted_data_bag_secret]
-      @encryption_cipher = Cheffish.enclosing_data_bag_item_encryption[:encryption_cipher]
-      @encryption_version = Cheffish.enclosing_data_bag_item_encryption[:encryption_version]
-      @old_secret = Cheffish.enclosing_data_bag_item_encryption[:old_secret]
-      @old_secret_path = Cheffish.enclosing_data_bag_item_encryption[:old_secret_path]
+    if Cheffish.current_data_bag_item_encryption
+      @encrypt = true if Cheffish.current_data_bag_item_encryption[:encrypt_all]
+      @secret = Cheffish.current_data_bag_item_encryption[:secret]
+      @secret_path = Cheffish.current_data_bag_item_encryption[:secret_path] || Chef::Config[:encrypted_data_bag_secret]
+      @encryption_cipher = Cheffish.current_data_bag_item_encryption[:encryption_cipher]
+      @encryption_version = Cheffish.current_data_bag_item_encryption[:encryption_version]
+      @old_secret = Cheffish.current_data_bag_item_encryption[:old_secret]
+      @old_secret_path = Cheffish.current_data_bag_item_encryption[:old_secret_path]
     end
-    chef_server Cheffish.enclosing_chef_server
+    chef_server Cheffish.current_chef_server
   end
 
   def name(*args)

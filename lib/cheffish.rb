@@ -4,37 +4,37 @@ require 'cheffish/inline_resource'
 module Cheffish
   NAME_REGEX = /^[.\-[:alnum:]_]+$/
 
-  @@enclosing_data_bag = nil
-  def self.enclosing_data_bag
-    @@enclosing_data_bag
+  @@current_data_bag = nil
+  def self.current_data_bag
+    @@current_data_bag
   end
-  def self.enclosing_data_bag=(name)
-    @@enclosing_data_bag = name
-  end
-
-  @@enclosing_environment = nil
-  def self.enclosing_environment
-    @@enclosing_environment
-  end
-  def self.enclosing_environment=(name)
-    @@enclosing_environment = name
+  def self.current_data_bag=(name)
+    @@current_data_bag = name
   end
 
-  @@enclosing_data_bag_item_encryption = nil
-  def self.enclosing_data_bag_item_encryption
-    @@enclosing_data_bag_item_encryption
+  @@current_environment = nil
+  def self.current_environment
+    @@current_environment
   end
-  def self.enclosing_data_bag_item_encryption=(options)
-    @@enclosing_data_bag_item_encryption = options
+  def self.current_environment=(name)
+    @@current_environment = name
+  end
+
+  @@current_data_bag_item_encryption = nil
+  def self.current_data_bag_item_encryption
+    @@current_data_bag_item_encryption
+  end
+  def self.current_data_bag_item_encryption=(options)
+    @@current_data_bag_item_encryption = options
   end
 
   def self.inline_resource(provider, &block)
     InlineResource.new(provider).instance_eval(&block)
   end
 
-  @@enclosing_chef_server = nil
-  def self.enclosing_chef_server
-    @@enclosing_chef_server || {
+  @@current_chef_server = nil
+  def self.current_chef_server
+    @@current_chef_server || {
       :chef_server_url => Chef::Config[:chef_server_url],
       :options => {
         :client_name => Chef::Config[:node_name],
@@ -42,15 +42,15 @@ module Cheffish
       }
     }
   end
-  def self.enclosing_chef_server=(chef_server)
-    @@enclosing_chef_server = chef_server
+  def self.current_chef_server=(chef_server)
+    @@current_chef_server = chef_server
   end
 
   def self.reset
-    @@enclosing_data_bag = nil
-    @@enclosing_environment = nil
-    @@enclosing_data_bag_item_encryption = nil
-    @@enclosing_chef_server = nil
+    @@current_data_bag = nil
+    @@current_environment = nil
+    @@current_data_bag_item_encryption = nil
+    @@current_chef_server = nil
   end
 
   NOT_PASSED=Object.new

@@ -10,8 +10,8 @@ class Chef::Resource::ChefNode < Chef::Resource::LWRPBase
   # Grab environment from with_environment
   def initialize(*args)
     super
-    chef_environment Cheffish.enclosing_environment
-    chef_server Cheffish.enclosing_chef_server
+    chef_environment Cheffish.current_environment
+    chef_server Cheffish.current_chef_server
   end
 
   Cheffish.node_attributes(self)

@@ -30,7 +30,7 @@ module Cheffish
       resource.recipe_name = @recipe_name
       resource.params = @params
       # Determine whether this resource is being created in the context of an enclosing Provider
-      resource.enclosing_provider = provider.is_a?(Chef::Provider) ? provider : nil
+      resource.current_provider = provider.is_a?(Chef::Provider) ? provider : nil
       # Evaluate resource attribute DSL
       resource.instance_eval(&block) if block
 

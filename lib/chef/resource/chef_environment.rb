@@ -10,7 +10,7 @@ class Chef::Resource::ChefEnvironment < Chef::Resource::LWRPBase
 
   def initialize(*args)
     super
-    chef_server Cheffish.enclosing_chef_server
+    chef_server Cheffish.current_chef_server
   end
 
   attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true

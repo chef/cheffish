@@ -9,7 +9,7 @@ class Chef::Resource::ChefClient < Chef::Resource::LWRPBase
 
   def initialize(*args)
     super
-    chef_server Cheffish.enclosing_chef_server
+    chef_server Cheffish.current_chef_server
   end
 
   # Client attributes

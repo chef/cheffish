@@ -7,49 +7,49 @@ require 'chef/chef_fs/config'
 class Chef
   class Recipe
     def with_chef_data_bag(name)
-      old_enclosing_data_bag = Cheffish.enclosing_data_bag
-      Cheffish.enclosing_data_bag = name
+      old_current_data_bag = Cheffish.current_data_bag
+      Cheffish.current_data_bag = name
       if block_given?
         begin
           yield
         ensure
-          Cheffish.enclosing_data_bag = old_enclosing_data_bag
+          Cheffish.current_data_bag = old_current_data_bag
         end
       end
     end
 
     def with_chef_environment(name)
-      old_enclosing_environment = Cheffish.enclosing_environment
-      Cheffish.enclosing_environment = name
+      old_current_environment = Cheffish.current_environment
+      Cheffish.current_environment = name
       if block_given?
         begin
           yield
         ensure
-          Cheffish.enclosing_environment = old_enclosing_environment
+          Cheffish.current_environment = old_current_environment
         end
       end
     end
 
     def with_chef_data_bag_item_encryption(encryption_options)
-      old_enclosing_data_bag_item_encryption = Cheffish.enclosing_data_bag_item_encryption
-      Cheffish.enclosing_data_bag_item_encryption = encryption_options
+      old_current_data_bag_item_encryption = Cheffish.current_data_bag_item_encryption
+      Cheffish.current_data_bag_item_encryption = encryption_options
       if block_given?
         begin
           yield
         ensure
-          Cheffish.enclosing_data_bag_item_encryption = old_enclosing_data_bag_item_encryption
+          Cheffish.current_data_bag_item_encryption = old_current_data_bag_item_encryption
         end
       end
     end
 
     def with_chef_server(server_url, options = {})
-      old_enclosing_chef_server = Cheffish.enclosing_chef_server
-      Cheffish.enclosing_chef_server = { :chef_server_url => server_url, :options => options }
+      old_current_chef_server = Cheffish.current_chef_server
+      Cheffish.current_chef_server = { :chef_server_url => server_url, :options => options }
       if block_given?
         begin
           yield
         ensure
-          Cheffish.enclosing_chef_server = old_enclosing_chef_server
+          Cheffish.current_chef_server = old_current_chef_server
         end
       end
     end
