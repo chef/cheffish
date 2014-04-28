@@ -14,7 +14,7 @@ module Cheffish
     end
 
     def not_found_resource
-      resource = resource_class.new(new_resource.name)
+      resource = resource_class.new(new_resource.name, run_context)
       resource.action :delete
       resource
     end
@@ -67,7 +67,7 @@ module Cheffish
     end
 
     def json_to_resource(json)
-      resource = resource_class.new(new_resource.name)
+      resource = resource_class.new(new_resource.name, run_context)
       keys.each do |json_key, resource_key|
         resource.send(resource_key, json.delete(json_key))
       end

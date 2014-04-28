@@ -139,7 +139,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
   attr_reader :current_private_key
 
   def load_current_resource
-    resource = Chef::Resource::PrivateKey.new(new_resource.name)
+    resource = Chef::Resource::PrivateKey.new(new_resource.name, run_context)
 
     if new_resource.path != :none && ::File.exist?(new_resource.path)
       resource.path new_resource.path

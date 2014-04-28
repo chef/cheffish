@@ -4,53 +4,8 @@ require 'cheffish/inline_resource'
 module Cheffish
   NAME_REGEX = /^[.\-[:alnum:]_]+$/
 
-  @@current_data_bag = nil
-  def self.current_data_bag
-    @@current_data_bag
-  end
-  def self.current_data_bag=(name)
-    @@current_data_bag = name
-  end
-
-  @@current_environment = nil
-  def self.current_environment
-    @@current_environment
-  end
-  def self.current_environment=(name)
-    @@current_environment = name
-  end
-
-  @@current_data_bag_item_encryption = nil
-  def self.current_data_bag_item_encryption
-    @@current_data_bag_item_encryption
-  end
-  def self.current_data_bag_item_encryption=(options)
-    @@current_data_bag_item_encryption = options
-  end
-
   def self.inline_resource(provider, &block)
     InlineResource.new(provider).instance_eval(&block)
-  end
-
-  @@current_chef_server = nil
-  def self.current_chef_server
-    @@current_chef_server || {
-      :chef_server_url => Chef::Config[:chef_server_url],
-      :options => {
-        :client_name => Chef::Config[:node_name],
-        :signing_key_filename => Chef::Config[:client_key]
-      }
-    }
-  end
-  def self.current_chef_server=(chef_server)
-    @@current_chef_server = chef_server
-  end
-
-  def self.reset
-    @@current_data_bag = nil
-    @@current_environment = nil
-    @@current_data_bag_item_encryption = nil
-    @@current_chef_server = nil
   end
 
   NOT_PASSED=Object.new
