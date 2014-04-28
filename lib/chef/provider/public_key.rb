@@ -62,7 +62,7 @@ class Chef::Provider::PublicKey < Chef::Provider::LWRPBase
 
   def load_current_resource
     if ::File.exist?(new_resource.path)
-      resource = Chef::Resource::PublicKey.new(new_resource.path)
+      resource = Chef::Resource::PublicKey.new(new_resource.path, run_context)
       begin
         key, key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.path), nil, new_resource.path)
         if key

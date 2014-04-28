@@ -3,53 +3,56 @@ require 'cheffish'
 require 'chef_zero/server'
 require 'chef/chef_fs/chef_fs_data_store'
 require 'chef/chef_fs/config'
+require 'cheffish/chef_run_data'
+require 'cheffish/chef_run_listener'
+require 'chef/client'
 
 class Chef
   class Recipe
     def with_chef_data_bag(name)
-      old_enclosing_data_bag = Cheffish.enclosing_data_bag
-      Cheffish.enclosing_data_bag = name
+      old_current_data_bag = run_context.cheffish.current_data_bag
+      run_context.cheffish.current_data_bag = name
       if block_given?
         begin
           yield
         ensure
-          Cheffish.enclosing_data_bag = old_enclosing_data_bag
+          run_context.cheffish.current_data_bag = old_current_data_bag
         end
       end
     end
 
     def with_chef_environment(name)
-      old_enclosing_environment = Cheffish.enclosing_environment
-      Cheffish.enclosing_environment = name
+      old_current_environment = run_context.cheffish.current_environment
+      run_context.cheffish.current_environment = name
       if block_given?
         begin
           yield
         ensure
-          Cheffish.enclosing_environment = old_enclosing_environment
+          run_context.cheffish.current_environment = old_current_environment
         end
       end
     end
 
     def with_chef_data_bag_item_encryption(encryption_options)
-      old_enclosing_data_bag_item_encryption = Cheffish.enclosing_data_bag_item_encryption
-      Cheffish.enclosing_data_bag_item_encryption = encryption_options
+      old_current_data_bag_item_encryption = run_context.cheffish.current_data_bag_item_encryption
+      run_context.cheffish.current_data_bag_item_encryption = encryption_options
       if block_given?
         begin
           yield
         ensure
-          Cheffish.enclosing_data_bag_item_encryption = old_enclosing_data_bag_item_encryption
+          run_context.cheffish.current_data_bag_item_encryption = old_current_data_bag_item_encryption
         end
       end
     end
 
     def with_chef_server(server_url, options = {})
-      old_enclosing_chef_server = Cheffish.enclosing_chef_server
-      Cheffish.enclosing_chef_server = { :chef_server_url => server_url, :options => options }
+      old_current_chef_server = run_context.cheffish.current_chef_server
+      run_context.cheffish.current_chef_server = { :chef_server_url => server_url, :options => options }
       if block_given?
         begin
           yield
         ensure
-          Cheffish.enclosing_chef_server = old_enclosing_chef_server
+          run_context.cheffish.current_chef_server = old_current_chef_server
         end
       end
     end
@@ -89,23 +92,26 @@ class Chef
       chef_zero_server = ChefZero::Server.new(options)
       chef_zero_server.start_background
 
-      @@local_servers ||= []
-      @@local_servers << chef_zero_server
+      run_context.cheffish.local_servers << chef_zero_server
 
       with_chef_server(chef_zero_server.url, &block)
     end
 
-    def self.stop_local_servers
-      # Just in case we're running this out of order:
-      @@local_servers ||= []
+  end
 
-      # Stop the servers
-      @@local_servers.each do |server|
-        server.stop
+  class RunContext
+    def cheffish
+      @cheffish ||= begin
+        run_data = Cheffish::ChefRunData.new
+        events.register(Cheffish::ChefRunListener.new(self))
+        run_data
       end
-
-      # Clean up after ourselves (don't want to stop a server twice)
-      @@local_servers = []
     end
   end
+
+  Chef::Client.when_run_starts do |run_status|
+    # Pulling on cheffish_run_data makes it initialize right now
+    run_status.run_context.cheffish_run_data
+  end
+
 end

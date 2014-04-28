@@ -11,7 +11,7 @@ class Chef::Resource::ChefRole < Chef::Resource::LWRPBase
   # Grab environment from with_environment
   def initialize(*args)
     super
-    chef_server Cheffish.enclosing_chef_server
+    chef_server run_context.cheffish.current_chef_server
   end
 
   attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true

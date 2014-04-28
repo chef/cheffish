@@ -10,7 +10,7 @@ class Chef::Resource::ChefUser < Chef::Resource::LWRPBase
   # Grab environment from with_environment
   def initialize(*args)
     super
-    chef_server Cheffish.enclosing_chef_server
+    chef_server run_context.cheffish.current_chef_server
   end
 
   # Client attributes
