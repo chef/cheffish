@@ -3,6 +3,8 @@ require 'net/ssh'
 require 'etc'
 require 'socket'
 require 'digest/md5'
+require 'base64'
+require 'openssl_pkcs8'
 
 module Cheffish
   class KeyFormatter
@@ -44,9 +46,20 @@ module Cheffish
         end
       when :der
         key.to_der
-      when :fingerprint
+      when :fingerprint, :pkcs1md5fingerprint
         hexes = Digest::MD5.hexdigest(key.to_der)
         # Put : between every pair of hexes
+        hexes.scan(/../).join(':')
+      when :rfc4716md5fingerprint
+        type, base64_data, etc = encode_openssh_key(key).split
+        data = Base64.decode64(base64_data)
+        hexes = Digest::MD5.hexdigest(data)
+        hexes.scan(/../).join(':')
+      when :pkcs8sha1fingerprint
+        pkcs8_pem = key.to_pem_pkcs8
+        pkcs8_base64 = pkcs8_pem.split("\n").reject { |l| l =~ /^-----/ }
+        pkcs8_data = Base64.decode64(pkcs8_base64.join)
+        hexes = Digest::SHA1.hexdigest(pkcs8_data)
         hexes.scan(/../).join(':')
       else
         raise "Unrecognized key format #{format}"
