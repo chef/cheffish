@@ -1,4 +1,5 @@
 require 'chef/config'
+require 'cheffish/with_pattern'
 
 module Cheffish
   class ChefRunData
@@ -13,10 +14,12 @@ module Cheffish
       }
     end
 
-    attr_accessor :current_data_bag
-    attr_accessor :current_environment
-    attr_accessor :current_data_bag_item_encryption
-    attr_accessor :current_chef_server
+    extend Cheffish::WithPattern
+    with :data_bag
+    with :environment
+    with :data_bag_item_encryption
+    with :chef_server
+
     attr_reader :local_servers
   end
 end

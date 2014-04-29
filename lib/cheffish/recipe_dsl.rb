@@ -10,51 +10,19 @@ require 'chef/client'
 class Chef
   class Recipe
     def with_chef_data_bag(name)
-      old_current_data_bag = run_context.cheffish.current_data_bag
-      run_context.cheffish.current_data_bag = name
-      if block_given?
-        begin
-          yield
-        ensure
-          run_context.cheffish.current_data_bag = old_current_data_bag
-        end
-      end
+      run_context.cheffish.with_data_bag(name, &block)
     end
 
-    def with_chef_environment(name)
-      old_current_environment = run_context.cheffish.current_environment
-      run_context.cheffish.current_environment = name
-      if block_given?
-        begin
-          yield
-        ensure
-          run_context.cheffish.current_environment = old_current_environment
-        end
-      end
+    def with_chef_environment(name, &block)
+      run_context.cheffish.with_environment(name, &block)
     end
 
-    def with_chef_data_bag_item_encryption(encryption_options)
-      old_current_data_bag_item_encryption = run_context.cheffish.current_data_bag_item_encryption
-      run_context.cheffish.current_data_bag_item_encryption = encryption_options
-      if block_given?
-        begin
-          yield
-        ensure
-          run_context.cheffish.current_data_bag_item_encryption = old_current_data_bag_item_encryption
-        end
-      end
+    def with_chef_data_bag_item_encryption(encryption_options, &block)
+      run_context.cheffish.with_data_bag_item_encryption(encryption_options, &block)
     end
 
-    def with_chef_server(server_url, options = {})
-      old_current_chef_server = run_context.cheffish.current_chef_server
-      run_context.cheffish.current_chef_server = { :chef_server_url => server_url, :options => options }
-      if block_given?
-        begin
-          yield
-        ensure
-          run_context.cheffish.current_chef_server = old_current_chef_server
-        end
-      end
+    def with_chef_server(server_url, options = {}, &block)
+      run_context.cheffish.with_chef_server({ :chef_server_url => server_url, :options => options }, &block)
     end
 
     def with_chef_local_server(options, &block)
