@@ -6,6 +6,8 @@ module Cheffish
       @run_context = run_context
     end
 
+    attr_reader :run_context
+
     def run_complete(node)
       disconnect
     end

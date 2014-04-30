@@ -79,7 +79,7 @@ class Chef
 
   Chef::Client.when_run_starts do |run_status|
     # Pulling on cheffish_run_data makes it initialize right now
-    run_status.run_context.cheffish_run_data
+    run_status.run_context.cheffish
   end
 
 end
