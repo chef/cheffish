@@ -5,11 +5,11 @@ require 'cheffish/key_formatter'
 class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
 
   action :create do
-    create_key(false)
+    create_key(false, :create)
   end
 
   action :regenerate do
-    create_key(true)
+    create_key(true, :regenerate)
   end
 
   action :delete do
@@ -26,7 +26,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
     true
   end
 
-  def create_key(regenerate)
+  def create_key(regenerate, action)
     final_private_key = nil
     if new_source_key
       #
@@ -92,7 +92,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
     if new_resource.public_key_path
       public_key_path = new_resource.public_key_path
       public_key_format = new_resource.public_key_format
-      Cheffish.inline_resource(self) do
+      Cheffish.inline_resource(self, action) do
         public_key public_key_path do
           source_key final_private_key
           format public_key_format

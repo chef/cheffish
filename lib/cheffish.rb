@@ -1,11 +1,11 @@
 require 'chef/run_list/run_list_item'
-require 'cheffish/inline_resource'
+require 'cheffish/basic_chef_client'
 
 module Cheffish
   NAME_REGEX = /^[.\-[:alnum:]_]+$/
 
-  def self.inline_resource(provider, &block)
-    InlineResource.new(provider).instance_eval(&block)
+  def self.inline_resource(provider, provider_action, &block)
+    BasicChefClient.inline_resource(provider, provider_action, &block)
   end
 
   NOT_PASSED=Object.new
