@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4 (5/1/2014)
+
+- Interface: change Cheffish.inline_resource() to take both provider and action
+- Interface: Rename enclosing_chef_server, enclosing_* to current_*
+- Use Chef client in a more standard and extensible way
+- Internal changes to make Cheffish more parallizable (no more globals)
+
 ## 0.3 (4/23/2014)
 
 - Preserve tags when attributes hash is set
