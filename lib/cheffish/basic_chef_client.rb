@@ -1,3 +1,4 @@
+require 'cheffish/version'
 require 'chef/dsl/recipe'
 require 'chef/event_dispatch/base'
 require 'chef/event_dispatch/dispatcher'
@@ -13,9 +14,9 @@ module Cheffish
     def initialize(node = nil, events = nil)
       if !node
         node = Chef::Node.new
-        node.name 'basic_client'
-        node.automatic[:platform] = 'test'
-        node.automatic[:platform_version] = 'test'
+        node.name 'basic_chef_client'
+        node.automatic[:platform] = 'basic_chef_client'
+        node.automatic[:platform_version] = Cheffish::VERSION
       end
 
       @event_catcher = BasicChefClientEvents.new
@@ -23,7 +24,7 @@ module Cheffish
       dispatcher.register(events) if events
       @run_context = Chef::RunContext.new(node, {}, dispatcher)
       @updated = []
-      @cookbook_name = 'basic_client'
+      @cookbook_name = 'basic_chef_client'
     end
 
     extend Forwardable
@@ -53,7 +54,7 @@ module Cheffish
 
     def self.inline_resource(provider, provider_action, &block)
       events = ProviderEventForwarder.new(provider, provider_action)
-      client = BasicChefClient.new(provider.node)
+      client = BasicChefClient.new(provider.node, events)
       client.load_block(&block)
       client.converge
       client.updated?

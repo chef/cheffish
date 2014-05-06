@@ -7,7 +7,7 @@ describe Chef::Resource::ChefNode do
 
   when_the_chef_server 'is empty' do
     context 'and we run a recipe that creates node "blah"' do
-      with_recipe do
+      with_converge do
         chef_node 'blah'
       end
 
@@ -31,7 +31,7 @@ describe Chef::Resource::ChefNode do
 
       context 'and a recipe is run that creates node "blah" on the second chef server using with_chef_server' do
 
-        with_recipe do
+        with_converge do
           with_chef_server 'http://127.0.0.1:8899'
           chef_node 'blah'
         end
@@ -45,7 +45,7 @@ describe Chef::Resource::ChefNode do
 
       context 'and a recipe is run that creates node "blah" on the second chef server using chef_server' do
 
-        with_recipe do
+        with_converge do
           chef_node 'blah' do
             chef_server({ :chef_server_url => 'http://127.0.0.1:8899' })
           end
@@ -64,7 +64,7 @@ describe Chef::Resource::ChefNode do
   when_the_chef_server 'has a node named "blah"' do
     node 'blah', {}
 
-    with_recipe do
+    with_converge do
       chef_node 'blah'
     end
 
@@ -79,7 +79,7 @@ describe Chef::Resource::ChefNode do
     }
 
     context 'with chef_node "blah" that sets attributes' do
-      with_recipe do
+      with_converge do
         chef_node 'blah' do
           attributes({})
         end
@@ -91,7 +91,7 @@ describe Chef::Resource::ChefNode do
     end
 
     context 'with chef_node "blah" that sets attributes with tags in them' do
-      with_recipe do
+      with_converge do
         chef_node 'blah' do
           attributes 'tags' => [ 'c', 'd' ]
         end
@@ -114,7 +114,7 @@ describe Chef::Resource::ChefNode do
     }
 
     context 'with chef_node "blah"' do
-      with_recipe do
+      with_converge do
         chef_node 'blah'
       end
 
@@ -124,7 +124,7 @@ describe Chef::Resource::ChefNode do
     end
 
     context 'with chef_node "blah" with complete true' do
-      with_recipe do
+      with_converge do
         chef_node 'blah' do
           complete true
         end

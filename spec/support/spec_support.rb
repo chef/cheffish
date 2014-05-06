@@ -1,11 +1,7 @@
 require 'chef_zero/rspec'
-require 'chef/recipe'
-require 'chef/run_context'
-require 'chef/event_dispatch/dispatcher'
-require 'chef/cookbook/cookbook_collection'
-require 'chef/runner'
 require 'chef/server_api'
 require 'cheffish'
+require 'cheffish/basic_chef_client'
 
 module SpecSupport
   include ChefZero::RSpec
@@ -17,34 +13,61 @@ module SpecSupport
       end
 
       def chef_run
-        @event_sink.events
-      end
-
-      def run_context
-        @run_context ||= begin
-          node = Chef::Node.new
-          node.name 'test'
-          node.automatic[:platform] = 'test'
-          node.automatic[:platform_version] = 'test'
-          Chef::RunContext.new(node, {}, Chef::EventDispatch::Dispatcher.new(event_sink))
-        end
+        converge if !@converged
+        event_sink.events
       end
 
       def event_sink
         @event_sink ||= EventSink.new
       end
 
+      def basic_chef_client
+        @basic_chef_client ||= begin
+          Cheffish::BasicChefClient.new(nil, event_sink)
+        end
+      end
+
+      def load_recipe(&block)
+        basic_chef_client.load_block(&block)
+      end
+
       def run_recipe(&block)
-        recipe = Chef::Recipe.new('test', 'test', run_context)
-        recipe.instance_eval(&block)
-        Chef::Runner.new(run_context).converge
+        load_recipe(&block)
+        converge
+      end
+
+      def reset_chef_client
+        @event_sink = nil
+        @basic_chef_client = nil
+        @converged = false
+      end
+
+      def converge
+        if @converged
+          raise "Already converged! Cannot converge twice, that's bad mojo."
+        end
+        @converged = true
+        basic_chef_client.converge
       end
     end
   end
 
   def with_recipe(&block)
     before :each do
-      run_recipe(&block)
+      load_recipe(&block)
+    end
+
+    after :each do
+      if !@converged
+        raise "Never tried to converge!"
+      end
+    end
+  end
+
+  def with_converge(&block)
+    before :each do
+      load_recipe(&block) if block_given?
+      converge
     end
   end
 

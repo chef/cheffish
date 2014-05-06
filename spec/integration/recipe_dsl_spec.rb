@@ -9,7 +9,7 @@ describe 'Cheffish Recipe DSL' do
   context 'when we include with_chef_local_server' do
     before :each do
       @tmp_repo = tmp_repo = Dir.mktmpdir('chef_repo')
-      run_recipe do
+      load_recipe do
         with_chef_local_server :chef_repo_path => tmp_repo
       end
     end

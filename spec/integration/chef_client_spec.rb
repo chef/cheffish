@@ -15,7 +15,7 @@ describe Chef::Resource::ChefClient do
       end
 
       context 'and we run a recipe that creates client "blah"' do
-        with_recipe do
+        with_converge do
           chef_client 'blah' do
             source_key_path "#{repo_path}/blah.pem"
           end
@@ -31,7 +31,7 @@ describe Chef::Resource::ChefClient do
       end
 
       context 'and we run a recipe that creates client "blah" with output_key_path' do
-        with_recipe do
+        with_converge do
           chef_client 'blah' do
             source_key_path "#{repo_path}/blah.pem"
             output_key_path "#{repo_path}/blah.pub"
