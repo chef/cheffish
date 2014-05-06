@@ -8,6 +8,16 @@ module Cheffish
     BasicChefClient.inline_resource(provider, provider_action, &block)
   end
 
+  def self.default_chef_server
+    {
+      :chef_server_url => Chef::Config[:chef_server_url],
+      :options => {
+        :client_name => Chef::Config[:node_name],
+        :signing_key_filename => Chef::Config[:client_key]
+      }
+    }
+  end
+
   NOT_PASSED=Object.new
 
   def self.node_attributes(klass)

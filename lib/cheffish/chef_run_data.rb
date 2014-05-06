@@ -5,13 +5,7 @@ module Cheffish
   class ChefRunData
     def initialize
       @local_servers = []
-      @current_chef_server = {
-        :chef_server_url => Chef::Config[:chef_server_url],
-        :options => {
-          :client_name => Chef::Config[:node_name],
-          :signing_key_filename => Chef::Config[:client_key]
-        }
-      }
+      @current_chef_server = Cheffish.default_chef_server
     end
 
     extend Cheffish::WithPattern
