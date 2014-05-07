@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1 (5/7/2014)
+
+- Expose Cheffish.default_chef_server
+- Make prettier green text when chef objects update
+
 ## 0.4 (5/1/2014)
 
 - Interface: change Cheffish.inline_resource() to take both provider and action
