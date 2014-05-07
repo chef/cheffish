@@ -97,23 +97,23 @@ module Cheffish
             end
           else
             if print_values
-              result << "add #{name == '' ? new_key : "#{name}.#{new_key}"} = #{new_value.inspect}"
+              result << "  add #{name == '' ? new_key : "#{name}.#{new_key}"} = #{new_value.inspect}"
             else
-              result << "add #{name == '' ? new_key : "#{name}.#{new_key}"}"
+              result << "  add #{name == '' ? new_key : "#{name}.#{new_key}"}"
             end
           end
         end
         removed_keys.keys.each do |removed_key|
-          result << "remove #{name == '' ? removed_key : "#{name}.#{removed_key}"}"
+          result << "  remove #{name == '' ? removed_key : "#{name}.#{removed_key}"}"
         end
       else
         old_json = old_json.to_s if old_json.kind_of?(Symbol)
         new_json = new_json.to_s if new_json.kind_of?(Symbol)
         if old_json != new_json
           if print_values
-            result << "update #{name} from #{old_json.inspect} to #{new_json.inspect}"
+            result << "  update #{name} from #{old_json.inspect} to #{new_json.inspect}"
           else
-            result << "update #{name}"
+            result << "  update #{name}"
           end
         end
       end
