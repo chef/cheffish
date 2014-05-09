@@ -8,12 +8,12 @@ module Cheffish
     BasicChefClient.inline_resource(provider, provider_action, &block)
   end
 
-  def self.default_chef_server
+  def self.default_chef_server(config = Chef::Config)
     {
-      :chef_server_url => Chef::Config[:chef_server_url],
+      :chef_server_url => config[:chef_server_url],
       :options => {
-        :client_name => Chef::Config[:node_name],
-        :signing_key_filename => Chef::Config[:client_key]
+        :client_name => config[:node_name],
+        :signing_key_filename => config[:client_key]
       }
     }
   end

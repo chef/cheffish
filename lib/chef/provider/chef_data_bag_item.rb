@@ -152,12 +152,12 @@ class Chef::Provider::ChefDataBagItem < Cheffish::ChefProviderBase
   end
 
   def encrypt(json, secret, version)
-    old_version = Chef::Config[:data_bag_encrypt_version]
-    Chef::Config[:data_bag_encrypt_version] = version
+    old_version = run_context.config[:data_bag_encrypt_version]
+    run_context.config[:data_bag_encrypt_version] = version
     begin
       Chef::EncryptedDataBagItem.encrypt_data_bag_item(json, secret)
     ensure
-      Chef::Config[:data_bag_encrypt_version] = old_version
+      run_context.config[:data_bag_encrypt_version] = old_version
     end
   end
 

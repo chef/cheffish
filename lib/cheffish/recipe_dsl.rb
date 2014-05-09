@@ -6,6 +6,7 @@ require 'chef/chef_fs/config'
 require 'cheffish/chef_run_data'
 require 'cheffish/chef_run_listener'
 require 'chef/client'
+require 'chef/config'
 
 class Chef
   module DSL
@@ -41,9 +42,9 @@ class Chef
           %w(acl client cookbook container data_bag environment group node role).each do |type|
             options["#{type}_path".to_sym] ||= begin
               if options[:chef_repo_path].kind_of?(String)
-                Chef::Config.path_join(options[:chef_repo_path], "#{type}s")
+                run_context.config.path_join(options[:chef_repo_path], "#{type}s")
               else
-                options[:chef_repo_path].map { |path| Chef::Config.path_join(path, "#{type}s")}
+                options[:chef_repo_path].map { |path| run_context.config.path_join(path, "#{type}s")}
               end
             end
             # Work around issue in earlier versions of ChefFS where it expects strings for these
@@ -75,6 +76,10 @@ class Chef
         events.register(Cheffish::ChefRunListener.new(self))
         run_data
       end
+    end
+
+    def config
+      @config ||= Chef::Config
     end
   end
 
