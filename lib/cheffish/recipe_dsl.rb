@@ -7,6 +7,7 @@ require 'cheffish/chef_run_data'
 require 'cheffish/chef_run_listener'
 require 'chef/client'
 require 'chef/config'
+require 'cheffish/merged_config'
 
 class Chef
   module DSL
@@ -69,17 +70,21 @@ class Chef
     end
   end
 
+  class Config
+    default(:profile) { ENV['CHEF_PROFILE'] || 'default' }
+  end
+
   class RunContext
     def cheffish
       @cheffish ||= begin
-        run_data = Cheffish::ChefRunData.new
+        run_data = Cheffish::ChefRunData.new(config)
         events.register(Cheffish::ChefRunListener.new(self))
         run_data
       end
     end
 
     def config
-      @config ||= Chef::Config
+      @config ||= Cheffish.profiled_config(Chef::Config)
     end
   end
 

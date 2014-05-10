@@ -18,6 +18,14 @@ module Cheffish
     }
   end
 
+  def self.profiled_config(config = Chef::Config)
+    if Chef::Config.profile && Chef::Config.profiles && Chef::Config.profiles[Chef::Config.profile]
+      MergedConfig.new(Chef::Config.profiles[Chef::Config.profile], Chef::Config)
+    else
+      Chef::Config
+    end
+  end
+
   NOT_PASSED=Object.new
 
   def self.node_attributes(klass)

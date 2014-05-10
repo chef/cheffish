@@ -3,9 +3,9 @@ require 'cheffish/with_pattern'
 
 module Cheffish
   class ChefRunData
-    def initialize
+    def initialize(config)
       @local_servers = []
-      @current_chef_server = Cheffish.default_chef_server
+      @current_chef_server = Cheffish.default_chef_server(config)
     end
 
     extend Cheffish::WithPattern
