@@ -14,8 +14,8 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
 
   action :delete do
     if Array(current_resource.action) == [ :create ]
-      converge_by "delete private key #{new_resource.path}" do
-        ::File.unlink(new_resource.path)
+      converge_by "delete private key #{new_path}" do
+        ::File.unlink(new_path)
       end
     end
   end
@@ -27,15 +27,21 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
   end
 
   def create_key(regenerate, action)
+    if @should_create_directory
+      Cheffish.inline_resource(self, action) do
+        directory run_context.config[:private_key_write_path]
+      end
+    end
+
     final_private_key = nil
     if new_source_key
       #
       # Create private key from source
       #
       desired_output = encode_private_key(new_source_key)
-      if Array(current_resource.action) == [ :delete ] || desired_output != IO.read(new_resource.path)
-        converge_by "reformat key at #{new_resource.source_key_path} to #{new_resource.format} private key #{new_resource.path} (#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
-          IO.write(new_resource.path, desired_output)
+      if Array(current_resource.action) == [ :delete ] || desired_output != IO.read(new_path)
+        converge_by "reformat key at #{new_resource.source_key_path} to #{new_resource.format} private key #{new_path} (#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
+          IO.write(new_path, desired_output)
         end
       end
 
@@ -50,7 +56,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
           (current_resource.size != new_resource.size ||
            current_resource.type != new_resource.type))
         action = (Array(current_resource.action) == [ :delete ]) ? "create" : "overwrite"
-        converge_by "#{action} #{new_resource.type} private key #{new_resource.path} (#{new_resource.size} bits#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
+        converge_by "#{action} #{new_resource.type} private key #{new_path} (#{new_resource.size} bits#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
           case new_resource.type
           when :rsa
             if new_resource.exponent
@@ -62,7 +68,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
             final_private_key = OpenSSL::PKey::DSA.generate(new_resource.size)
           end
 
-          if new_resource.path != :none
+          if new_path != :none
             write_private_key(final_private_key)
           end
         end
@@ -77,13 +83,13 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
         final_private_key = current_private_key
 
         if current_resource.format != new_resource.format
-          converge_by "change format of #{new_resource.type} private key #{new_resource.path} from #{current_resource.format} to #{new_resource.format}" do
+          converge_by "change format of #{new_resource.type} private key #{new_path} from #{current_resource.format} to #{new_resource.format}" do
             write_private_key(current_private_key)
           end
         elsif (@current_file_mode & 0077) != 0
           new_mode = @current_file_mode & 07700
-          converge_by "change mode of private key #{new_resource.path} to #{new_mode.to_s(8)}" do
-            ::File.chmod(new_mode, new_resource.path)
+          converge_by "change mode of private key #{new_path} to #{new_mode.to_s(8)}" do
+            ::File.chmod(new_mode, new_path)
           end
         end
       end
@@ -114,7 +120,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
   end
 
   def write_private_key(key)
-    ::File.open(new_resource.path, 'w') do |file|
+    ::File.open(new_path, 'w') do |file|
       file.chmod(0600)
       file.write(encode_private_key(key))
     end
@@ -138,14 +144,26 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
 
   attr_reader :current_private_key
 
+  def new_path
+    path = new_resource.path
+    if path.is_a?(Symbol)
+      path
+    elsif Pathname.new(path).relative? && run_context.config[:private_key_write_path]
+      @should_create_directory = true
+      ::File.join(run_context.config[:private_key_write_path], path)
+    else
+      path
+    end
+  end
+
   def load_current_resource
     resource = Chef::Resource::PrivateKey.new(new_resource.name, run_context)
 
-    if new_resource.path != :none && ::File.exist?(new_resource.path)
-      resource.path new_resource.path
+    if new_path != :none && ::File.exist?(new_path)
+      resource.path new_path
 
       begin
-        key, key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.path), new_resource.pass_phrase, new_resource.path)
+        key, key_format = Cheffish::KeyFormatter.decode(IO.read(new_path), new_resource.pass_phrase, new_path)
         if key
           @current_private_key = key
           resource.format key_format[:format]
@@ -155,7 +173,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
           resource.pass_phrase key_format[:pass_phrase]
           resource.cipher key_format[:cipher]
         end
-        @current_file_mode = ::File.stat(new_resource.path).mode
+        @current_file_mode = ::File.stat(new_path).mode
       rescue
         # If there's an error reading, we assume format and type are wrong and don't futz with them
       end
