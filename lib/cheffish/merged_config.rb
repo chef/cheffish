@@ -10,7 +10,7 @@ module Cheffish
       result_configs = []
       configs.each do |config|
         value = config[name]
-        if value
+        if !value.nil?
           if value.respond_to?(:keys)
             result_configs << value
           elsif result_configs.size > 0
@@ -31,6 +31,30 @@ module Cheffish
 
     def method_missing(name)
       self[name]
+    end
+
+    def has_key?(name)
+      configs.any? { config.has_key?(name) }
+    end
+
+    def keys
+      configs.map { |c| c.keys }.flatten(1).uniq
+    end
+
+    def values
+      keys.map { |key| self[key] }
+    end
+
+    def each_pair(&block)
+      each(&block)
+    end
+
+    def each
+      keys.each do |key|
+        if block_given?
+          yield key, self[key]
+        end
+      end
     end
   end
 end
