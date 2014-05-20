@@ -6,6 +6,8 @@ require 'chef/node'
 require 'chef/run_context'
 require 'chef/runner'
 require 'forwardable'
+require 'chef/providers'
+require 'chef/resources'
 
 module Cheffish
   class BasicChefClient

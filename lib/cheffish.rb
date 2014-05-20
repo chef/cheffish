@@ -1,5 +1,6 @@
 require 'chef/run_list/run_list_item'
 require 'cheffish/basic_chef_client'
+require 'chef/server_api'
 
 module Cheffish
   NAME_REGEX = /^[.\-[:alnum:]_]+$/
@@ -8,7 +9,7 @@ module Cheffish
     BasicChefClient.inline_resource(provider, provider_action, &block)
   end
 
-  def self.default_chef_server(config = Chef::Config)
+  def self.default_chef_server(config = profiled_config)
     {
       :chef_server_url => config[:chef_server_url],
       :options => {
@@ -16,6 +17,10 @@ module Cheffish
         :signing_key_filename => config[:client_key]
       }
     }
+  end
+
+  def self.chef_server_api(chef_server_hash = default_chef_server)
+    Chef::ServerAPI.new(config[:chef_server_url], :client_name => config[:node_name], :signing_key_filename => config[:client_key])
   end
 
   def self.profiled_config(config = Chef::Config)
