@@ -19,15 +19,15 @@ module Cheffish
     }
   end
 
-  def self.chef_server_api(chef_server_hash = default_chef_server)
+  def self.chef_server_api(chef_server_hash = default_chef_server, config = Chef::Config)
     Chef::ServerAPI.new(config[:chef_server_url], :client_name => config[:node_name], :signing_key_filename => config[:client_key])
   end
 
   def self.profiled_config(config = Chef::Config)
-    if Chef::Config.profile && Chef::Config.profiles && Chef::Config.profiles[Chef::Config.profile]
-      MergedConfig.new(Chef::Config.profiles[Chef::Config.profile], Chef::Config)
+    if config.profile && config.profiles && config.profiles[config.profile]
+      MergedConfig.new(config.profiles[config.profile], config)
     else
-      Chef::Config
+      config
     end
   end
 
