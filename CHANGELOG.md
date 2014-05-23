@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.beta (5/23/2014)
+
+- Support relative directories and Chef::Config.private_key_paths in private_key resource
+- add support for profiled configs with Cheffish::MergedConfig and Cheffish.profiled_config
+- work better with multiple threads (store config in instances)
+- Add helper methods Cheffish.load_chef_config and Cheffish.honor_local_mode for embedders
+
 ## 0.4.1 (5/7/2014)
 
 - Expose Cheffish.default_chef_server
