@@ -1,6 +1,10 @@
 require 'chef/run_list/run_list_item'
 require 'cheffish/basic_chef_client'
 require 'chef/server_api'
+require 'chef/knife'
+require 'chef/config_fetcher'
+require 'chef/log'
+require 'chef/application'
 
 module Cheffish
   NAME_REGEX = /^[.\-[:alnum:]_]+$/
@@ -28,6 +32,45 @@ module Cheffish
       MergedConfig.new(config.profiles[config.profile], config)
     else
       config
+    end
+  end
+
+  def self.load_chef_config(chef_config = Chef::Config)
+    chef_config.config_file = Chef::Knife.locate_config_file
+    config_fetcher = Chef::ConfigFetcher.new(chef_config.config_file, chef_config.config_file_jail)
+    if chef_config.config_file.nil?
+      Chef::Log.warn("No config file found or specified on command line, using command line options.")
+    elsif config_fetcher.config_missing?
+      Chef::Log.warn("Did not find config file: #{chef_config.config_file}, using command line options.")
+    else
+      config_content = config_fetcher.read_config
+      config_file_path = chef_config.config_file
+      begin
+        chef_config.from_string(config_content, config_file_path)
+      rescue Exception => error
+        Chef::Log.fatal("Configuration error #{error.class}: #{error.message}")
+        filtered_trace = error.backtrace.grep(/#{Regexp.escape(config_file_path)}/)
+        filtered_trace.each {|line| Chef::Log.fatal("  " + line )}
+        Chef::Application.fatal!("Aborting due to error in '#{config_file_path}'", 2)
+      end
+    end
+    Cheffish.profiled_config(chef_config)
+  end
+
+  def self.honor_local_mode(local_mode_default = true)
+    if !Chef::Config.has_key?(:local_mode) && !local_mode_default.nil?
+      Chef::Config.local_mode = default
+    end
+    if Chef::Config.local_mode && !Chef::Config.has_key?(:cookbook_path) && !Chef::Config.has_key?(:chef_repo_path)
+      Chef::Config.chef_repo_path = Chef::Config.find_chef_repo_path(Dir.pwd)
+    end
+    Chef::Application.setup_server_connectivity
+    if block_given?
+      begin
+        yield
+      ensure
+        Chef::Application.destroy_server_connectivity
+      end
     end
   end
 
