@@ -5,6 +5,8 @@ module Cheffish
       @merge_arrays = {}
     end
 
+    include Enumerable
+
     attr_reader :configs
     def merge_arrays(*symbols)
       symbols.each do |symbol|

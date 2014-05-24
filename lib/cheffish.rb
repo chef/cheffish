@@ -59,7 +59,7 @@ module Cheffish
 
   def self.honor_local_mode(local_mode_default = true)
     if !Chef::Config.has_key?(:local_mode) && !local_mode_default.nil?
-      Chef::Config.local_mode = default
+      Chef::Config.local_mode = local_mode_default
     end
     if Chef::Config.local_mode && !Chef::Config.has_key?(:cookbook_path) && !Chef::Config.has_key?(:chef_repo_path)
       Chef::Config.chef_repo_path = Chef::Config.find_chef_repo_path(Dir.pwd)
@@ -70,6 +70,28 @@ module Cheffish
         yield
       ensure
         Chef::Application.destroy_server_connectivity
+      end
+    end
+  end
+
+  def self.get_private_key(name, config = profiled_chef_config)
+    if config[:private_keys] && config[:private_keys][name]
+      if config[:private_keys][name].is_a?(String)
+        IO.read(config[:private_keys][name])
+      else
+        config[:private_keys][name].to_pem
+      end
+    elsif config[:private_key_paths]
+      config[:private_key_paths].each do |private_key_path|
+        Dir.entries(private_key_path).each do |key|
+          ext = File.extname(key)
+          if ext == '' || ext == '.pem'
+            key_name = key[0..-(ext.length+1)]
+            if key_name == name
+              return IO.read("#{private_key_path}/#{key}")
+            end
+          end
+        end
       end
     end
   end
