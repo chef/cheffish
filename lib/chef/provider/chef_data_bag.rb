@@ -45,6 +45,6 @@ class Chef::Provider::ChefDataBag < Cheffish::ChefProviderBase
   end
 
   def json_to_resource(json)
-    Chef::Resource::ChefDataBag.new(json['name'])
+    Chef::Resource::ChefDataBag.new(json['name'], run_context)
   end
 end

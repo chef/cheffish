@@ -75,7 +75,7 @@ class Chef::Provider::PublicKey < Chef::Provider::LWRPBase
 
       @current_resource = resource
     else
-      not_found_resource = Chef::Resource::PublicKey.new(new_resource.path)
+      not_found_resource = Chef::Resource::PublicKey.new(new_resource.path, run_context)
       not_found_resource.action :delete
       @current_resource = not_found_resource
     end

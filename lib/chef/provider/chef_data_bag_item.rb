@@ -38,7 +38,7 @@ class Chef::Provider::ChefDataBagItem < Cheffish::ChefProviderBase
   def load_current_resource
     begin
       json = rest.get("data/#{new_resource.data_bag}/#{new_resource.id}")
-      resource = Chef::Resource::ChefDataBagItem.new(new_resource.name)
+      resource = Chef::Resource::ChefDataBagItem.new(new_resource.name, run_context)
       resource.raw_data json
       @current_resource = resource
     rescue Net::HTTPServerException => e
