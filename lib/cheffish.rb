@@ -1,6 +1,6 @@
 require 'chef/run_list/run_list_item'
 require 'cheffish/basic_chef_client'
-require 'chef/server_api'
+require 'cheffish/server_api'
 require 'chef/knife'
 require 'chef/config_fetcher'
 require 'chef/log'
@@ -23,8 +23,8 @@ module Cheffish
     }
   end
 
-  def self.chef_server_api(chef_server_hash = default_chef_server, config = Chef::Config)
-    Chef::ServerAPI.new(config[:chef_server_url], :client_name => config[:node_name], :signing_key_filename => config[:client_key])
+  def self.chef_server_api(chef_server = default_chef_server)
+    Cheffish::ServerAPI.new(chef_server[:chef_server_url], chef_server[:options] || {})
   end
 
   def self.profiled_config(config = Chef::Config)

@@ -5,7 +5,7 @@ require 'chef/provider/lwrp_base'
 module Cheffish
   class ChefProviderBase < Chef::Provider::LWRPBase
     def rest
-      @rest ||= Cheffish.chef_server_api(new_resource.chef_server, run_context.config)
+      @rest ||= Cheffish.chef_server_api(new_resource.chef_server)
     end
 
     def current_resource_exists?
