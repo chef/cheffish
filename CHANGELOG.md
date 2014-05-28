@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.5.beta.2 (5/23/2914)
+## 0.5.beta.3 (5/28/2014)
+
+- Fix chef_data_bag crash in recipe
+- Fix MergedConfig.has_key? crash
+
+## 0.5.beta.2 (5/27/2014)
 
 - Fix issues with with_chef_local_server
 - Fix crashes with PKCS8 on Ruby 2.0+

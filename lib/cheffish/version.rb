@@ -1,3 +1,3 @@
 module Cheffish
-  VERSION = '0.5.beta.2'
+  VERSION = '0.5.beta.3'
 end
