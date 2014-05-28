@@ -31,7 +31,7 @@ class Chef
       def with_chef_local_server(options, &block)
         options[:host] ||= '127.0.0.1'
         options[:log_level] ||= Chef::Log.level
-        options[:port] ||= 8900
+        options[:port] ||= 8901
 
         # Create the data store chef-zero will use
         options[:data_store] ||= begin
