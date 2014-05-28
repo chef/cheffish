@@ -46,7 +46,7 @@ module Cheffish
     end
 
     def has_key?(name)
-      configs.any? { config.has_key?(name) }
+      configs.any? { |config| config.has_key?(name) }
     end
 
     def keys
