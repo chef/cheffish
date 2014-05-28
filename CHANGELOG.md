@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.beta.2 (5/23/2914)
+
+- Fix issues with with_chef_local_server
+- Fix crashes with PKCS8 on Ruby 2.0+
+
 ## 0.5.beta (5/23/2014)
 
 - Support relative directories and Chef::Config.private_key_paths in private_key resource
