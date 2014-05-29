@@ -13,26 +13,20 @@ module Cheffish
     BasicChefClient.inline_resource(provider, provider_action, &block)
   end
 
-  def self.default_chef_server(config = profiled_config)
-    {
-      :chef_server_url => config[:chef_server_url],
-      :options => {
-        :client_name => config[:node_name],
-        :signing_key_filename => config[:client_key]
-      }
-    }
+  def self.chef_server_api(config = profiled_config)
+    Cheffish::ServerAPI.new(config)
   end
 
-  def self.chef_server_api(chef_server = default_chef_server)
-    Cheffish::ServerAPI.new(chef_server[:chef_server_url], chef_server[:options] || {})
-  end
-
-  def self.profiled_config(config = Chef::Config)
-    if config.profile && config.profiles && config.profiles[config.profile]
-      MergedConfig.new(config.profiles[config.profile], config)
+  def self.config_for(type, name, config = profiled_config)
+    if name && config[type] && config[type][name]
+      MergedConfig.new(config[type][name], config)
     else
       config
     end
+  end
+
+  def self.profiled_config(config = Chef::Config)
+    config_for(:profiles, config.profile, config)
   end
 
   def self.load_chef_config(chef_config = Chef::Config)
@@ -110,7 +104,6 @@ module Cheffish
       attribute :complete, :kind_of => [TrueClass, FalseClass]
 
       attribute :raw_json, :kind_of => Hash
-      attribute :chef_server, :kind_of => Hash
 
       # attribute 'ip_address', '127.0.0.1'
       # attribute [ 'pushy', 'port' ], '9000'

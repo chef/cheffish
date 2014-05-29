@@ -1,17 +1,9 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'cheffish/resource_base'
 
-class Chef::Resource::ChefUser < Chef::Resource::LWRPBase
-  self.resource_name = 'chef_user'
-
+class Chef::Resource::ChefUser < Cheffish::ResourceBase
   actions :create, :delete, :nothing
   default_action :create
-
-  # Grab environment from with_environment
-  def initialize(*args)
-    super
-    chef_server run_context.cheffish.current_chef_server
-  end
 
   # Client attributes
   attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
@@ -37,7 +29,6 @@ class Chef::Resource::ChefUser < Chef::Resource::LWRPBase
   attribute :complete, :kind_of => [TrueClass, FalseClass]
 
   attribute :raw_json, :kind_of => Hash
-  attribute :chef_server, :kind_of => Hash
 
   # Proc that runs just before the resource executes.  Called with (resource)
   def before(&block)

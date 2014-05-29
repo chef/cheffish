@@ -1,17 +1,10 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'cheffish/resource_base'
 require 'chef/environment'
 
-class Chef::Resource::ChefEnvironment < Chef::Resource::LWRPBase
-  self.resource_name = 'chef_environment'
-
+class Chef::Resource::ChefEnvironment < Cheffish::ResourceBase
   actions :create, :delete, :nothing
   default_action :create
-
-  def initialize(*args)
-    super
-    chef_server run_context.cheffish.current_chef_server
-  end
 
   attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
   attribute :description, :kind_of => String
@@ -26,7 +19,6 @@ class Chef::Resource::ChefEnvironment < Chef::Resource::LWRPBase
   attribute :complete, :kind_of => [TrueClass, FalseClass]
 
   attribute :raw_json, :kind_of => Hash
-  attribute :chef_server, :kind_of => Hash
 
   NOT_PASSED=Object.new
 

@@ -1,9 +1,7 @@
 require 'openssl/cipher'
-require 'chef/resource/lwrp_base'
+require 'cheffish/resource_base'
 
-class Chef::Resource::PrivateKey < Chef::Resource::LWRPBase
-  self.resource_name = 'private_key'
-
+class Chef::Resource::PrivateKey < Cheffish::ResourceBase
   actions :create, :delete, :regenerate, :nothing
   default_action :create
 

@@ -24,8 +24,22 @@ class Chef
         run_context.cheffish.with_data_bag_item_encryption(encryption_options, &block)
       end
 
+      def with_config(config)
+        run_context.add_config_override(config)
+        if block_given?
+          begin
+            yield
+          ensure
+            run_context.remove_config_override(config)
+          end
+        end
+      end
+
       def with_chef_server(server_url, options = {}, &block)
-        run_context.cheffish.with_chef_server({ :chef_server_url => server_url, :options => options }, &block)
+        options = options.dup # Don't modify originals!
+        options[:node_name] ||= options[:client_name] if options.has_key?(:client_name)
+        options[:client_key] ||= options[:signing_validation_key] if options.has_key?(:signing_validation_key)
+        with_config(options.merge({ :chef_server_url => server_url }), &block)
       end
 
       def with_chef_local_server(options, &block)
@@ -65,7 +79,15 @@ class Chef
 
         run_context.cheffish.local_servers << chef_zero_server
 
-        with_chef_server(chef_zero_server.url, &block)
+        if block
+          begin
+            with_chef_server(chef_zero_server.url, &block)
+          ensure
+            chef_zero_server.stop
+          end
+        else
+          with_chef_server(chef_zero_server.url)
+        end
       end
     end
   end
@@ -73,21 +95,33 @@ class Chef
   class Config
     default(:profile) { ENV['CHEF_PROFILE'] || 'default' }
     configurable(:private_keys)
-    default(:private_key_paths) { [ path_join(config_dir, 'keys'), path_join(user_home, '.ssh') ] }
+    default(:private_key_paths) { [ path_join(config_dir, 'keys'), path_join(user_home, '.chef', 'keys'), path_join(user_home, '.ssh') ] }
     default(:private_key_write_path) { private_key_paths.first }
   end
 
   class RunContext
     def cheffish
       @cheffish ||= begin
-        run_data = Cheffish::ChefRunData.new(config)
+        run_data = Cheffish::ChefRunData.new(self)
         events.register(Cheffish::ChefRunListener.new(self))
         run_data
       end
     end
 
+    def base_config
+      @base_config ||= Cheffish.profiled_config(Chef::Config)
+    end
+
     def config
-      @config ||= Cheffish.profiled_config(Chef::Config)
+      @config ||= Cheffish::MergedConfig.new(base_config)
+    end
+
+    def add_config_override(config_override)
+      @config = Cheffish::MergedConfig.new(config_override, *config.configs)
+    end
+
+    def remove_config_override(config_override)
+      @config = Cheffish::MergedConfig.new(*(config.configs { |c| c != config_override }))
     end
   end
 

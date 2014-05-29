@@ -27,9 +27,8 @@ require 'chef/http/remote_request_id'
 module Cheffish
   # Exactly like Chef::ServerAPI, but requires you to pass in what keys you want (no defaults)
   class ServerAPI < Chef::HTTP
-
-    def initialize(url, options = {})
-      super(url, options)
+    def initialize(config)
+      super(config[:chef_server_url], :client_name => config[:node_name], :signing_validation_key => config[:client_key])
     end
 
     use Chef::HTTP::JSONInput
