@@ -9,8 +9,12 @@ module Cheffish
 
     attr_reader :configs
     def merge_arrays(*symbols)
-      symbols.each do |symbol|
-        @merge_arrays[symbol] = true
+      if symbols.size > 0
+        symbols.each do |symbol|
+          @merge_arrays[symbol] = true
+        end
+      else
+        @merge_arrays
       end
     end
 
@@ -67,6 +71,14 @@ module Cheffish
           yield key, self[key]
         end
       end
+    end
+
+    def to_hash
+      result = {}
+      each_pair do |key, value|
+        result[key] = value
+      end
+      result
     end
   end
 end
