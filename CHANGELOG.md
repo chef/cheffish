@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.beta.4 (5/28/2014)
+
+- add Cheffish::MergedConfig.to_hash
+
 ## 0.5.beta.3 (5/28/2014)
 
 - Fix chef_data_bag crash in recipe
