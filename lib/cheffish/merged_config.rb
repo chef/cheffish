@@ -49,9 +49,11 @@ module Cheffish
       self[name]
     end
 
-    def has_key?(name)
+    def key?(name)
       configs.any? { |config| config.has_key?(name) }
     end
+
+    alias_method :has_key?, :key?
 
     def keys
       configs.map { |c| c.keys }.flatten(1).uniq
