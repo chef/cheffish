@@ -1,25 +1,12 @@
 # Changelog
 
-## 0.5.beta.4 (5/28/2014)
-
-- add Cheffish::MergedConfig.to_hash
-
-## 0.5.beta.3 (5/28/2014)
-
-- Fix chef_data_bag crash in recipe
-- Fix MergedConfig.has_key? crash
-
-## 0.5.beta.2 (5/27/2014)
-
-- Fix issues with with_chef_local_server
-- Fix crashes with PKCS8 on Ruby 2.0+
-
-## 0.5.beta (5/23/2014)
+## 0.5 (6/3/2014)
 
 - Support relative directories and Chef::Config.private_key_paths in private_key resource
 - add support for profiled configs with Cheffish::MergedConfig and Cheffish.profiled_config
 - work better with multiple threads (store config in instances)
 - Add helper methods Cheffish.load_chef_config and Cheffish.honor_local_mode for embedders
+- Fix crashes with PKCS8 on Ruby 2.0+
 
 ## 0.4.1 (5/7/2014)
 
