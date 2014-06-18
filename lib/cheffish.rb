@@ -75,7 +75,8 @@ module Cheffish
   end
 
   def self.get_private_key(name, config = profiled_config)
-    get_private_key_with_path(name, config)[0]
+    key, key_path = get_private_key_with_path(name, config)
+    key
   end
 
   def self.get_private_key_with_path(name, config = profiled_config)
