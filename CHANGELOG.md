@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6 (6/18/2014)
+
+- remove PKCS8 as a required dependency
+- Allow `chef_client.source_key_path` and `chef_user.source_key_path` to specify keys in `Chef::Config.private_key_paths`
+- Robustify `private_key` named key handling to deal with multiple key paths so `private_key 'blah'` will Just Work
+- Fix bug with direct calls to Cheffish.get_private_key
+
 ## 0.5 (6/3/2014)
 
 - Support relative directories and Chef::Config.private_key_paths in private_key resource
