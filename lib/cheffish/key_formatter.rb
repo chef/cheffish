@@ -4,7 +4,6 @@ require 'etc'
 require 'socket'
 require 'digest/md5'
 require 'base64'
-require 'openssl_pkcs8'
 
 module Cheffish
   class KeyFormatter
@@ -59,6 +58,7 @@ module Cheffish
         if RUBY_VERSION.to_f >= 2.0
           raise "PKCS8 SHA1 not supported in Ruby #{RUBY_VERSION}"
         end
+        require 'openssl_pkcs8'
         pkcs8_pem = key.to_pem_pkcs8
         pkcs8_base64 = pkcs8_pem.split("\n").reject { |l| l =~ /^-----/ }
         pkcs8_data = Base64.decode64(pkcs8_base64.join)

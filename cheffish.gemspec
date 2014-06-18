@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
   s.homepage = 'http://wiki.opscode.com/display/chef'
 
   s.add_dependency 'chef'
-  s.add_dependency 'openssl_pkcs8'
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec'
