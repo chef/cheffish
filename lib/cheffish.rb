@@ -74,7 +74,7 @@ module Cheffish
     end
   end
 
-  def self.get_private_key(name, config = profiled_chef_config)
+  def self.get_private_key(name, config = profiled_config)
     if config[:private_keys] && config[:private_keys][name]
       if config[:private_keys][name].is_a?(String)
         IO.read(config[:private_keys][name])
