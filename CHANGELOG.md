@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.2 (6/18/2014)
+
+- fix Cheffish.get_private_key when private key does not exist
+
 ## 0.6 (6/18/2014)
 
 - remove PKCS8 as a required dependency
