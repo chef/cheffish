@@ -87,6 +87,10 @@ class Chef
 
         with_chef_server(chef_zero_server.url, &block)
       end
+
+      def get_private_key(name)
+        Cheffish.get_private_key(name, run_context.config)
+      end
     end
   end
 

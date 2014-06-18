@@ -81,7 +81,13 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
           new_resource.source_key
         end
       elsif new_resource.source_key_path
-        source_key, source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
+        source_key_path = new_resource.source_key_path
+        if Pathname.new(source_key_path).relative?
+          source_key_str, source_key_path = Cheffish.get_private_key_with_path(source_key_path, run_context.config)
+        else
+          source_key_str = IO.read(source_key_path)
+        end
+        source_key, source_key_format = Cheffish::KeyFormatter.decode(source_key_str, new_resource.source_key_pass_phrase, source_key_path)
         if source_key.private?
           source_key.public_key
         else

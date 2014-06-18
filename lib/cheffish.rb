@@ -75,11 +75,15 @@ module Cheffish
   end
 
   def self.get_private_key(name, config = profiled_config)
+    get_private_key_with_path(name, config)[0]
+  end
+
+  def self.get_private_key_with_path(name, config = profiled_config)
     if config[:private_keys] && config[:private_keys][name]
       if config[:private_keys][name].is_a?(String)
-        IO.read(config[:private_keys][name])
+        return [ IO.read(config[:private_keys][name]), config[:private_keys][name] ]
       else
-        config[:private_keys][name].to_pem
+        return [ config[:private_keys][name].to_pem, nil ]
       end
     elsif config[:private_key_paths]
       config[:private_key_paths].each do |private_key_path|
@@ -88,12 +92,13 @@ module Cheffish
           if ext == '' || ext == '.pem'
             key_name = key[0..-(ext.length+1)]
             if key_name == name
-              return IO.read("#{private_key_path}/#{key}")
+              return [ IO.read("#{private_key_path}/#{key}"), "#{private_key_path}/#{key}" ]
             end
           end
         end
       end
     end
+    nil
   end
 
   NOT_PASSED=Object.new

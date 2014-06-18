@@ -27,6 +27,41 @@ describe Chef::Resource::PrivateKey do
     end
   end
 
+  context 'with a private_key "blah" resource' do
+    before :each do
+      Dir.mkdir("#{repo_path}/other_keys")
+      Chef::Config.private_key_paths = [ repo_path, "#{repo_path}/other_keys" ]
+    end
+
+    with_recipe do
+      private_key 'blah'
+    end
+
+    it 'the private key is created in the private_key_write_path' do
+      chef_run.should have_updated "private_key[blah]", :create
+      Chef::Config.private_key_write_path.should == repo_path
+      File.exist?("#{repo_path}/blah").should be_true
+      File.exist?("#{repo_path}/other_keys/blah").should be_false
+      OpenSSL::PKey.read(IO.read("#{repo_path}/blah")).kind_of?(OpenSSL::PKey::RSA).should be_true
+      OpenSSL::PKey.read(Cheffish.get_private_key('blah')).kind_of?(OpenSSL::PKey::RSA).should be_true
+    end
+
+    context 'and the private key already exists somewhere not in the write path' do
+      before :each do
+        Cheffish::BasicChefClient.converge_block do
+          private_key "#{repo_path}/other_keys/blah"
+        end
+      end
+
+      it 'the private key should not update' do
+        chef_run.should_not have_updated "private_key[blah]", :create
+
+        File.exist?("#{repo_path}/blah").should be_false
+        File.exist?("#{repo_path}/other_keys/blah").should be_true
+      end
+    end
+  end
+
   context 'with a private key' do
     before :each do
       Cheffish::BasicChefClient.converge_block do
