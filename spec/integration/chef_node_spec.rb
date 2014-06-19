@@ -12,8 +12,8 @@ describe Chef::Resource::ChefNode do
       end
 
       it 'the node gets created' do
-        chef_run.should have_updated 'chef_node[blah]', :create
-        get('/nodes/blah')['name'].should == 'blah'
+        expect(chef_run).to have_updated 'chef_node[blah]', :create
+        expect(get('/nodes/blah')['name']).to eq('blah')
       end
     end
 
@@ -37,9 +37,9 @@ describe Chef::Resource::ChefNode do
         end
 
         it 'the node is created on the second chef server but not the first' do
-          chef_run.should have_updated 'chef_node[blah]', :create
-          lambda { get('/nodes/blah') }.should raise_error(Net::HTTPServerException)
-          get('http://127.0.0.1:8899/nodes/blah')['name'].should == 'blah'
+          expect(chef_run).to have_updated 'chef_node[blah]', :create
+          expect { get('/nodes/blah') }.to raise_error(Net::HTTPServerException)
+          expect(get('http://127.0.0.1:8899/nodes/blah')['name']).to eq('blah')
         end
       end
 
@@ -52,9 +52,9 @@ describe Chef::Resource::ChefNode do
         end
 
         it 'the node is created on the second chef server but not the first' do
-          chef_run.should have_updated 'chef_node[blah]', :create
-          lambda { get('/nodes/blah') }.should raise_error(Net::HTTPServerException)
-          get('http://127.0.0.1:8899/nodes/blah')['name'].should == 'blah'
+          expect(chef_run).to have_updated 'chef_node[blah]', :create
+          expect { get('/nodes/blah') }.to raise_error(Net::HTTPServerException)
+          expect(get('http://127.0.0.1:8899/nodes/blah')['name']).to eq('blah')
         end
       end
 
@@ -69,7 +69,7 @@ describe Chef::Resource::ChefNode do
     end
 
     it 'chef_node "blah" does not get created or updated' do
-      chef_run.should_not have_updated 'chef_node[blah]', :create
+      expect(chef_run).not_to have_updated 'chef_node[blah]', :create
     end
   end
 
@@ -86,7 +86,7 @@ describe Chef::Resource::ChefNode do
       end
 
       it 'the tags in attributes are used' do
-        get('/nodes/blah')['normal']['tags'].should == [ 'a', 'b' ]
+        expect(get('/nodes/blah')['normal']['tags']).to eq([ 'a', 'b' ])
       end
     end
 
@@ -98,7 +98,7 @@ describe Chef::Resource::ChefNode do
       end
 
       it 'the tags in attributes are used' do
-        get('/nodes/blah')['normal']['tags'].should == [ 'c', 'd' ]
+        expect(get('/nodes/blah')['normal']['tags']).to eq([ 'c', 'd' ])
       end
     end
   end
@@ -119,7 +119,7 @@ describe Chef::Resource::ChefNode do
       end
 
       it 'nothing gets updated' do
-        chef_run.should_not have_updated 'chef_node[blah]', :create
+        expect(chef_run).not_to have_updated 'chef_node[blah]', :create
       end
     end
 
@@ -131,14 +131,14 @@ describe Chef::Resource::ChefNode do
       end
 
       it 'default, automatic and override attributes are left alone' do
-        chef_run.should have_updated 'chef_node[blah]', :create
+        expect(chef_run).to have_updated 'chef_node[blah]', :create
         node = get('/nodes/blah')
-        node['chef_environment'].should == '_default'
-        node['run_list'].should == []
-        node['normal'].should == { 'tags' => [ 'a', 'b' ] }
-        node['default'].should == { 'foo2' => 'bar2' }
-        node['automatic'].should == { 'foo3' => 'bar3' }
-        node['override'].should == { 'foo4' => 'bar4' }
+        expect(node['chef_environment']).to eq('_default')
+        expect(node['run_list']).to eq([])
+        expect(node['normal']).to eq({ 'tags' => [ 'a', 'b' ] })
+        expect(node['default']).to eq({ 'foo2' => 'bar2' })
+        expect(node['automatic']).to eq({ 'foo3' => 'bar3' })
+        expect(node['override']).to eq({ 'foo4' => 'bar4' })
       end
     end
   end

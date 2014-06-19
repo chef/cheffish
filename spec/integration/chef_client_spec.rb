@@ -22,11 +22,11 @@ describe Chef::Resource::ChefClient do
         end
 
         it 'the client gets created' do
-          chef_run.should have_updated 'chef_client[blah]', :create
+          expect(chef_run).to have_updated 'chef_client[blah]', :create
           client = get('/clients/blah')
-          client['name'].should == 'blah'
+          expect(client['name']).to eq('blah')
           key, format = Cheffish::KeyFormatter.decode(client['public_key'])
-          key.should be_public_key_for("#{repo_path}/blah.pem")
+          expect(key).to be_public_key_for("#{repo_path}/blah.pem")
         end
       end
 
@@ -39,8 +39,8 @@ describe Chef::Resource::ChefClient do
         end
 
         it 'the output public key gets created' do
-          IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-          "#{repo_path}/blah.pub".should be_public_key_for("#{repo_path}/blah.pem")
+          expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+          expect("#{repo_path}/blah.pub").to be_public_key_for("#{repo_path}/blah.pem")
         end
       end
     end
@@ -62,13 +62,13 @@ describe Chef::Resource::ChefClient do
         end
 
         it 'the client is accessible via the given private key' do
-          chef_run.should have_updated 'chef_client[foobar]', :create
+          expect(chef_run).to have_updated 'chef_client[foobar]', :create
           client = get('/clients/foobar')
           key, format = Cheffish::KeyFormatter.decode(client['public_key'])
-          key.should be_public_key_for("#{repo_path}/blah.pem")
+          expect(key).to be_public_key_for("#{repo_path}/blah.pem")
 
           private_key = Cheffish::KeyFormatter.decode(Cheffish.get_private_key('blah'))
-          key.should be_public_key_for(private_key)
+          expect(key).to be_public_key_for(private_key)
         end
       end
     end

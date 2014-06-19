@@ -87,9 +87,9 @@ end
 RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
   match do |actual|
     actual_actions = actual.select { |event, resource, action| event == :resource_updated && resource.to_s == resource_name }.map { |event, resource, action| action }
-    actual_actions.should == expected_actions
+    expect(actual_actions).to eq(expected_actions)
   end
-  failure_message_for_should do |actual|
+  failure_message do |actual|
     updates = actual.select { |event, resource, action| event == :resource_updated }.to_a
     result = "expected that the chef_run would #{expected_actions.join(',')} #{resource_name}."
     if updates.size > 0
@@ -99,7 +99,7 @@ RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
     end
     result
   end
-  failure_message_for_should_not do |actual|
+  failure_message_when_negated do |actual|
     updates = actual.select { |event, resource, action| event == :resource_updated }.to_a
     result = "expected that the chef_run would not #{expected_actions.join(',')} #{resource_name}."
     if updates.size > 0
@@ -114,7 +114,6 @@ end
 RSpec.configure do |config|
   config.filter_run :focus => true
   config.run_all_when_everything_filtered = true
-  config.treat_symbols_as_metadata_keys_with_true_values = true
 
   config.before :each do
     Chef::Config.reset

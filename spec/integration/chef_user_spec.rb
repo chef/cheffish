@@ -22,11 +22,11 @@ describe Chef::Resource::ChefUser do
         end
 
         it 'the user gets created' do
-          chef_run.should have_updated 'chef_user[blah]', :create
+          expect(chef_run).to have_updated 'chef_user[blah]', :create
           user = get('/users/blah')
-          user['name'].should == 'blah'
+          expect(user['name']).to eq('blah')
           key, format = Cheffish::KeyFormatter.decode(user['public_key'])
-          key.should be_public_key_for("#{repo_path}/blah.pem")
+          expect(key).to be_public_key_for("#{repo_path}/blah.pem")
         end
       end
 
@@ -39,8 +39,8 @@ describe Chef::Resource::ChefUser do
         end
 
         it 'the output public key gets created' do
-          IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-          "#{repo_path}/blah.pub".should be_public_key_for("#{repo_path}/blah.pem")
+          expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+          expect("#{repo_path}/blah.pub").to be_public_key_for("#{repo_path}/blah.pem")
         end
       end
     end

@@ -21,9 +21,9 @@ describe Chef::Resource::PrivateKey do
     end
 
     it 'the private_key is created in pem format' do
-      chef_run.should have_updated "private_key[#{repo_path}/blah]", :create
-      IO.read("#{repo_path}/blah").should start_with('-----BEGIN')
-      OpenSSL::PKey.read(IO.read("#{repo_path}/blah")).kind_of?(OpenSSL::PKey::RSA).should be_true
+      expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+      expect(IO.read("#{repo_path}/blah")).to start_with('-----BEGIN')
+      expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
     end
   end
 
@@ -38,12 +38,12 @@ describe Chef::Resource::PrivateKey do
     end
 
     it 'the private key is created in the private_key_write_path' do
-      chef_run.should have_updated "private_key[blah]", :create
-      Chef::Config.private_key_write_path.should == repo_path
-      File.exist?("#{repo_path}/blah").should be_true
-      File.exist?("#{repo_path}/other_keys/blah").should be_false
-      OpenSSL::PKey.read(IO.read("#{repo_path}/blah")).kind_of?(OpenSSL::PKey::RSA).should be_true
-      OpenSSL::PKey.read(Cheffish.get_private_key('blah')).kind_of?(OpenSSL::PKey::RSA).should be_true
+      expect(chef_run).to have_updated "private_key[blah]", :create
+      expect(Chef::Config.private_key_write_path).to eq(repo_path)
+      expect(File.exist?("#{repo_path}/blah")).to be true
+      expect(File.exist?("#{repo_path}/other_keys/blah")).to be false
+      expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
+      expect(OpenSSL::PKey.read(Cheffish.get_private_key('blah'))).to be_kind_of(OpenSSL::PKey::RSA)
     end
 
     context 'and the private key already exists somewhere not in the write path' do
@@ -53,11 +53,11 @@ describe Chef::Resource::PrivateKey do
         end
       end
 
-      it 'the private key should not update' do
-        chef_run.should_not have_updated "private_key[blah]", :create
+      it 'the private expect(key).to not update' do
+        expect(chef_run).not_to have_updated "private_key[blah]", :create
 
-        File.exist?("#{repo_path}/blah").should be_false
-        File.exist?("#{repo_path}/other_keys/blah").should be_true
+        expect(File.exist?("#{repo_path}/blah")).to be false
+        expect(File.exist?("#{repo_path}/other_keys/blah")).to be true
       end
     end
   end
@@ -78,11 +78,11 @@ describe Chef::Resource::PrivateKey do
       end
 
       it 'the private_key is copied in der format and is identical' do
-        chef_run.should have_updated "private_key[#{repo_path}/blah.der]", :create
+        expect(chef_run).to have_updated "private_key[#{repo_path}/blah.der]", :create
         key_str = IO.read("#{repo_path}/blah.der")
-        key_str.should_not start_with('-----BEGIN')
-        key_str.should_not start_with('ssh-')
-        "#{repo_path}/blah.der".should match_private_key("#{repo_path}/blah")
+        expect(key_str).not_to start_with('-----BEGIN')
+        expect(key_str).not_to start_with('ssh-')
+        expect("#{repo_path}/blah.der").to match_private_key("#{repo_path}/blah")
       end
     end
 
@@ -94,11 +94,11 @@ describe Chef::Resource::PrivateKey do
         end
       end
 
-      chef_run.should have_updated "private_key[#{repo_path}/blah.der]", :create
+      expect(chef_run).to have_updated "private_key[#{repo_path}/blah.der]", :create
       key_str = IO.read("#{repo_path}/blah.der")
-      key_str.should_not start_with('-----BEGIN')
-      key_str.should_not start_with('ssh-')
-      "#{repo_path}/blah.der".should match_private_key("#{repo_path}/blah")
+      expect(key_str).not_to start_with('-----BEGIN')
+      expect(key_str).not_to start_with('ssh-')
+      expect("#{repo_path}/blah.der").to match_private_key("#{repo_path}/blah")
     end
 
     it 'a private_key that copies it from in-memory as a key succeeds' do
@@ -110,11 +110,11 @@ describe Chef::Resource::PrivateKey do
         end
       end
 
-      chef_run.should have_updated "private_key[#{repo_path}/blah.der]", :create
+      expect(chef_run).to have_updated "private_key[#{repo_path}/blah.der]", :create
       key_str = IO.read("#{repo_path}/blah.der")
-      key_str.should_not start_with('-----BEGIN')
-      key_str.should_not start_with('ssh-')
-      "#{repo_path}/blah.der".should match_private_key("#{repo_path}/blah")
+      expect(key_str).not_to start_with('-----BEGIN')
+      expect(key_str).not_to start_with('ssh-')
+      expect("#{repo_path}/blah.der").to match_private_key("#{repo_path}/blah")
     end
 
     context 'and a public_key recipe' do
@@ -125,9 +125,9 @@ describe Chef::Resource::PrivateKey do
       end
 
       it 'the public_key is created' do
-        chef_run.should have_updated "public_key[#{repo_path}/blah.pub]", :create
-        IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-        "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah"
+        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+        expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
       end
     end
 
@@ -148,9 +148,9 @@ describe Chef::Resource::PrivateKey do
         end
 
         it 'the second public_key is created' do
-          chef_run.should have_updated "public_key[#{repo_path}/blah.pub2]", :create
-          IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-          "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah"
+          expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub2]", :create
+          expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+          expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
         end
       end
 
@@ -162,9 +162,9 @@ describe Chef::Resource::PrivateKey do
         end
 
         it 'the second public_key is created' do
-          chef_run.should have_updated "public_key[#{repo_path}/blah.pub2]", :create
-          IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-          "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah"
+          expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub2]", :create
+          expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+          expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
         end
       end
 
@@ -177,9 +177,9 @@ describe Chef::Resource::PrivateKey do
           end
         end
 
-        chef_run.should have_updated "public_key[#{repo_path}/blah.pub2]", :create
-        IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-        "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah"
+        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub2]", :create
+        expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+        expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
       end
 
       context 'and another public_key in :pem format based off the first public_key' do
@@ -191,9 +191,9 @@ describe Chef::Resource::PrivateKey do
         end
 
         it 'the second public_key is created' do
-          chef_run.should have_updated "public_key[#{repo_path}/blah.pub2]", :create
-          IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-          "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah"
+          expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub2]", :create
+          expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+          expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
         end
       end
 
@@ -206,9 +206,9 @@ describe Chef::Resource::PrivateKey do
         end
 
         it 'the second public_key is created' do
-          chef_run.should have_updated "public_key[#{repo_path}/blah.pub2]", :create
-          IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-          "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah"
+          expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub2]", :create
+          expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+          expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
         end
       end
     end
@@ -222,9 +222,9 @@ describe Chef::Resource::PrivateKey do
       end
 
       it 'the public_key is created' do
-        chef_run.should have_updated "public_key[#{repo_path}/blah.pub]", :create
-        IO.read("#{repo_path}/blah.pub").should start_with('-----BEGIN')
-        "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah"
+        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect(IO.read("#{repo_path}/blah.pub")).to start_with('-----BEGIN')
+        expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
       end
     end
 
@@ -237,10 +237,10 @@ describe Chef::Resource::PrivateKey do
       end
 
       it 'the public_key is created in openssh format' do
-        chef_run.should have_updated "public_key[#{repo_path}/blah.pub]", :create
-        IO.read("#{repo_path}/blah.pub").should_not start_with('-----BEGIN')
-        IO.read("#{repo_path}/blah.pub").should_not start_with('ssh-rsa')
-        "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah"
+        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect(IO.read("#{repo_path}/blah.pub")).not_to start_with('-----BEGIN')
+        expect(IO.read("#{repo_path}/blah.pub")).not_to start_with('ssh-rsa')
+        expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
       end
     end
   end
@@ -253,9 +253,9 @@ describe Chef::Resource::PrivateKey do
     end
 
     it 'the private_key is created' do
-      chef_run.should have_updated "private_key[#{repo_path}/blah]", :create
-      IO.read("#{repo_path}/blah").should_not start_with('-----BEGIN')
-      OpenSSL::PKey.read(IO.read("#{repo_path}/blah")).kind_of?(OpenSSL::PKey::RSA).should be_true
+      expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+      expect(IO.read("#{repo_path}/blah")).not_to start_with('-----BEGIN')
+      expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
     end
   end
 
@@ -276,9 +276,9 @@ describe Chef::Resource::PrivateKey do
       end
 
       it 'the public_key is created in openssh format' do
-        chef_run.should have_updated "public_key[#{repo_path}/blah.pub]", :create
-        IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-        "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah"
+        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+        expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
       end
     end
   end
@@ -291,9 +291,9 @@ describe Chef::Resource::PrivateKey do
     end
 
     it 'the private_key is created' do
-      chef_run.should have_updated "private_key[#{repo_path}/blah]", :create
-      IO.read("#{repo_path}/blah").should start_with('-----BEGIN')
-      OpenSSL::PKey.read(IO.read("#{repo_path}/blah"), 'hello').kind_of?(OpenSSL::PKey::RSA).should be_true
+      expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+      expect(IO.read("#{repo_path}/blah")).to start_with('-----BEGIN')
+      expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"), 'hello')).to be_kind_of(OpenSSL::PKey::RSA)
     end
   end
 
@@ -316,11 +316,11 @@ describe Chef::Resource::PrivateKey do
       end
 
       it 'the private_key is copied in der format and is identical' do
-        chef_run.should have_updated "private_key[#{repo_path}/blah.der]", :create
+        expect(chef_run).to have_updated "private_key[#{repo_path}/blah.der]", :create
         key_str = IO.read("#{repo_path}/blah.der")
-        key_str.should_not start_with('-----BEGIN')
-        key_str.should_not start_with('ssh-')
-        "#{repo_path}/blah.der".should match_private_key("#{repo_path}/blah", 'hello')
+        expect(key_str).not_to start_with('-----BEGIN')
+        expect(key_str).not_to start_with('ssh-')
+        expect("#{repo_path}/blah.der").to match_private_key("#{repo_path}/blah", 'hello')
       end
     end
 
@@ -333,11 +333,11 @@ describe Chef::Resource::PrivateKey do
         end
       end
 
-      chef_run.should have_updated "private_key[#{repo_path}/blah.der]", :create
+      expect(chef_run).to have_updated "private_key[#{repo_path}/blah.der]", :create
       key_str = IO.read("#{repo_path}/blah.der")
-      key_str.should_not start_with('-----BEGIN')
-      key_str.should_not start_with('ssh-')
-      "#{repo_path}/blah.der".should match_private_key("#{repo_path}/blah", 'hello')
+      expect(key_str).not_to start_with('-----BEGIN')
+      expect(key_str).not_to start_with('ssh-')
+      expect("#{repo_path}/blah.der").to match_private_key("#{repo_path}/blah", 'hello')
     end
 
     context 'and a public_key' do
@@ -349,9 +349,9 @@ describe Chef::Resource::PrivateKey do
       end
 
       it 'the public_key is created in openssh format' do
-        chef_run.should have_updated "public_key[#{repo_path}/blah.pub]", :create
-        IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-        "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah", 'hello'
+        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+        expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah", 'hello'
       end
     end
 
@@ -364,9 +364,9 @@ describe Chef::Resource::PrivateKey do
       end
 
       it 'the public_key is created in openssh format' do
-        chef_run.should have_updated "public_key[#{repo_path}/blah.pub]", :create
-        IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-        "#{repo_path}/blah.pub".should be_public_key_for "#{repo_path}/blah", 'hello'
+        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+        expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah", 'hello'
       end
     end
   end
@@ -379,11 +379,11 @@ describe Chef::Resource::PrivateKey do
     end
 
     it 'the private_key and public_key are created' do
-      chef_run.should have_updated "private_key[#{repo_path}/blah]", :create
-      IO.read("#{repo_path}/blah").should start_with('-----BEGIN')
-      OpenSSL::PKey.read(IO.read("#{repo_path}/blah")).kind_of?(OpenSSL::PKey::RSA).should be_true
-      IO.read("#{repo_path}/blah.pub").should start_with('ssh-rsa ')
-      "#{repo_path}/blah.pub".should be_public_key_for("#{repo_path}/blah")
+      expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+      expect(IO.read("#{repo_path}/blah")).to start_with('-----BEGIN')
+      expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
+      expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
+      expect("#{repo_path}/blah.pub").to be_public_key_for("#{repo_path}/blah")
     end
   end
 
@@ -396,11 +396,11 @@ describe Chef::Resource::PrivateKey do
     end
 
     it 'the private_key and public_key are created' do
-      chef_run.should have_updated "private_key[#{repo_path}/blah]", :create
-      IO.read("#{repo_path}/blah").should start_with('-----BEGIN')
-      OpenSSL::PKey.read(IO.read("#{repo_path}/blah")).kind_of?(OpenSSL::PKey::RSA).should be_true
-      IO.read("#{repo_path}/blah.pub.der").should_not start_with('ssh-rsa ')
-      "#{repo_path}/blah.pub.der".should be_public_key_for("#{repo_path}/blah")
+      expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+      expect(IO.read("#{repo_path}/blah")).to start_with('-----BEGIN')
+      expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
+      expect(IO.read("#{repo_path}/blah.pub.der")).not_to start_with('ssh-rsa ')
+      expect("#{repo_path}/blah.pub.der").to be_public_key_for("#{repo_path}/blah")
     end
   end
 
@@ -414,8 +414,8 @@ describe Chef::Resource::PrivateKey do
         end
       end
 
-      chef_run.should have_updated "private_key[in_memory]", :create
-      got_private_key.kind_of?(OpenSSL::PKey::RSA).should be_true
+      expect(chef_run).to have_updated "private_key[in_memory]", :create
+      expect(got_private_key).to be_kind_of(OpenSSL::PKey::RSA)
     end
   end
 

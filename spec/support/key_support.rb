@@ -8,7 +8,7 @@ RSpec::Matchers.define :be_public_key_for do |private_key, pass_phrase|
     end
 
     encrypted = public_key.public_encrypt('hi there')
-    private_key.private_decrypt(encrypted).should == 'hi there'
+    expect(private_key.private_decrypt(encrypted)).to eq('hi there')
   end
 end
 
@@ -22,8 +22,8 @@ RSpec::Matchers.define :match_private_key do |expected, pass_phrase|
     end
 
     encrypted = actual.public_encrypt('hi there')
-    expected.private_decrypt(encrypted).should == 'hi there'
+    expect(expected.private_decrypt(encrypted)).to eq('hi there')
     encrypted = expected.public_encrypt('hi there')
-    actual.private_decrypt(encrypted).should == 'hi there'
+    expect(actual.private_decrypt(encrypted)).to eq('hi there')
   end
 end

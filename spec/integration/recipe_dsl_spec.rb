@@ -22,8 +22,8 @@ describe 'Cheffish Recipe DSL' do
       run_recipe do
         chef_node 'blah'
       end
-      chef_run.should have_updated 'chef_node[blah]', :create
-      File.should exist("#{@tmp_repo}/nodes/blah.json")
+      expect(chef_run).to have_updated 'chef_node[blah]', :create
+      expect(File).to exist("#{@tmp_repo}/nodes/blah.json")
     end
   end
 end
