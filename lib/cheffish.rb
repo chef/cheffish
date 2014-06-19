@@ -88,7 +88,7 @@ module Cheffish
       end
     elsif config[:private_key_paths]
       config[:private_key_paths].each do |private_key_path|
-        Dir.entries(private_key_path).sort.each do |key|
+        Dir.entries(private_key_path).each do |key|
           ext = File.extname(key)
           if ext == '' || ext == '.pem'
             key_name = key[0..-(ext.length+1)]
