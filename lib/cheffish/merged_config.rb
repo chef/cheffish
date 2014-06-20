@@ -45,8 +45,12 @@ module Cheffish
       end
     end
 
-    def method_missing(name)
-      self[name]
+    def method_missing(name, *args)
+      if args.count > 0
+        raise NoMethodError, "Unexpected method #{name} for MergedConfig with arguments #{args}"
+      else
+        self[name]
+      end
     end
 
     def key?(name)
@@ -81,6 +85,10 @@ module Cheffish
         result[key] = value
       end
       result
+    end
+
+    def to_s
+      to_hash.to_s
     end
   end
 end
