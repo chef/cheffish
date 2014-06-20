@@ -10,7 +10,7 @@ describe "merged_config" do
     expect(config.test).to eq('val')
   end
 
-  it "returns value in config" do
+  it "raises a NoMethodError if calling an unknown method with arguments" do
     expect{config.merge({:some => 'hash'})}.to raise_error(NoMethodError)
   end
 
