@@ -195,6 +195,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
     if new_key
       begin
         key, key_format = Cheffish::KeyFormatter.decode(new_key, new_resource.pass_phrase, new_path)
+
         if key
           @current_private_key = key
           resource.format key_format[:format]
@@ -205,7 +206,8 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
           resource.cipher key_format[:cipher]
         end
       rescue
-        # If there's an error reading, we assume format and type are wrong and don't futz with them
+        # promote a raised error up the stack
+        raise $!
       end
     else
       resource.action :delete
