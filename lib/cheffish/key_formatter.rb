@@ -10,7 +10,12 @@ module Cheffish
     # Returns nil or key, format
     def self.decode(str, pass_phrase=nil, filename='')
       key_format = {}
-      key_format[:format] = format_of(str)
+      key_format[:format], key_format[:encrypted] = format_of(str)
+
+      # make sure we have a pass phrase for an encrypted key
+      if key_format[:encrypted] && pass_phrase.nil?
+        raise "You are attempting to use an encrypted key but did not provide a password"
+      end
 
       case key_format[:format]
       when :openssh
@@ -83,13 +88,26 @@ module Cheffish
     end
 
     def self.format_of(key_contents)
-      if key_contents.start_with?('-----BEGIN ')
-        :pem
-      elsif key_contents.start_with?('ssh-rsa ') || key_contents.start_with?('ssh-dss ')
-        :openssh
-      else
-        :der
+
+      format = nil
+      encrypted = nil
+
+      if key_contents.include?('ENCRYPTED')
+        encrypted = true
       end
+
+      if key_contents.start_with?('-----BEGIN RSA PRIVATE KEY')
+        format = :pem
+      elsif key_contents.start_with?('ssh-rsa ') || key_contents.start_with?('ssh-dss ')
+        format = :openssh
+      # TODO figure out der format
+      # else
+      #   :der
+      else
+        format = :unknown
+      end
+
+      [format, encrypted]
     end
 
     def self.type_of(key)
