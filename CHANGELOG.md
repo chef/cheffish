@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7 (7/15/2014)
+
+- fix issue with encrypted private keys being overwritten
+- fix private key discovery when directories are missing (@lcg)
+
 ## 0.6.2 (6/18/2014)
 
 - fix Cheffish.get_private_key when private key does not exist
