@@ -51,12 +51,13 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
       #
       # Generate a new key
       #
-      if !current_private_key || regenerate ||
+      if current_resource.action == [ :delete ] || regenerate ||
         (new_resource.regenerate_if_different &&
-          (current_resource.size != new_resource.size ||
+          (!current_private_key ||
+           current_resource.size != new_resource.size ||
            current_resource.type != new_resource.type))
 
-        case new_resource.type
+       case new_resource.type
         when :rsa
           if new_resource.exponent
             final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size, new_resource.exponent)
@@ -68,6 +69,8 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
         end
 
         generated_key = true
+      elsif !current_private_key
+        raise "Could not read private key from #{current_resource.path}: missing pass phrase?"
       else
         final_private_key = current_private_key
         generated_key = false

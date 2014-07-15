@@ -324,6 +324,30 @@ describe Chef::Resource::PrivateKey do
       end
     end
 
+    context 'and a private_key resource pointing at it without a pass_phrase' do
+      with_recipe do
+        private_key "#{repo_path}/blah"
+      end
+
+      it 'the run fails with an exception' do
+        expect { chef_run }.to raise_error
+      end
+    end
+
+    context 'and a private_key resource with no pass phrase and regenerate_if_different' do
+      with_recipe do
+        private_key "#{repo_path}/blah" do
+          regenerate_if_different true
+        end
+      end
+
+      it 'the private_key is regenerated' do
+        expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+        expect(IO.read("#{repo_path}/blah")).to start_with('-----BEGIN')
+        expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
+      end
+    end
+
     it 'a private_key resource that copies it from in-memory as a string succeeds' do
       run_recipe do
         private_key "#{repo_path}/blah.der" do
