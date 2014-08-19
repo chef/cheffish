@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.1 (8/18/2014)
+
+- Fix Cheffish to work with latest Chef
+
 ## 0.7 (7/15/2014)
 
 - fix issue with encrypted private keys being overwritten
