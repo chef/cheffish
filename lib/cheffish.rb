@@ -64,12 +64,18 @@ module Cheffish
     if Chef::Config.local_mode && !Chef::Config.has_key?(:cookbook_path) && !Chef::Config.has_key?(:chef_repo_path)
       Chef::Config.chef_repo_path = Chef::Config.find_chef_repo_path(Dir.pwd)
     end
-    Chef::Application.setup_server_connectivity
-    if block_given?
-      begin
-        yield
-      ensure
-        Chef::Application.destroy_server_connectivity
+    begin
+      require 'chef/local_mode'
+      Chef::LocalMode.with_server_connectivity(&block)
+
+    rescue LoadError
+      Chef::Application.setup_server_connectivity
+      if block_given?
+        begin
+          yield
+        ensure
+          Chef::Application.destroy_server_connectivity
+        end
       end
     end
   end
