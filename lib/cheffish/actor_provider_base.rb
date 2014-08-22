@@ -74,7 +74,13 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
     @new_public_key ||= begin
       if new_resource.source_key
         if new_resource.source_key.is_a?(String)
-          Cheffish::KeyFormatter.decode(new_resource.source_key)
+          key, key_format = Cheffish::KeyFormatter.decode(new_resource.source_key)
+
+          if key.private?
+            key.public_key
+          else
+            key
+          end
         elsif new_resource.source_key.private?
           new_resource.source_key.public_key
         else
