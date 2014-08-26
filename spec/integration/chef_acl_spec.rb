@@ -132,11 +132,27 @@ describe Chef::Resource::ChefAcl do
           )
         end
 
-        it 'Converging chef_acl "nodes/x" with rights [ :read, :create, :update, :delete, :grant ] modifies both read and create' do
+        it 'Converging chef_acl "nodes/x" with rights [ :read, :create, :update, :delete, :grant ] modifies all rights' do
           expect {
             run_recipe do
               chef_acl 'nodes/x' do
                 rights [ :create, :read, :update, :delete, :grant ], :users => %w(u1 u2), :clients => 'c1', :groups => 'g1'
+              end
+            end
+          }.to update_acls('nodes/x/_acl',
+            'create' => { 'groups' => %w(g1), 'actors' => %w(u1 u2 c1) },
+            'read' => { 'groups' => %w(g1), 'actors' => %w(u1 u2 c1) },
+            'update' => { 'groups' => %w(g1), 'actors' => %w(u1 u2 c1) },
+            'delete' => { 'groups' => %w(g1), 'actors' => %w(u1 u2 c1) },
+            'grant' => { 'groups' => %w(g1), 'actors' => %w(u1 u2 c1) },
+          )
+        end
+
+        it 'Converging chef_acl "nodes/x" with rights :all modifies all rights' do
+          expect {
+            run_recipe do
+              chef_acl 'nodes/x' do
+                rights :all, :users => %w(u1 u2), :clients => 'c1', :groups => 'g1'
               end
             end
           }.to update_acls('nodes/x/_acl',
@@ -172,6 +188,34 @@ describe Chef::Resource::ChefAcl do
             end
           end
         }.to update_acls('nodes/x/_acl', {})
+      end
+    end
+
+    when_the_chef_server 'has a node named x with users foo and bar in all its acls', :osc_compat => false do
+      user 'foo', {}
+      user 'bar', {}
+      node 'x', {} do
+        acl 'create' => { 'actors' => %w(foo bar) },
+            'read' => { 'actors' => %w(foo bar) },
+            'update' => { 'actors' => %w(foo bar) },
+            'delete' => { 'actors' => %w(foo bar) },
+            'grant' => { 'actors' => %w(foo bar) }
+      end
+
+      it 'Converging chef_acl "nodes/x" with remove_rights :all removes foo from everything' do
+        expect {
+          run_recipe do
+            chef_acl 'nodes/x' do
+              rights :read, :users => 'foo'
+            end
+          end
+        }.to update_acls('nodes/x/_acl',
+                         'create' => { 'actors' => %w(-foo) },
+                         'read'   => { 'actors' => %w(-foo) },
+                         'update' => { 'actors' => %w(-foo) },
+                         'delete' => { 'actors' => %w(-foo) },
+                         'grant'  => { 'actors' => %w(-foo) },
+        )
       end
     end
 

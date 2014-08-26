@@ -21,9 +21,6 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
   # the parent has changed.  :on_change is the default.
   attribute :recursive, :equal_to => [ true, false, :on_change ], :default => :on_change
 
-  # TODO :full_rights?
-  # TODO parallelism
-
   # Specifies that this is a complete specification for the acl (i.e. rights
   # you don't specify will be reset to their defaults)
   attribute :complete, :kind_of => [TrueClass, FalseClass]
@@ -32,7 +29,8 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
   attribute :chef_server, :kind_of => Hash
 
   # rights :read, :users => 'jkeiser', :groups => [ 'admins', 'users' ]
-  # rights :permissions => [ :create, :read ], :users => [ 'jkeiser', 'adam' ]
+  # rights [ :create, :read ], :users => [ 'jkeiser', 'adam' ]
+  # rights :all, :users => 'jkeiser'
   def rights(*values)
     if values.size == 0
       @raw_json
@@ -41,6 +39,9 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
       args[:permissions] ||= []
       values.each do |value|
         args[:permissions] |= Array(value)
+      end
+      if args[:permissions].delete(:all)
+        args[:permissions] |= [ :create, :read, :update, :delete, :grant ]
       end
 
       @raw_json ||= {}
@@ -75,7 +76,8 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
   end
 
   # remove_rights :read, :users => 'jkeiser', :groups => [ 'admins', 'users' ]
-  # remove_rights :permissions => [ :create, :read ], :users => [ 'jkeiser', 'adam' ]
+  # remove_rights [ :create, :read ], :users => [ 'jkeiser', 'adam' ]
+  # remove_rights :all, :users => [ 'jkeiser', 'adam' ]
   def remove_rights(*values)
     if values.size == 0
       @remove_rights
@@ -84,6 +86,9 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
       args[:permissions] ||= []
       values.each do |value|
         args[:permissions] |= Array(value)
+      end
+      if args[:permissions].delete(:all)
+        args[:permissions] |= [ :create, :read, :update, :delete, :grant ]
       end
 
       @remove_rights ||= {}

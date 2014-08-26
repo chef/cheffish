@@ -56,11 +56,14 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
   end
 
   def current_acl(acl_path)
-    begin
-      rest.get(acl_path)
-    rescue Net::HTTPServerException => e
-      unless e.response.code == '404' && new_resource.path.split('/').any? { |p| p == '*' }
-        raise
+    @current_acls ||= {}
+    @current_acls[acl_path] ||= begin
+      begin
+        rest.get(acl_path)
+      rescue Net::HTTPServerException => e
+        unless e.response.code == '404' && new_resource.path.split('/').any? { |p| p == '*' }
+          raise
+        end
       end
     end
   end
