@@ -16,10 +16,9 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
   # Path of the thing being secured, e.g. nodes, nodes/mynode, roles/base, data/secrets, cookbooks/apache2
   attribute :path, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
 
-  # TODO recursive
-  # TODO nodes/*, */* and **
+  attribute :recursive, :equal_to => [ true, false, :on_change ], :default => :on_change
+
   # TODO remove_rights
-  # TODO Chef::Config.multi_org server URL so we know whether it's multi or not?
 
   # Specifies that this is a complete specification for the acl (i.e. rights
   # you don't specify will be reset to their defaults)

@@ -112,24 +112,29 @@ RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
   end
 end
 
-RSpec::Matchers.define :update_acls do |acl_path, expected_acls|
+RSpec::Matchers.define :update_acls do |acl_paths, expected_acls|
   match do |block|
-    orig = get(acl_path)
+    orig_json = {}
+    Array(acl_paths).each do |acl_path|
+      orig_json[acl_path] = get(acl_path)
+    end
 
     block.call
 
-    changed = get(acl_path)
-    expected_acls.each do |permission, hash|
-      hash.each do |type, actors|
-        actors.each do |actor|
-          expect(changed[permission][type]).to include(actor)
-          changed[permission][type].delete(actor)
+    orig_json.each_pair do |acl_path, orig|
+      changed = get(acl_path)
+      expected_acls.each do |permission, hash|
+        hash.each do |type, actors|
+          actors.each do |actor|
+            expect(changed[permission][type]).to include(actor)
+            changed[permission][type].delete(actor)
+          end
         end
       end
+      # After checking everything, see if the remaining acl is the same as before
+      expect(changed).to eq(orig)
     end
-
-    # After checking everything, see if the remaining acl is the same as before
-    expect(changed).to eq(orig)
+    true
   end
 
   supports_block_expectations
