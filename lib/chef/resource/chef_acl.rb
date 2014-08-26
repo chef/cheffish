@@ -18,9 +18,8 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
 
   attribute :recursive, :equal_to => [ true, false, :on_change ], :default => :on_change
 
-  # TODO **
-  # TODO recursive
   # TODO :full_rights?
+  # TODO complete true tests
 
   # Specifies that this is a complete specification for the acl (i.e. rights
   # you don't specify will be reset to their defaults)

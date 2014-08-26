@@ -141,6 +141,103 @@ describe Chef::Resource::ChefAcl do
         }.to update_acls('nodes/x/_acl', {})
       end
     end
+
+    context 'recursive' do
+      when_the_chef_server 'has a nodes container with user blarghle in its acl', :osc_compat => false do
+        user 'blarghle', {}
+        acl_for 'containers/nodes', 'read' => { 'actors' => %w(blarghle) }
+        node 'x', {} do
+          acl 'read' => { 'actors' => [] }
+        end
+
+        it 'Converging chef_acl "nodes" makes no changes' do
+          expect {
+            run_recipe do
+              chef_acl 'nodes' do
+                rights :read, :users => 'blarghle'
+              end
+            end
+          }.to update_acls([ 'containers/nodes/_acl', 'nodes/x/_acl' ], {})
+        end
+
+        it 'Converging chef_acl "nodes" with recursive :on_change makes no changes' do
+          expect {
+            run_recipe do
+              chef_acl 'nodes' do
+                rights :read, :users => 'blarghle'
+                recursive :on_change
+              end
+            end
+          }.to update_acls([ 'containers/nodes/_acl', 'nodes/x/_acl' ], {})
+        end
+
+        it 'Converging chef_acl "nodes" with recursive true changes nodes/x\'s acls' do
+          expect {
+            run_recipe do
+              chef_acl 'nodes' do
+                rights :read, :users => 'blarghle'
+                recursive true
+              end
+            end
+          }.to update_acls('nodes/x/_acl', 'read' => { 'actors' => %w(blarghle) })
+        end
+
+        it 'Converging chef_acl "nodes/**" with recursive false changes nodes/x\'s acls' do
+          expect {
+            run_recipe do
+              chef_acl 'nodes/**' do
+                rights :read, :users => 'blarghle'
+                recursive false
+              end
+            end
+          }.to update_acls('nodes/x/_acl', 'read' => { 'actors' => %w(blarghle) })
+        end
+
+        it 'Converging chef_acl "" with recursive false does not change nodes/x\'s acls' do
+          expect {
+            run_recipe do
+              chef_acl '' do
+                rights :read, :users => 'blarghle'
+                recursive false
+              end
+            end
+          }.to update_acls([ 'containers/nodes/_acl', 'nodes/x/_acl' ], {})
+        end
+
+        it 'Converging chef_acl "" with recursive :on_change does not change nodes/x\'s acls' do
+          expect {
+            run_recipe do
+              chef_acl '' do
+                rights :read, :users => 'blarghle'
+                recursive :on_change
+              end
+            end
+          }.to update_acls([ 'containers/nodes/_acl', 'nodes/x/_acl' ], {})
+        end
+
+        it 'Converging chef_acl "" with recursive true changes nodes/x\'s acls' do
+          expect {
+            run_recipe do
+              chef_acl '' do
+                rights :read, :users => 'blarghle'
+                recursive true
+              end
+            end
+          }.to update_acls([ 'organizations/_acl', 'nodes/x/_acl' ], 'read' => { 'actors' => %w(blarghle) })
+        end
+
+        it 'Converging chef_acl "**" with recursive true changes nodes/x\'s acls' do
+          expect {
+            run_recipe do
+              chef_acl '**' do
+                rights :read, :users => 'blarghle'
+                recursive true
+              end
+            end
+          }.to update_acls([ 'organizations/_acl', 'nodes/x/_acl' ], 'read' => { 'actors' => %w(blarghle) })
+        end
+      end
+    end
   end
 
   context 'ACLs on each type of thing' do
@@ -274,7 +371,7 @@ describe Chef::Resource::ChefAcl do
               rights :read, :users => 'u'
             end
           end
-        }.to update_acls('/organizations/foo/organizations/_acl', 'read' => { 'actors' => %w(u) })
+        }.to update_acls([ '/organizations/foo/organizations/_acl', '/organizations/foo/nodes/x/_acl' ], 'read' => { 'actors' => %w(u) })
       end
 
       it 'chef_acl "/organizations/*" changes the acl' do
@@ -284,7 +381,7 @@ describe Chef::Resource::ChefAcl do
               rights :read, :users => 'u'
             end
           end
-        }.to update_acls('/organizations/foo/organizations/_acl', 'read' => { 'actors' => %w(u) })
+        }.to update_acls([ '/organizations/foo/organizations/_acl', '/organizations/foo/nodes/x/_acl' ], 'read' => { 'actors' => %w(u) })
       end
 
       it 'chef_acl "/users/x" changes the acl' do
@@ -426,7 +523,7 @@ describe Chef::Resource::ChefAcl do
               rights :read, :users => 'u'
             end
           end
-        }.to update_acls('organizations/_acl', 'read' => { 'actors' => %w(u) })
+        }.to update_acls([ 'organizations/_acl', 'nodes/x/_acl' ], 'read' => { 'actors' => %w(u) })
       end
     end
   end

@@ -8,48 +8,53 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
     true
   end
 
-  def acl_paths
-    @acl_paths ||= begin
-      paths, recursive = match_paths(new_resource.path)
-      @recursive = new_resource.recursive || recursive
-
-      if paths.size == 0 && !new_resource.path.split('/').any? { |p| p == '*' }
-        raise "Path #{new_resource.path} cannot have an ACL set on it!"
-      end
-
-      results = []
-      paths.each do |path|
-        result = acl_path(path)
-        results << result if result
-      end
-      results
-    end
-  end
-
-  def recursive
-    if !@recursive
-      acl_paths
-    end
-    @recursive
-  end
-
   action :create do
-    @current_acls.each_pair do |acl_path, current_json|
-      new_acl(acl_path).each do |permission, json|
-        differences = json_differences(current_json[permission], json)
+    paths, recursive = match_paths(new_resource.path)
+    if paths.size == 0 && !new_resource.path.split('/').any? { |p| p == '*' }
+      raise "Path #{new_resource.path} cannot have an ACL set on it!"
+    end
 
-        if differences.size > 0
-          description = [ "update #{permission} for acl #{new_resource.path} at #{rest.url}" ] + differences
-          converge_by description do
-            rest.put("#{acl_path}/#{permission}", { permission => json })
+    paths.each do |path|
+      create_acl(path, recursive || new_resource.recursive)
+    end
+  end
+
+  def create_acl(path, recursive)
+    acl = acl_path(path)
+    changed = false
+    if acl
+      current_json = current_acl(acl)
+      if current_json
+        new_acl(acl).each do |permission, new_json|
+          differences = json_differences(current_json[permission], new_json)
+
+          if differences.size > 0
+            changed = true
+            description = [ "update #{permission} for acl #{new_resource.path} at #{rest.url}" ] + differences
+            converge_by description do
+              rest.put("#{acl}/#{permission}", { permission => new_json })
+            end
           end
         end
+      end
+    end
+
+    if recursive == true || (recursive == :on_change && (!acl || changed))
+      children, error = list(path, '*')
+      children.each do |child|
+        create_acl(child, recursive)
       end
     end
   end
 
   def current_acl(acl_path)
-    @current_acls[acl_path] || rest.get(acl_path)
+    begin
+      rest.get(acl_path)
+    rescue Net::HTTPServerException => e
+      unless e.response.code == '404' && new_resource.path.split('/').any? { |p| p == '*' }
+        raise
+      end
+    end
   end
 
   def new_acl(acl_path)
@@ -87,16 +92,6 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
   end
 
   def load_current_resource
-    @current_acls = {}
-    acl_paths.each do |acl_path|
-      begin
-        @current_acls[acl_path] = rest.get(acl_path)
-      rescue Net::HTTPServerException => e
-        unless e.response.code == '404' && new_resource.path.split('/').any? { |p| p == '*' }
-          raise
-        end
-      end
-    end
   end
 
   def match_paths(path)
@@ -212,6 +207,8 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
           results = [ "/organizations", "/users" ]
         else
           results, error = rest_list("containers")
+          # Move containers to the end so recursion works correctly
+          results << 'containers' if results.delete('containers')
         end
 
       when 1
@@ -224,6 +221,8 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
       when 2
         # /organizations/NAME/*
         results, error = rest_list(::File.join(path, 'containers'))
+        # Move containers to the end so recursion works correctly
+        results << 'containers' if results.delete('containers')
         if !error
           results = results.map { |result| ::File.join(path, result) }
         end
