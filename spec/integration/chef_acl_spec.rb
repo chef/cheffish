@@ -244,6 +244,47 @@ describe Chef::Resource::ChefAcl do
           end
         }.to update_acls('/organizations/foo/organizations/_acl', 'read' => { 'actors' => %w(u) })
       end
+
+      it 'chef_acl "/users/x" changes the acl' do
+        expect {
+          run_recipe do
+            chef_acl '/users/x' do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to update_acls('/users/x/_acl', 'read' => { 'actors' => %w(u) })
+      end
+
+      it 'chef_acl "/users/*" changes the acl' do
+        expect {
+          run_recipe do
+            chef_acl '/users/*' do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to update_acls('/users/x/_acl', 'read' => { 'actors' => %w(u) })
+      end
+
+      it 'chef_acl "/*/x" changes the acl' do
+        expect {
+          run_recipe do
+            chef_acl '/*/x' do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to update_acls('/users/x/_acl', 'read' => { 'actors' => %w(u) })
+      end
+
+      it 'chef_acl "/*/*" changes the acl' do
+        expect {
+          run_recipe do
+            chef_acl '/*/*' do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to update_acls([ '/organizations/foo/organizations/_acl', '/users/x/_acl' ],
+                         'read' => { 'actors' => %w(u) })
+      end
     end
 
     when_the_chef_server 'has a user "u" in single org mode', :osc_compat => false do
@@ -344,6 +385,116 @@ describe Chef::Resource::ChefAcl do
             end
           end
         }.to update_acls('organizations/_acl', 'read' => { 'actors' => %w(u) })
+      end
+    end
+  end
+
+  context 'ACLs on each container type' do
+    when_the_chef_server 'has an organization named foo', :osc_compat => false, :single_org => false do
+      organization 'foo' do
+        user 'u', {}
+        client 'x', {}
+        container 'x', {}
+        cookbook 'x', '1.0.0', {}
+        data_bag 'x', { 'y' => {} }
+        environment 'x', {}
+        group 'x', {}
+        node 'x', {}
+        role 'x', {}
+        sandbox 'x', {}
+        user 'x', {}
+      end
+
+      %w(clients containers cookbooks data environments groups nodes roles sandboxes).each do |type|
+        it "chef_acl '/organizations/foo/#{type}' changes the acl" do
+          expect {
+            run_recipe do
+              chef_acl "/organizations/foo/#{type}" do
+                rights :read, :users => 'u'
+              end
+            end
+          }.to update_acls("organizations/foo/containers/#{type}/_acl", 'read' => { 'actors' => %w(u) })
+        end
+      end
+
+      %w(clients containers cookbooks data environments groups nodes roles).each do |type|
+        it "chef_acl '/*/*/#{type}' changes the acl" do
+          expect {
+            run_recipe do
+              chef_acl "/*/*/#{type}" do
+                rights :read, :users => 'u'
+              end
+            end
+          }.to update_acls("organizations/foo/containers/#{type}/_acl", 'read' => { 'actors' => %w(u) })
+        end
+      end
+
+      it "chef_acl '/*/*/*' changes the acls" do
+        expect {
+          run_recipe do
+            chef_acl "/*/*/*" do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to update_acls(%w(clients containers cookbooks data environments groups nodes roles sandboxes).map { |type| "organizations/foo/containers/#{type}/_acl" },
+                         'read' => { 'actors' => %w(u) })
+      end
+
+      it 'chef_acl "/organizations/foo/data_bags" changes the acl' do
+        expect {
+          run_recipe do
+            chef_acl '/organizations/foo/data_bags' do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to update_acls('organizations/foo/containers/data/_acl', 'read' => { 'actors' => %w(u) })
+      end
+
+      it 'chef_acl "/*/*/data_bags" changes the acl' do
+        expect {
+          run_recipe do
+            chef_acl '/*/*/data_bags' do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to update_acls('organizations/foo/containers/data/_acl', 'read' => { 'actors' => %w(u) })
+      end
+    end
+
+    when_the_chef_server 'has a user "u" in single org mode', :osc_compat => false do
+      user 'u', {}
+      client 'x', {}
+      container 'x', {}
+      cookbook 'x', '1.0.0', {}
+      data_bag 'x', { 'y' => {} }
+      environment 'x', {}
+      group 'x', {}
+      node 'x', {}
+      role 'x', {}
+      sandbox 'x', {}
+      user 'x', {}
+
+      %w(clients containers cookbooks data environments groups nodes roles sandboxes).each do |type|
+        it "chef_acl #{type}' changes the acl" do
+          expect {
+            run_recipe do
+              chef_acl "#{type}" do
+                rights :read, :users => 'u'
+              end
+            end
+          }.to update_acls("containers/#{type}/_acl", 'read' => { 'actors' => %w(u) })
+        end
+      end
+
+      it "chef_acl '*' changes the acls" do
+        expect {
+          run_recipe do
+            chef_acl "*" do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to update_acls(%w(clients containers cookbooks data environments groups nodes roles sandboxes).map { |type| "containers/#{type}/_acl" },
+                         'read' => { 'actors' => %w(u) })
       end
     end
   end

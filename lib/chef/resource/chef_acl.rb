@@ -19,6 +19,8 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
   attribute :recursive, :equal_to => [ true, false, :on_change ], :default => :on_change
 
   # TODO remove_rights
+  # TODO correctly die when x/* fails to list, but don't worry about x when */* fails to list
+  # TODO cookbooks/x/name/version, data/x/y tests
 
   # Specifies that this is a complete specification for the acl (i.e. rights
   # you don't specify will be reset to their defaults)

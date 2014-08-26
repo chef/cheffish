@@ -134,7 +134,7 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
       # The top level organizations and users containers have no publicly
       # visible ACLs.  Only nodes/*, etc.
       if prefix == ''
-        ::File.join('containers', path, '_acl').join('/')
+        ::File.join('containers', path, '_acl')
       end
 
     when 2
