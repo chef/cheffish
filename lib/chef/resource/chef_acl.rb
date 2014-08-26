@@ -13,7 +13,9 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
     chef_server run_context.cheffish.current_chef_server
   end
 
-  # Path of the thing being secured, e.g. nodes, nodes/mynode, roles/base, data/secrets, cookbooks/apache2
+  # Path of the thing being secured, e.g. nodes, nodes/*, nodes/mynode,
+  # */*, **, roles/base, data/secrets, cookbooks/apache2, /users/*,
+  # /organizations/foo/nodes/x
   attribute :path, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
 
   # Whether to change things recursively.  true means it will descend all children

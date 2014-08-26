@@ -206,7 +206,7 @@ describe Chef::Resource::ChefAcl do
         expect {
           run_recipe do
             chef_acl 'nodes/x' do
-              rights :read, :users => 'foo'
+              remove_rights :all, :users => 'foo'
             end
           end
         }.to update_acls('nodes/x/_acl',

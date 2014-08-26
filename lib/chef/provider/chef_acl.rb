@@ -10,36 +10,46 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
   end
 
   action :create do
+    # Find all matching paths so we can update them (resolve * and **)
     paths, recursive = match_paths(new_resource.path)
     if paths.size == 0 && !new_resource.path.split('/').any? { |p| p == '*' }
       raise "Path #{new_resource.path} cannot have an ACL set on it!"
     end
 
+    # Go through the matches and update the ACLs for them
     paths.each do |path|
       create_acl(path, recursive || new_resource.recursive)
     end
   end
 
+  # Update the ACL if necessary.
   def create_acl(path, recursive)
-    acl = acl_path(path)
     changed = false
+    # There may not be an ACL path for some valid paths (/ and /organizations,
+    # for example).  We want to recurse into these, but we don't want to try to
+    # update nonexistent ACLs for them.
+    acl = acl_path(path)
     if acl
+      # It's possible to make a custom container
       current_json = current_acl(acl)
       if current_json
-        Chef::ChefFS::Parallelizer.parallel_do(new_acl(acl)) do |permission, new_json|
-          differences = json_differences(current_json[permission], new_json)
+
+        # Compare the desired and current json for the ACL, and update if different.
+        Chef::ChefFS::Parallelizer.parallel_do(desired_acl(acl)) do |permission, desired_json|
+          differences = json_differences(current_json[permission], desired_json)
 
           if differences.size > 0
             changed = true
             description = [ "update #{permission} for acl #{new_resource.path} at #{rest.url}" ] + differences
             converge_by description do
-              rest.put("#{acl}/#{permission}", { permission => new_json })
+              rest.put("#{acl}/#{permission}", { permission => desired_json })
             end
           end
         end
       end
     end
 
+    # If we have been asked to recurse, do so.
     if recursive == true || (recursive == :on_change && (!acl || changed))
       children, error = list(path, '*')
       Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
@@ -55,10 +65,11 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
     end
   end
 
+  # Get the current ACL for the given path
   def current_acl(acl_path)
     @current_acls ||= {}
-    @current_acls[acl_path] ||= begin
-      begin
+    if !@current_acls.has_key?(acl_path)
+      @current_acls[acl_path] = begin
         rest.get(acl_path)
       rescue Net::HTTPServerException => e
         unless e.response.code == '404' && new_resource.path.split('/').any? { |p| p == '*' }
@@ -66,9 +77,11 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
         end
       end
     end
+    @current_acls[acl_path]
   end
 
-  def new_acl(acl_path)
+  # Get the desired acl for the given acl path
+  def desired_acl(acl_path)
     result = new_resource.raw_json ? new_resource.raw_json.dup : {}
     if new_resource.complete
       result = Chef::ChefFS::DataHandler::AclDataHandler.new.normalize(result, nil)
@@ -248,10 +261,13 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
       end
 
       if absolute
+        # /<child>, /users/<child>, /organizations/<child>, /organizations/foo/<child>, /organizations/foo/nodes/<child> ...
         results = [ ::File.join('/', parts[0..2], child) ]
       elsif parts.size == 0
+        # <child> (nodes, roles, etc.)
         results = [ child ]
       else
+        # nodes/<child>, roles/<child>, etc.
         results = [ ::File.join(parts[0], child) ]
       end
     end
@@ -261,6 +277,7 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
 
   def rest_list(path)
     begin
+      # All our rest lists are hashes where the keys are the names
       [ rest.get(path).keys, nil ]
     rescue Net::HTTPServerException => e
       if e.response.code == '405' || e.response.code == '404'
