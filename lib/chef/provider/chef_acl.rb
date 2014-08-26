@@ -60,7 +60,7 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
   def new_acl(acl_path)
     result = new_resource.raw_json ? new_resource.raw_json.dup : {}
     if new_resource.complete
-      result = Chef::ChefFS::DataHandler::AclDataHandler.normalize(result)
+      result = Chef::ChefFS::DataHandler::AclDataHandler.new.normalize(result, nil)
     else
       # If resource is incomplete, use current json to fill any holes
       current_acl(acl_path).each do |permission, perm_hash|

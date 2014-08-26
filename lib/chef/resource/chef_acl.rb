@@ -16,10 +16,13 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
   # Path of the thing being secured, e.g. nodes, nodes/mynode, roles/base, data/secrets, cookbooks/apache2
   attribute :path, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
 
+  # Whether to change things recursively.  true means it will descend all children
+  # and make the same modifications to them.  :on_change will only descend if
+  # the parent has changed.  :on_change is the default.
   attribute :recursive, :equal_to => [ true, false, :on_change ], :default => :on_change
 
   # TODO :full_rights?
-  # TODO complete true tests
+  # TODO parallelism
 
   # Specifies that this is a complete specification for the acl (i.e. rights
   # you don't specify will be reset to their defaults)

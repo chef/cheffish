@@ -18,10 +18,26 @@ describe Chef::Resource::ChefAcl do
         }.to update_acls('nodes/x/_acl', {})
       end
 
+      it 'Converging chef_acl "nodes/x" with "complete true" removes all ACLs' do
+        expect {
+          run_recipe do
+            chef_acl 'nodes/x' do
+              complete true
+            end
+          end
+        }.to update_acls('nodes/x/_acl', {
+          "create"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users", "-clients"]},
+          "read"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users", "-clients"]},
+          "update"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users"]},
+          "delete"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users"]},
+          "grant"=>{"actors"=>["-pivotal"], "groups"=>["-admins"]}
+        })
+      end
+
       context 'and a user "blarghle"' do
         user 'blarghle', {}
 
-        it 'Converging chef_acl "nodes/x" with user "blarghle" adds the group' do
+        it 'Converging chef_acl "nodes/x" with user "blarghle" adds the user' do
           expect {
             run_recipe do
               chef_acl 'nodes/x' do
@@ -29,6 +45,23 @@ describe Chef::Resource::ChefAcl do
               end
             end
           }.to update_acls('nodes/x/_acl', 'read' => { 'actors' => %w(blarghle) })
+        end
+
+        it 'Converging chef_acl "nodes/x" with "complete true" removes all ACLs except the user' do
+          expect {
+            run_recipe do
+              chef_acl 'nodes/x' do
+                rights :read, :users => 'blarghle'
+                complete true
+              end
+            end
+          }.to update_acls('nodes/x/_acl', {
+            "create"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users", "-clients"]},
+            "read"=>{"actors"=>["-pivotal", "blarghle"], "groups"=>["-admins", "-users", "-clients"]},
+            "update"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users"]},
+            "delete"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users"]},
+            "grant"=>{"actors"=>["-pivotal"], "groups"=>["-admins"]}
+          })
         end
       end
 
