@@ -2,6 +2,7 @@ require 'chef_zero/rspec'
 require 'chef/server_api'
 require 'cheffish'
 require 'cheffish/basic_chef_client'
+require 'chef/provider/chef_acl'
 
 module SpecSupport
   include ChefZero::RSpec
@@ -109,6 +110,29 @@ RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
     end
     result
   end
+end
+
+RSpec::Matchers.define :update_acls do |acl_path, expected_acls|
+  match do |block|
+    orig = get(acl_path)
+
+    block.call
+
+    changed = get(acl_path)
+    expected_acls.each do |permission, hash|
+      hash.each do |type, actors|
+        actors.each do |actor|
+          expect(changed[permission][type]).to include(actor)
+          changed[permission][type].delete(actor)
+        end
+      end
+    end
+
+    # After checking everything, see if the remaining acl is the same as before
+    expect(changed).to eq(orig)
+  end
+
+  supports_block_expectations
 end
 
 RSpec.configure do |config|
