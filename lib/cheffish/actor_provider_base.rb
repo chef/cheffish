@@ -16,7 +16,7 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
       if differences.size > 0
         description = [ "update #{actor_type} #{new_resource.name} at #{rest.url}" ] + differences
         converge_by description do
-          result = rest.put("#{actor_type}s/#{new_resource.name}", normalize_for_put(new_json))
+          result = rest.put("#{actor_path}/#{new_resource.name}", normalize_for_put(new_json))
           current_public_key, current_public_key_format = Cheffish::KeyFormatter.decode(result['public_key']) if result['public_key']
         end
       end
@@ -27,7 +27,7 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
       end
       description = [ "create #{actor_type} #{new_resource.name} at #{rest.url}" ] + differences
       converge_by description do
-        result = rest.post("#{actor_type}s", normalize_for_post(new_json))
+        result = rest.post("#{actor_path}", normalize_for_post(new_json))
         current_public_key, current_public_key_format = Cheffish::KeyFormatter.decode(result['public_key']) if result['public_key']
       end
     end
@@ -59,7 +59,7 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
   def delete_actor
     if current_resource_exists?
       converge_by "delete #{actor_type} #{new_resource.name} at #{rest.url}" do
-        rest.delete("#{actor_type}s/#{new_resource.name}")
+        rest.delete("#{actor_path}/#{new_resource.name}")
         Chef::Log.info("#{new_resource} deleted #{actor_type} #{new_resource.name} at #{rest.url}")
       end
     end
@@ -114,7 +114,7 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
 
   def load_current_resource
     begin
-      json = rest.get("#{actor_type}s/#{new_resource.name}")
+      json = rest.get("#{actor_path}/#{new_resource.name}")
       @current_resource = json_to_resource(json)
     rescue Net::HTTPServerException => e
       if e.response.code == "404"
@@ -128,5 +128,4 @@ class Cheffish::ActorProviderBase < Cheffish::ChefProviderBase
       current_resource.output_key_path = new_resource.output_key_path
     end
   end
-
 end

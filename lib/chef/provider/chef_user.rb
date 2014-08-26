@@ -25,6 +25,10 @@ class Chef::Provider::ChefUser < Cheffish::ActorProviderBase
     'user'
   end
 
+  def actor_path
+    '/users'
+  end
+
   def resource_class
     Chef::Resource::ChefUser
   end
@@ -36,6 +40,7 @@ class Chef::Provider::ChefUser < Cheffish::ActorProviderBase
   def keys
     {
       'name' => :name,
+      'username' => :name,
       'admin' => :admin,
       'email' => :email,
       'password' => :password,
