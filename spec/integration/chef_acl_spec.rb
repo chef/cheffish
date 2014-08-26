@@ -540,4 +540,70 @@ describe Chef::Resource::ChefAcl do
       end
     end
   end
+
+  context 'remove_rights' do
+    when_the_chef_server 'has a node "x" with "u", "c" and "g" in its acl', :osc_compat => false do
+      user 'u', {}
+      user 'u2', {}
+      client 'c', {}
+      client 'c2', {}
+      group 'g', {}
+      group 'g2', {}
+      node 'x', {} do
+        acl 'create' => { 'actors' => [ 'u', 'c' ], 'groups' => [ 'g' ] },
+            'read'   => { 'actors' => [ 'u', 'c' ], 'groups' => [ 'g' ] },
+            'update' => { 'actors' => [ 'u', 'c' ], 'groups' => [ 'g' ] }
+      end
+
+      it 'chef_acl with remove_rights "u" removes the user\'s rights' do
+        expect {
+          run_recipe do
+            chef_acl "nodes/x" do
+              remove_rights :read, :users => 'u'
+            end
+          end
+        }.to update_acls("nodes/x/_acl", 'read' => { 'actors' => %w(-u) })
+      end
+
+      it 'chef_acl with remove_rights "c" removes the client\'s rights' do
+        expect {
+          run_recipe do
+            chef_acl "nodes/x" do
+              remove_rights :read, :clients => 'c'
+            end
+          end
+        }.to update_acls("nodes/x/_acl", 'read' => { 'actors' => %w(-c) })
+      end
+
+      it 'chef_acl with remove_rights "g" removes the group\'s rights' do
+        expect {
+          run_recipe do
+            chef_acl "nodes/x" do
+              remove_rights :read, :groups => 'g'
+            end
+          end
+        }.to update_acls("nodes/x/_acl", 'read' => { 'groups' => %w(-g) })
+      end
+
+      it 'chef_acl with remove_rights [ :create, :read ], "u", "c", "g" removes all three' do
+        expect {
+          run_recipe do
+            chef_acl "nodes/x" do
+              remove_rights [ :create, :read ], :users => 'u', :clients => 'c', :groups => 'g'
+            end
+          end
+        }.to update_acls("nodes/x/_acl", 'create' => { 'actors' => %w(-u -c), 'groups' => %w(-g) }, 'read' => { 'actors' => %w(-u -c), 'groups' => %w(-g) })
+      end
+
+      it 'chef_acl with remove_rights "u2", "c2", "g2" has no effect' do
+        expect {
+          run_recipe do
+            chef_acl "nodes/x" do
+              remove_rights :read, :users => 'u2', :clients => 'c2', :groups => 'g2'
+            end
+          end
+        }.to update_acls("nodes/x/_acl", {})
+      end
+    end
+  end
 end

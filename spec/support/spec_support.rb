@@ -113,6 +113,9 @@ RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
 end
 
 RSpec::Matchers.define :update_acls do |acl_paths, expected_acls|
+
+  errors = []
+
   match do |block|
     orig_json = {}
     Array(acl_paths).each do |acl_path|
@@ -126,15 +129,25 @@ RSpec::Matchers.define :update_acls do |acl_paths, expected_acls|
       expected_acls.each do |permission, hash|
         hash.each do |type, actors|
           actors.each do |actor|
-            expect(changed[permission][type]).to include(actor)
-            changed[permission][type].delete(actor)
+            if actor[0] == '-'
+              actor = actor[1..-1]
+              errors << "#{acl_path} expected to remove #{type} #{actor} from #{permission} permissions" if changed[permission][type].include?(actor)
+              orig[permission][type].delete(actor)
+            else
+              errors << "#{acl_path} expected to add #{type} #{actor} to #{permission} permissions" if !changed[permission][type].include?(actor)
+              changed[permission][type].delete(actor)
+            end
           end
         end
       end
       # After checking everything, see if the remaining acl is the same as before
-      expect(changed).to eq(orig)
+      errors << "#{acl_path} updated more than expected!\nActual:\n#{changed}\nExpected:\n#{orig}" if changed != orig
     end
-    true
+    errors.size == 0
+  end
+
+  failure_message do |block|
+    errors.join("\n")
   end
 
   supports_block_expectations

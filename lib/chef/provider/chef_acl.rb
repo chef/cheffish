@@ -73,6 +73,15 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
           end
         end
       end
+      if new_resource.remove_rights
+        new_resource.remove_rights.each_pair do |permission, perm_hash|
+          perm_hash.each do |type, actors|
+            result[permission] = result[permission].dup
+            result[permission][type] = result[permission][type].dup
+            result[permission][type] -= actors
+          end
+        end
+      end
     end
     result
   end
