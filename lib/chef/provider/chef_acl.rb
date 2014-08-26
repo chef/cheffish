@@ -30,9 +30,9 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
   end
 
   action :create do
-    acl_paths.each do |acl_path|
+    @current_acls.each_pair do |acl_path, current_json|
       new_acl(acl_path).each do |permission, json|
-        differences = json_differences(current_acl(acl_path)[permission], json)
+        differences = json_differences(current_json[permission], json)
 
         if differences.size > 0
           description = [ "update #{permission} for acl #{new_resource.path} at #{rest.url}" ] + differences
@@ -75,7 +75,15 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
 
   def load_current_resource
     @current_acls = {}
-    acl_paths.each { |acl_path| @current_acls[acl_path] = rest.get(acl_path) }
+    acl_paths.each do |acl_path|
+      begin
+        @current_acls[acl_path] = rest.get(acl_path)
+      rescue Net::HTTPServerException => e
+        unless e.response.code == '404' && new_resource.path.split('/').any? { |p| p == '*' }
+          raise
+        end
+      end
+    end
   end
 
   def match_paths(path)
@@ -219,6 +227,19 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
   end
 
   def rest_list(path)
-    rest.get(path).keys
+    begin
+      rest.get(path).keys
+    rescue Net::HTTPServerException => e
+      if e.response.code == '405' || e.response.code == '404'
+        parts = path.split('/').select { |p| p != '' }.to_a
+
+        # We KNOW we expect these to exist.  Other containers may or may not.
+        unless (parts.size == 1 || (parts.size == 3 && parts[0] == 'organizations')) &&
+          %w(clients containers cookbooks data environments groups nodes roles).include?(parts[-1])
+          return []
+        end
+      end
+      raise
+    end
   end
 end
