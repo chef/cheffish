@@ -1,6 +1,7 @@
 require 'cheffish/chef_provider_base'
 require 'chef/resource/chef_acl'
 require 'chef/chef_fs/data_handler/acl_data_handler'
+require 'chef/chef_fs/parallelizer'
 
 class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
 
@@ -25,7 +26,7 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
     if acl
       current_json = current_acl(acl)
       if current_json
-        new_acl(acl).each do |permission, new_json|
+        Chef::ChefFS::Parallelizer.parallel_do(new_acl(acl)) do |permission, new_json|
           differences = json_differences(current_json[permission], new_json)
 
           if differences.size > 0
@@ -41,9 +42,16 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
 
     if recursive == true || (recursive == :on_change && (!acl || changed))
       children, error = list(path, '*')
-      children.each do |child|
+      Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
+        next if child.split('/')[-1] == 'containers'
         create_acl(child, recursive)
       end
+      # containers mess up our descent, so we do them last
+      Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
+        next if child.split('/')[-1] != 'containers'
+        create_acl(child, recursive)
+      end
+
     end
   end
 
@@ -115,18 +123,17 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
 
     # Descend until we find the starting path
     parts.each_with_index do |part, index|
-      new_matches = []
-      matches.each do |path|
+      matches = Chef::ChefFS::Parallelizer.parallelize(matches) do |path|
         found, error = list(path, part)
         if error
           if parts[0..index-1].all? { |p| p != '*' }
             raise error
           end
+          []
         else
-          new_matches += found
+          found
         end
-      end
-      matches = new_matches
+      end.flatten(1).to_a
     end
 
     [ matches, recursive ]
@@ -207,8 +214,6 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
           results = [ "/organizations", "/users" ]
         else
           results, error = rest_list("containers")
-          # Move containers to the end so recursion works correctly
-          results << 'containers' if results.delete('containers')
         end
 
       when 1
@@ -221,8 +226,6 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
       when 2
         # /organizations/NAME/*
         results, error = rest_list(::File.join(path, 'containers'))
-        # Move containers to the end so recursion works correctly
-        results << 'containers' if results.delete('containers')
         if !error
           results = results.map { |result| ::File.join(path, result) }
         end
