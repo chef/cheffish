@@ -13,6 +13,10 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
       paths, recursive = match_paths(new_resource.path)
       @recursive = new_resource.recursive || recursive
 
+      if paths.size == 0 && !new_resource.path.split('/').any? { |p| p == '*' }
+        raise "Path #{new_resource.path} cannot have an ACL set on it!"
+      end
+
       results = []
       paths.each do |path|
         result = acl_path(path)
@@ -106,10 +110,17 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
     end
 
     # Descend until we find the starting path
-    parts.each do |part|
+    parts.each_with_index do |part, index|
       new_matches = []
       matches.each do |path|
-        new_matches += list(path, part)
+        found, error = list(path, part)
+        if error
+          if parts[0..index-1].all? { |p| p != '*' }
+            raise error
+          end
+        else
+          new_matches += found
+        end
       end
       matches = new_matches
     end
@@ -177,38 +188,44 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
     parts = path.split('/').select { |x| x != '' }.to_a
     absolute = (path[0] == '/')
     if absolute && parts[0] == 'organizations'
-      return [] if parts.size > 3
+      return [ [], "ACLs cannot be set on children of #{path}" ] if parts.size > 3
     else
-      return [] if parts.size > 1
+      return [ [], "ACLs cannot be set on children of #{path}" ] if parts.size > 1
     end
 
+    error = nil
+
     if child == '*'
-      results = case parts.size
+      case parts.size
       when 0
         # /*, *
         if absolute
-          [ "/organizations", "/users" ]
+          results = [ "/organizations", "/users" ]
         else
-          rest_list("containers")
+          results, error = rest_list("containers")
         end
 
       when 1
         # /organizations/*, /users/*, roles/*, nodes/*, etc.
-        rest_list(path).map { |result| ::File.join(path, result) }
+        results, error = rest_list(path)
+        if !error
+          results = results.map { |result| ::File.join(path, result) }
+        end
 
       when 2
         # /organizations/NAME/*
-        if absolute
-          rest_list(::File.join(path, 'containers')).map { |result| ::File.join(path, result) }
+        results, error = rest_list(::File.join(path, 'containers'))
+        if !error
+          results = results.map { |result| ::File.join(path, result) }
         end
 
       when 3
         # /organizations/NAME/TYPE/*
-        if absolute
-          rest_list(path).map { |result| ::File.join(path, result) }
+        results, error = rest_list(path)
+        if !error
+          results = results.map { |result| ::File.join(path, result) }
         end
       end
-      results || []
 
     else
       if child == 'data_bags'
@@ -217,18 +234,20 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
       end
 
       if absolute
-        [ ::File.join('/', parts[0..2], child) ]
+        results = [ ::File.join('/', parts[0..2], child) ]
       elsif parts.size == 0
-        [ child ]
+        results = [ child ]
       else
-        [ ::File.join(parts[0], child) ]
+        results = [ ::File.join(parts[0], child) ]
       end
     end
+
+    [ results, error ]
   end
 
   def rest_list(path)
     begin
-      rest.get(path).keys
+      [ rest.get(path).keys, nil ]
     rescue Net::HTTPServerException => e
       if e.response.code == '405' || e.response.code == '404'
         parts = path.split('/').select { |p| p != '' }.to_a
@@ -236,7 +255,7 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
         # We KNOW we expect these to exist.  Other containers may or may not.
         unless (parts.size == 1 || (parts.size == 3 && parts[0] == 'organizations')) &&
           %w(clients containers cookbooks data environments groups nodes roles).include?(parts[-1])
-          return []
+          return [ [], "Cannot get list of #{path}: HTTP response code #{e.response.code}" ]
         end
       end
       raise

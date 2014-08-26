@@ -225,6 +225,48 @@ describe Chef::Resource::ChefAcl do
         }.to update_acls('organizations/foo/data/x/_acl', 'read' => { 'actors' => %w(u) })
       end
 
+      it "chef_acl '/organizations/foo/cookbooks/x/1.0.0' raises an error" do
+        expect {
+          run_recipe do
+            chef_acl "/organizations/foo/cookbooks/x/1.0.0" do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/cookbooks\/x/)
+      end
+
+      it "chef_acl '/organizations/foo/cookbooks/*/*' raises an error" do
+        pending
+        expect {
+          run_recipe do
+            chef_acl "/organizations/foo/cookbooks/*/*" do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/cookbooks\/*/)
+      end
+
+      it 'chef_acl "/organizations/foo/data/x/y" raises an error' do
+        expect {
+          run_recipe do
+            chef_acl '/organizations/foo/data/x/y' do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/data\/x/)
+      end
+
+      it 'chef_acl "/organizations/foo/data/*/*" raises an error' do
+        pending
+        expect {
+          run_recipe do
+            chef_acl '/organizations/foo/data/*/*' do
+              rights :read, :users => 'u'
+            end
+          end
+        }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/data\/*/)
+      end
+
       it 'chef_acl "/organizations/foo" changes the acl' do
         expect {
           run_recipe do
