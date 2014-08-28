@@ -35,14 +35,26 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
       if current_json
 
         # Compare the desired and current json for the ACL, and update if different.
-        Chef::ChefFS::Parallelizer.parallel_do(desired_acl(acl)) do |permission, desired_json|
+        modify = {}
+        desired_acl(acl).each do |permission, desired_json|
           differences = json_differences(current_json[permission], desired_json)
 
           if differences.size > 0
-            changed = true
-            description = [ "update #{permission} for acl #{new_resource.path} at #{rest.url}" ] + differences
-            converge_by description do
-              rest.put("#{acl}/#{permission}", { permission => desired_json })
+            modify[differences] ||= {}
+            modify[differences][permission] = desired_json
+          end
+        end
+
+        if modify.size > 0
+          changed = true
+          description = [ "update acl #{path} at #{rest.url}" ] + modify.map do |diffs, permissions|
+            diffs.map { |diff| "  #{permissions.keys.join(', ')}:#{diff}" }
+          end.flatten(1)
+          converge_by description do
+            modify.values.each do |permissions|
+              permissions.each do |permission, desired_json|
+                rest.put("#{acl}/#{permission}", { permission => desired_json })
+              end
             end
           end
         end
@@ -50,6 +62,8 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
     end
 
     # If we have been asked to recurse, do so.
+    # If recurse is on_change, then we will recurse if there is no ACL, or if
+    # the ACL has changed.
     if recursive == true || (recursive == :on_change && (!acl || changed))
       children, error = list(path, '*')
       Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
