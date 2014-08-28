@@ -33,7 +33,12 @@ module Cheffish
 
     def initialize(url, options = {})
       super(url, options)
+      root_url = URI.parse(url)
+      root_url.path = ''
+      @root_url = root_url.to_s
     end
+
+    attr_reader :root_url
 
     use Chef::HTTP::JSONInput
     use Chef::HTTP::JSONOutput

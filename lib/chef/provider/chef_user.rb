@@ -26,7 +26,7 @@ class Chef::Provider::ChefUser < Cheffish::ActorProviderBase
   end
 
   def actor_path
-    '/users'
+    "#{rest.root_url}/users"
   end
 
   def resource_class

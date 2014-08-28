@@ -45,19 +45,45 @@ describe Chef::Resource::ChefUser do
   end
 
   when_the_chef_server 'is multitenant', :osc_compat => false, :single_org => false do
-    context 'and we run a recipe that creates user "blah"'do
-      with_converge do
-        chef_user 'blah' do
-          source_key_path "#{repo_path}/blah.pem"
+    context 'and chef_server_url is pointed at the top level' do
+      context 'and we run a recipe that creates user "blah"'do
+        with_converge do
+          chef_user 'blah' do
+            source_key_path "#{repo_path}/blah.pem"
+          end
+        end
+
+        it 'the user gets created' do
+          expect(chef_run).to have_updated 'chef_user[blah]', :create
+          user = get('/users/blah')
+          expect(user['name']).to eq('blah')
+          key, format = Cheffish::KeyFormatter.decode(user['public_key'])
+          expect(key).to be_public_key_for("#{repo_path}/blah.pem")
         end
       end
+    end
 
-      it 'the user gets created' do
-        expect(chef_run).to have_updated 'chef_user[blah]', :create
-        user = get('/users/blah')
-        expect(user['name']).to eq('blah')
-        key, format = Cheffish::KeyFormatter.decode(user['public_key'])
-        expect(key).to be_public_key_for("#{repo_path}/blah.pem")
+    context 'and chef_server_url is pointed at /organizations/foo' do
+      organization 'foo'
+
+      before :each do
+        Chef::Config.chef_server_url = URI.join(Chef::Config.chef_server_url, '/organizations/foo').to_s
+      end
+
+      context 'and we run a recipe that creates user "blah"'do
+        with_converge do
+          chef_user 'blah' do
+            source_key_path "#{repo_path}/blah.pem"
+          end
+        end
+
+        it 'the user gets created' do
+          expect(chef_run).to have_updated 'chef_user[blah]', :create
+          user = get('/users/blah')
+          expect(user['name']).to eq('blah')
+          key, format = Cheffish::KeyFormatter.decode(user['public_key'])
+          expect(key).to be_public_key_for("#{repo_path}/blah.pem")
+        end
       end
     end
   end
