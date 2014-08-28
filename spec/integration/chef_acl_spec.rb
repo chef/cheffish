@@ -780,4 +780,51 @@ describe Chef::Resource::ChefAcl do
       end
     end
   end
+
+  when_the_chef_server 'has a node named data_bags', :osc_compat => false do
+    user 'blarghle', {}
+    node 'data_bags', {}
+
+    it 'Converging chef_acl "nodes/data_bags" with user "blarghle" adds the user' do
+      expect {
+        run_recipe do
+          chef_acl 'nodes/data_bags' do
+            rights :read, :users => 'blarghle'
+          end
+        end
+      }.to update_acls('nodes/data_bags/_acl', 'read' => { 'actors' => %w(blarghle) })
+    end
+  end
+
+  when_the_chef_server 'has a node named data_bags in multi-org mode', :osc_compat => false, :single_org => false do
+    user 'blarghle', {}
+    organization 'foo' do
+      node 'data_bags', {}
+    end
+
+    it 'Converging chef_acl "/organizations/foo/nodes/data_bags" with user "blarghle" adds the user' do
+      expect {
+        run_recipe do
+          chef_acl '/organizations/foo/nodes/data_bags' do
+            rights :read, :users => 'blarghle'
+          end
+        end
+      }.to update_acls('organizations/foo/nodes/data_bags/_acl', 'read' => { 'actors' => %w(blarghle) })
+    end
+  end
+
+  when_the_chef_server 'has a user named data_bags in multi-org mode', :osc_compat => false, :single_org => false do
+    user 'data_bags', {}
+    user 'blarghle', {}
+
+    it 'Converging chef_acl "/users/data_bags" with user "blarghle" adds the user' do
+      expect {
+        run_recipe do
+          chef_acl '/users/data_bags' do
+            rights :read, :users => 'blarghle'
+          end
+        end
+      }.to update_acls('users/data_bags/_acl', 'read' => { 'actors' => %w(blarghle) })
+    end
+  end
 end

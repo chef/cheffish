@@ -312,8 +312,8 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
       end
 
     else
-      if child == 'data_bags'
-        parts.size == 0 || (parts.size == 2 && parts[0] == 'organizations')
+      if child == 'data_bags' &&
+        (parts.size == 0 || (parts.size == 2 && parts[0] == 'organizations'))
         child = 'data'
       end
 
