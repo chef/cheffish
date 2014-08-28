@@ -37,6 +37,11 @@ module Cheffish
     attr_accessor :recipe_name
     def_delegators :@run_context, :resource_collection, :immediate_notifications, :delayed_notifications
 
+    def add_resource(resource)
+      resource.run_context = run_context
+      run_context.resource_collection.insert(resource)
+    end
+
     def load_block(&block)
       @recipe_name = 'block'
       instance_eval(&block)
@@ -54,10 +59,21 @@ module Cheffish
       @event_catcher.updates.size > 0
     end
 
-    def self.inline_resource(provider, provider_action, &block)
+    # Builds a resource sans context, which can be later used in a new client's
+    # add_resource() method.
+    def self.build_resource(type, name, created_at=nil, &resource_attrs_block)
+      created_at ||= caller[0]
+      result = BasicChefClient.new.build_resource(type, name, created_at, &resource_attrs_block)
+      result
+    end
+
+    def self.inline_resource(provider, provider_action, *resources, &block)
       events = ProviderEventForwarder.new(provider, provider_action)
       client = BasicChefClient.new(provider.node, events)
-      client.load_block(&block)
+      resources.each do |resource|
+        client.add_resource(resource)
+      end
+      client.load_block(&block) if block
       client.converge
       client.updated?
     end
