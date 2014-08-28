@@ -10,6 +10,15 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
   end
 
   action :create do
+    if new_resource.remove_rights && new_resource.complete
+      Chef::Log.warn("'remove_rights' is redundant when 'complete' is specified: all rights not specified in a 'rights' declaration will be removed.")
+    end
+    # Verify that we're not destroying all hope of ACL recovery here
+    if new_resource.complete && (!new_resource.rights || !new_resource.rights.any? { |r| r[:permissions].include?(:all) || r[:permissions].include?(:grant) })
+      # NOTE: if superusers exist, this should turn into a warning.
+      raise "'complete' specified on chef_acl resource, but no GRANT permissions were granted.  I'm sorry Dave, I can't let you remove all access to an object with no hope of recovery."
+    end
+
     # Find all matching paths so we can update them (resolve * and **)
     paths, recursive = match_paths(new_resource.path)
     if paths.size == 0 && !new_resource.path.split('/').any? { |p| p == '*' }
@@ -40,6 +49,11 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
           differences = json_differences(current_json[permission], desired_json)
 
           if differences.size > 0
+            # Verify we aren't trying to destroy grant permissions
+            if permission == 'grant' && desired_json['actors'] == [] && desired_json['groups'] == []
+              # NOTE: if superusers exist, this should turn into a warning.
+              raise "chef_acl attempted to remove all actors from GRANT!  I'm sorry Dave, I can't let you remove access to an object with no hope of recovery."
+            end
             modify[differences] ||= {}
             modify[differences][permission] = desired_json
           end

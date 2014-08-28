@@ -18,20 +18,24 @@ describe Chef::Resource::ChefAcl do
         }.to update_acls('nodes/x/_acl', {})
       end
 
-      it 'Converging chef_acl "nodes/x" with "complete true" removes all ACLs' do
+      it 'Converging chef_acl "nodes/x" with "complete true" and no rights raises an error' do
         expect {
           run_recipe do
             chef_acl 'nodes/x' do
               complete true
             end
           end
-        }.to update_acls('nodes/x/_acl', {
-          "create"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users", "-clients"]},
-          "read"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users", "-clients"]},
-          "update"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users"]},
-          "delete"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users"]},
-          "grant"=>{"actors"=>["-pivotal"], "groups"=>["-admins"]}
-        })
+        }.to raise_error(RuntimeError)
+      end
+
+      it 'Removing all :grant rights from a node raises an error' do
+        expect {
+          run_recipe do
+            chef_acl 'nodes/x' do
+              remove_rights :grant, :users => 'pivotal', :groups => %w(admins users clients)
+            end
+          end
+        }.to raise_error(RuntimeError)
       end
 
       context 'and a user "blarghle"' do
@@ -47,22 +51,39 @@ describe Chef::Resource::ChefAcl do
           }.to update_acls('nodes/x/_acl', 'read' => { 'actors' => %w(blarghle) })
         end
 
-        it 'Converging chef_acl "nodes/x" with "complete true" removes all ACLs except the user' do
+        it 'Converging chef_acl "nodes/x" with "complete true" removes all ACLs except those specified' do
           expect {
             run_recipe do
               chef_acl 'nodes/x' do
-                rights :read, :users => 'blarghle'
+                rights :grant, :users => 'blarghle'
                 complete true
               end
             end
           }.to update_acls('nodes/x/_acl', {
             "create"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users", "-clients"]},
-            "read"=>{"actors"=>["-pivotal", "blarghle"], "groups"=>["-admins", "-users", "-clients"]},
+            "read"  =>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users", "-clients"]},
             "update"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users"]},
             "delete"=>{"actors"=>["-pivotal"], "groups"=>["-admins", "-users"]},
-            "grant"=>{"actors"=>["-pivotal"], "groups"=>["-admins"]}
+            "grant" =>{"actors"=>["-pivotal", "blarghle"], "groups"=>["-admins"]}
           })
         end
+      end
+
+      it 'Converging chef_acl "nodes/x" with "complete true" removes all ACLs except those specified in :all' do
+        expect {
+          run_recipe do
+            chef_acl 'nodes/x' do
+              rights :all, :users => 'blarghle'
+              complete true
+            end
+          end
+        }.to update_acls('nodes/x/_acl', {
+          "create"=>{"actors"=>["-pivotal", "blarghle"], "groups"=>["-admins", "-users", "-clients"]},
+          "read"  =>{"actors"=>["-pivotal", "blarghle"], "groups"=>["-admins", "-users", "-clients"]},
+          "update"=>{"actors"=>["-pivotal", "blarghle"], "groups"=>["-admins", "-users"]},
+          "delete"=>{"actors"=>["-pivotal", "blarghle"], "groups"=>["-admins", "-users"]},
+          "grant" =>{"actors"=>["-pivotal", "blarghle"], "groups"=>["-admins"]}
+        })
       end
 
       context 'and a client "blarghle"' do
