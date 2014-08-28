@@ -35,45 +35,15 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
   # rights :all, :users => 'jkeiser'
   def rights(*values)
     if values.size == 0
-      @raw_json
+      @rights
     else
       args = values.pop
       args[:permissions] ||= []
       values.each do |value|
         args[:permissions] |= Array(value)
       end
-      if args[:permissions].delete(:all)
-        args[:permissions] |= [ :create, :read, :update, :delete, :grant ]
-      end
-
-      @raw_json ||= {}
-      args.each_pair do |key, value|
-        Array(args[:permissions]).each do |permission|
-          ace = @raw_json[permission.to_s] ||= {}
-          # WTF, no distinction between users and clients?  The Chef API doesn't
-          # let us distinguish, so we have no choice :/  This means that:
-          # 1. If you specify :users => 'foo', and client 'foo' exists, it will
-          #    pick that (whether user 'foo' exists or not)
-          # 2. If you specify :clients => 'foo', and user 'foo' exists but
-          #    client 'foo' does not, it will pick user 'foo' and put it in the
-          #    ACL
-          # 3. If an existing item has user 'foo' on it and you specify :clients
-          #    => 'foo' instead, idempotence will not notice that anything needs
-          #    to be updated and nothing will happen.
-          if args[:users]
-            ace['actors'] ||= []
-            ace['actors'] |= Array(args[:users])
-          end
-          if args[:clients]
-            ace['actors'] ||= []
-            ace['actors'] |= Array(args[:clients])
-          end
-          if args[:groups]
-            ace['groups'] ||= []
-            ace['groups'] |= Array(args[:groups])
-          end
-        end
-      end
+      @rights ||= []
+      @rights << args
     end
   end
 
@@ -89,38 +59,8 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
       values.each do |value|
         args[:permissions] |= Array(value)
       end
-      if args[:permissions].delete(:all)
-        args[:permissions] |= [ :create, :read, :update, :delete, :grant ]
-      end
-
-      @remove_rights ||= {}
-      args.each_pair do |key, value|
-        Array(args[:permissions]).each do |permission|
-          ace = @remove_rights[permission.to_s] ||= {}
-          # WTF, no distinction between users and clients?  The Chef API doesn't
-          # let us distinguish, so we have no choice :/  This means that:
-          # 1. If you specify :users => 'foo', and client 'foo' exists, it will
-          #    pick that (whether user 'foo' exists or not)
-          # 2. If you specify :clients => 'foo', and user 'foo' exists but
-          #    client 'foo' does not, it will pick user 'foo' and put it in the
-          #    ACL
-          # 3. If an existing item has user 'foo' on it and you specify :clients
-          #    => 'foo' instead, idempotence will not notice that anything needs
-          #    to be updated and nothing will happen.
-          if args[:users]
-            ace['actors'] ||= []
-            ace['actors'] |= Array(args[:users])
-          end
-          if args[:clients]
-            ace['actors'] ||= []
-            ace['actors'] |= Array(args[:clients])
-          end
-          if args[:groups]
-            ace['groups'] ||= []
-            ace['groups'] |= Array(args[:groups])
-          end
-        end
-      end
+      @remove_rights ||= []
+      @remove_rights << args
     end
   end
 end

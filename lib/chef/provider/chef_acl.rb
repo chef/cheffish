@@ -83,13 +83,17 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
   # Get the desired acl for the given acl path
   def desired_acl(acl_path)
     result = new_resource.raw_json ? new_resource.raw_json.dup : {}
+
+    # Calculate the JSON based on rights
+    add_rights(acl_path, result)
+
     if new_resource.complete
       result = Chef::ChefFS::DataHandler::AclDataHandler.new.normalize(result, nil)
     else
       # If resource is incomplete, use current json to fill any holes
       current_acl(acl_path).each do |permission, perm_hash|
         if !result[permission]
-          result[permission] = perm_hash
+          result[permission] = perm_hash.dup
         else
           result[permission] = result[permission].dup
           perm_hash.each do |type, actors|
@@ -102,17 +106,70 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
           end
         end
       end
-      if new_resource.remove_rights
-        new_resource.remove_rights.each_pair do |permission, perm_hash|
-          perm_hash.each do |type, actors|
-            result[permission] = result[permission].dup
-            result[permission][type] = result[permission][type].dup
-            result[permission][type] -= actors
+
+      remove_rights(result)
+    end
+    result
+  end
+
+  def add_rights(acl_path, json)
+    if new_resource.rights
+      new_resource.rights.each do |rights|
+        if rights[:permissions].delete(:all)
+          rights[:permissions] |= current_acl(acl_path).keys
+        end
+
+        Array(rights[:permissions]).each do |permission|
+          ace = json[permission.to_s] ||= {}
+          # WTF, no distinction between users and clients?  The Chef API doesn't
+          # let us distinguish, so we have no choice :/  This means that:
+          # 1. If you specify :users => 'foo', and client 'foo' exists, it will
+          #    pick that (whether user 'foo' exists or not)
+          # 2. If you specify :clients => 'foo', and user 'foo' exists but
+          #    client 'foo' does not, it will pick user 'foo' and put it in the
+          #    ACL
+          # 3. If an existing item has user 'foo' on it and you specify :clients
+          #    => 'foo' instead, idempotence will not notice that anything needs
+          #    to be updated and nothing will happen.
+          if rights[:users]
+            ace['actors'] ||= []
+            ace['actors'] |= Array(rights[:users])
+          end
+          if rights[:clients]
+            ace['actors'] ||= []
+            ace['actors'] |= Array(rights[:clients])
+          end
+          if rights[:groups]
+            ace['groups'] ||= []
+            ace['groups'] |= Array(rights[:groups])
           end
         end
       end
     end
-    result
+  end
+
+  def remove_rights(json)
+    if new_resource.remove_rights
+      new_resource.remove_rights.each do |rights|
+        rights[:permissions].each do |permission|
+          if permission == :all
+            json.each_key do |key|
+              ace = json[key] = json[key.dup]
+              ace['actors'] = ace['actors'] - Array(rights[:users])   if rights[:users]   && ace['actors']
+              ace['actors'] = ace['actors'] - Array(rights[:clients]) if rights[:clients] && ace['actors']
+              ace['groups'] = ace['groups'] - Array(rights[:groups])  if rights[:groups]  && ace['groups']
+            end
+          else
+            ace = json[permission.to_s] = json[permission.to_s].dup
+            if ace
+              ace['actors'] = ace['actors'] - Array(rights[:users])   if rights[:users]   && ace['actors']
+              ace['actors'] = ace['actors'] - Array(rights[:clients]) if rights[:clients] && ace['actors']
+              ace['groups'] = ace['groups'] - Array(rights[:groups])  if rights[:groups]  && ace['groups']
+            end
+          end
+        end
+      end
+    end
   end
 
   def load_current_resource
