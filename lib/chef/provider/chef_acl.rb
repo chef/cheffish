@@ -2,6 +2,7 @@ require 'cheffish/chef_provider_base'
 require 'chef/resource/chef_acl'
 require 'chef/chef_fs/data_handler/acl_data_handler'
 require 'chef/chef_fs/parallelizer'
+require 'uri'
 
 class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
 
@@ -61,13 +62,13 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
 
         if modify.size > 0
           changed = true
-          description = [ "update acl #{path} at #{rest.url}" ] + modify.map do |diffs, permissions|
+          description = [ "update acl #{path} at #{rest_url(path)}" ] + modify.map do |diffs, permissions|
             diffs.map { |diff| "  #{permissions.keys.join(', ')}:#{diff}" }
           end.flatten(1)
           converge_by description do
             modify.values.each do |permissions|
               permissions.each do |permission, desired_json|
-                rest.put("#{acl}/#{permission}", { permission => desired_json })
+                rest.put(rest_url("#{acl}/#{permission}"), { permission => desired_json })
               end
             end
           end
@@ -98,7 +99,7 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
     @current_acls ||= {}
     if !@current_acls.has_key?(acl_path)
       @current_acls[acl_path] = begin
-        rest.get(acl_path)
+        rest.get(rest_url(acl_path))
       rescue Net::HTTPServerException => e
         unless e.response.code == '404' && new_resource.path.split('/').any? { |p| p == '*' }
           raise
@@ -409,10 +410,14 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
     [ results, error ]
   end
 
+  def rest_url(path)
+    path[0] == '/' ? URI.join(rest.url, path) : path
+  end
+
   def rest_list(path)
     begin
       # All our rest lists are hashes where the keys are the names
-      [ rest.get(path).keys, nil ]
+      [ rest.get(rest_url(path)).keys, nil ]
     rescue Net::HTTPServerException => e
       if e.response.code == '405' || e.response.code == '404'
         parts = path.split('/').select { |p| p != '' }.to_a

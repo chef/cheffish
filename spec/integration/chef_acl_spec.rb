@@ -3,6 +3,7 @@ require 'support/key_support'
 require 'chef/resource/chef_acl'
 require 'chef/provider/chef_acl'
 require 'chef_zero/version'
+require 'uri'
 
 if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
   describe Chef::Resource::ChefAcl do
@@ -312,7 +313,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
                   recursive true
                 end
               end
-            }.to update_acls([ 'organizations/_acl', 'nodes/x/_acl' ], 'read' => { 'actors' => %w(blarghle) })
+            }.to update_acls([ '/organizations/_acl', 'nodes/x/_acl' ], 'read' => { 'actors' => %w(blarghle) })
           end
         end
       end
@@ -334,173 +335,255 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
           user 'x', {}
         end
 
-        %w(clients containers cookbooks data environments groups nodes roles sandboxes).each do |type|
-          it "chef_acl '/organizations/foo/#{type}/x' changes the acl" do
-            expect {
-              run_recipe do
-                chef_acl "/organizations/foo/#{type}/x" do
-                  rights :read, :users => 'u'
+        organization 'bar' do
+          user 'u', {}
+          node 'x', {}
+        end
+
+        context 'and the chef server URL points at /organizations/foo' do
+          before :each do
+            Chef::Config.chef_server_url = URI.join(Chef::Config.chef_server_url, '/organizations/foo').to_s
+          end
+
+          context 'relative paths' do
+            it "chef_acl 'nodes/x' changes the acls" do
+              expect {
+                run_recipe do
+                  chef_acl "nodes/x" do
+                    rights :read, :users => 'u'
+                  end
                 end
+              }.to update_acls("nodes/x/_acl", 'read' => { 'actors' => %w(u) })
+            end
+
+            it "chef_acl '*/*' changes the acls" do
+              expect {
+                run_recipe do
+                  chef_acl "*/*" do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to update_acls(%w(clients containers cookbooks data environments groups nodes roles).map { |type| "/organizations/foo/#{type}/x/_acl" },
+                               'read' => { 'actors' => %w(u) })
+            end
+          end
+
+          context 'absolute paths' do
+            %w(clients containers cookbooks data environments groups nodes roles sandboxes).each do |type|
+              it "chef_acl '/organizations/foo/#{type}/x' changes the acl" do
+                expect {
+                  run_recipe do
+                    chef_acl "/organizations/foo/#{type}/x" do
+                      rights :read, :users => 'u'
+                    end
+                  end
+                }.to update_acls("/organizations/foo/#{type}/x/_acl", 'read' => { 'actors' => %w(u) })
               end
-            }.to update_acls("organizations/foo/#{type}/x/_acl", 'read' => { 'actors' => %w(u) })
+            end
+
+            %w(clients containers cookbooks data environments groups nodes roles sandboxes).each do |type|
+              it "chef_acl '/organizations/foo/#{type}/x' changes the acl" do
+                expect {
+                  run_recipe do
+                    chef_acl "/organizations/foo/#{type}/x" do
+                      rights :read, :users => 'u'
+                    end
+                  end
+                }.to update_acls("/organizations/foo/#{type}/x/_acl", 'read' => { 'actors' => %w(u) })
+              end
+            end
+
+            %w(clients containers cookbooks data environments groups nodes roles).each do |type|
+              it "chef_acl '/*/*/#{type}/*' changes the acl" do
+                expect {
+                  run_recipe do
+                    chef_acl "/*/*/#{type}/*" do
+                      rights :read, :users => 'u'
+                    end
+                  end
+                }.to update_acls("/organizations/foo/#{type}/x/_acl", 'read' => { 'actors' => %w(u) })
+              end
+            end
+
+            it "chef_acl '/*/*/*/x' changes the acls" do
+              expect {
+                run_recipe do
+                  chef_acl "/*/*/*/x" do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to update_acls(%w(clients containers cookbooks data environments groups nodes roles sandboxes).map { |type| "/organizations/foo/#{type}/x/_acl" },
+                               'read' => { 'actors' => %w(u) })
+            end
+
+            it "chef_acl '/*/*/*/*' changes the acls" do
+              expect {
+                run_recipe do
+                  chef_acl "/*/*/*/*" do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to update_acls(%w(clients containers cookbooks data environments groups nodes roles).map { |type| "/organizations/foo/#{type}/x/_acl" },
+                               'read' => { 'actors' => %w(u) })
+            end
+
+            it 'chef_acl "/organizations/foo/data_bags/x" changes the acl' do
+              expect {
+                run_recipe do
+                  chef_acl '/organizations/foo/data_bags/x' do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to update_acls('/organizations/foo/data/x/_acl', 'read' => { 'actors' => %w(u) })
+            end
+
+            it 'chef_acl "/*/*/data_bags/*" changes the acl' do
+              expect {
+                run_recipe do
+                  chef_acl '/*/*/data_bags/*' do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to update_acls('/organizations/foo/data/x/_acl', 'read' => { 'actors' => %w(u) })
+            end
+
+            it "chef_acl '/organizations/foo/cookbooks/x/1.0.0' raises an error" do
+              expect {
+                run_recipe do
+                  chef_acl "/organizations/foo/cookbooks/x/1.0.0" do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/cookbooks\/x/)
+            end
+
+            it "chef_acl '/organizations/foo/cookbooks/*/*' raises an error" do
+              pending
+              expect {
+                run_recipe do
+                  chef_acl "/organizations/foo/cookbooks/*/*" do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/cookbooks\/*/)
+            end
+
+            it 'chef_acl "/organizations/foo/data/x/y" raises an error' do
+              expect {
+                run_recipe do
+                  chef_acl '/organizations/foo/data/x/y' do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/data\/x/)
+            end
+
+            it 'chef_acl "/organizations/foo/data/*/*" raises an error' do
+              pending
+              expect {
+                run_recipe do
+                  chef_acl '/organizations/foo/data/*/*' do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/data\/*/)
+            end
+
+            it 'chef_acl "/organizations/foo" changes the acl' do
+              expect {
+                run_recipe do
+                  chef_acl '/organizations/foo' do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to update_acls([ '/organizations/foo/organizations/_acl', '/organizations/foo/nodes/x/_acl' ], 'read' => { 'actors' => %w(u) })
+            end
+
+            it 'chef_acl "/organizations/*" changes the acl' do
+              expect {
+                run_recipe do
+                  chef_acl '/organizations/*' do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to update_acls([ '/organizations/foo/organizations/_acl', '/organizations/foo/nodes/x/_acl' ], 'read' => { 'actors' => %w(u) })
+            end
+
+            it 'chef_acl "/users/x" changes the acl' do
+              expect {
+                run_recipe do
+                  chef_acl '/users/x' do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to update_acls('/users/x/_acl', 'read' => { 'actors' => %w(u) })
+            end
+
+            it 'chef_acl "/users/*" changes the acl' do
+              expect {
+                run_recipe do
+                  chef_acl '/users/*' do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to update_acls('/users/x/_acl', 'read' => { 'actors' => %w(u) })
+            end
+
+            it 'chef_acl "/*/x" changes the acl' do
+              expect {
+                run_recipe do
+                  chef_acl '/*/x' do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to update_acls('/users/x/_acl', 'read' => { 'actors' => %w(u) })
+            end
+
+            it 'chef_acl "/*/*" changes the acl' do
+              expect {
+                run_recipe do
+                  chef_acl '/*/*' do
+                    rights :read, :users => 'u'
+                  end
+                end
+              }.to update_acls([ '/organizations/foo/organizations/_acl', '/users/x/_acl' ],
+                               'read' => { 'actors' => %w(u) })
+            end
           end
         end
 
-        %w(clients containers cookbooks data environments groups nodes roles).each do |type|
-          it "chef_acl '/*/*/#{type}/*' changes the acl" do
+        context 'and the chef server URL points at /organizations/bar' do
+          before :each do
+            Chef::Config.chef_server_url = URI.join(Chef::Config.chef_server_url.to_s, '/organizations/bar').to_s
+          end
+
+          it "chef_acl '/organizations/foo/nodes/*' changes the acl" do
             expect {
               run_recipe do
-                chef_acl "/*/*/#{type}/*" do
+                chef_acl "/organizations/foo/nodes/*" do
                   rights :read, :users => 'u'
                 end
               end
-            }.to update_acls("organizations/foo/#{type}/x/_acl", 'read' => { 'actors' => %w(u) })
+            }.to update_acls("/organizations/foo/nodes/x/_acl", 'read' => { 'actors' => %w(u) })
+            expect {}.not_to update_acls("/organizations/bar/nodes/x/_acl", 'read' => { 'actors' => %w(u) })
           end
         end
 
-        it "chef_acl '/*/*/*/x' changes the acls" do
-          expect {
-            run_recipe do
-              chef_acl "/*/*/*/x" do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to update_acls(%w(clients containers cookbooks data environments groups nodes roles sandboxes).map { |type| "organizations/foo/#{type}/x/_acl" },
-                           'read' => { 'actors' => %w(u) })
-        end
+        context 'and the chef server URL points at /' do
+          before :each do
+            Chef::Config.chef_server_url = URI.join(Chef::Config.chef_server_url.to_s, '/').to_s
+          end
 
-        it "chef_acl '/*/*/*/*' changes the acls" do
-          expect {
-            run_recipe do
-              chef_acl "/*/*/*/*" do
-                rights :read, :users => 'u'
+          it "chef_acl '/organizations/foo/nodes/*' changes the acl" do
+            expect {
+              run_recipe do
+                chef_acl "/organizations/foo/nodes/*" do
+                  rights :read, :users => 'u'
+                end
               end
-            end
-          }.to update_acls(%w(clients containers cookbooks data environments groups nodes roles).map { |type| "organizations/foo/#{type}/x/_acl" },
-                           'read' => { 'actors' => %w(u) })
-        end
-
-        it 'chef_acl "/organizations/foo/data_bags/x" changes the acl' do
-          expect {
-            run_recipe do
-              chef_acl '/organizations/foo/data_bags/x' do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to update_acls('organizations/foo/data/x/_acl', 'read' => { 'actors' => %w(u) })
-        end
-
-        it 'chef_acl "/*/*/data_bags/*" changes the acl' do
-          expect {
-            run_recipe do
-              chef_acl '/*/*/data_bags/*' do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to update_acls('organizations/foo/data/x/_acl', 'read' => { 'actors' => %w(u) })
-        end
-
-        it "chef_acl '/organizations/foo/cookbooks/x/1.0.0' raises an error" do
-          expect {
-            run_recipe do
-              chef_acl "/organizations/foo/cookbooks/x/1.0.0" do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/cookbooks\/x/)
-        end
-
-        it "chef_acl '/organizations/foo/cookbooks/*/*' raises an error" do
-          pending
-          expect {
-            run_recipe do
-              chef_acl "/organizations/foo/cookbooks/*/*" do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/cookbooks\/*/)
-        end
-
-        it 'chef_acl "/organizations/foo/data/x/y" raises an error' do
-          expect {
-            run_recipe do
-              chef_acl '/organizations/foo/data/x/y' do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/data\/x/)
-        end
-
-        it 'chef_acl "/organizations/foo/data/*/*" raises an error' do
-          pending
-          expect {
-            run_recipe do
-              chef_acl '/organizations/foo/data/*/*' do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/data\/*/)
-        end
-
-        it 'chef_acl "/organizations/foo" changes the acl' do
-          expect {
-            run_recipe do
-              chef_acl '/organizations/foo' do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to update_acls([ '/organizations/foo/organizations/_acl', '/organizations/foo/nodes/x/_acl' ], 'read' => { 'actors' => %w(u) })
-        end
-
-        it 'chef_acl "/organizations/*" changes the acl' do
-          expect {
-            run_recipe do
-              chef_acl '/organizations/*' do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to update_acls([ '/organizations/foo/organizations/_acl', '/organizations/foo/nodes/x/_acl' ], 'read' => { 'actors' => %w(u) })
-        end
-
-        it 'chef_acl "/users/x" changes the acl' do
-          expect {
-            run_recipe do
-              chef_acl '/users/x' do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to update_acls('/users/x/_acl', 'read' => { 'actors' => %w(u) })
-        end
-
-        it 'chef_acl "/users/*" changes the acl' do
-          expect {
-            run_recipe do
-              chef_acl '/users/*' do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to update_acls('/users/x/_acl', 'read' => { 'actors' => %w(u) })
-        end
-
-        it 'chef_acl "/*/x" changes the acl' do
-          expect {
-            run_recipe do
-              chef_acl '/*/x' do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to update_acls('/users/x/_acl', 'read' => { 'actors' => %w(u) })
-        end
-
-        it 'chef_acl "/*/*" changes the acl' do
-          expect {
-            run_recipe do
-              chef_acl '/*/*' do
-                rights :read, :users => 'u'
-              end
-            end
-          }.to update_acls([ '/organizations/foo/organizations/_acl', '/users/x/_acl' ],
-                           'read' => { 'actors' => %w(u) })
+            }.to update_acls("/organizations/foo/nodes/x/_acl", 'read' => { 'actors' => %w(u) })
+            expect {}.not_to update_acls("/organizations/bar/nodes/x/_acl", 'read' => { 'actors' => %w(u) })
+          end
         end
       end
 
@@ -601,7 +684,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
                 rights :read, :users => 'u'
               end
             end
-          }.to update_acls([ 'organizations/_acl', 'nodes/x/_acl' ], 'read' => { 'actors' => %w(u) })
+          }.to update_acls([ '/organizations/_acl', 'nodes/x/_acl' ], 'read' => { 'actors' => %w(u) })
         end
       end
     end
@@ -630,7 +713,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
                   rights :read, :users => 'u'
                 end
               end
-            }.to update_acls("organizations/foo/containers/#{type}/_acl", 'read' => { 'actors' => %w(u) })
+            }.to update_acls("/organizations/foo/containers/#{type}/_acl", 'read' => { 'actors' => %w(u) })
           end
         end
 
@@ -642,7 +725,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
                   rights :read, :users => 'u'
                 end
               end
-            }.to update_acls("organizations/foo/containers/#{type}/_acl", 'read' => { 'actors' => %w(u) })
+            }.to update_acls("/organizations/foo/containers/#{type}/_acl", 'read' => { 'actors' => %w(u) })
           end
         end
 
@@ -653,7 +736,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
                 rights :read, :users => 'u'
               end
             end
-          }.to update_acls(%w(clients containers cookbooks data environments groups nodes roles sandboxes).map { |type| "organizations/foo/containers/#{type}/_acl" },
+          }.to update_acls(%w(clients containers cookbooks data environments groups nodes roles sandboxes).map { |type| "/organizations/foo/containers/#{type}/_acl" },
                            'read' => { 'actors' => %w(u) })
         end
 
@@ -664,7 +747,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
                 rights :read, :users => 'u'
               end
             end
-          }.to update_acls('organizations/foo/containers/data/_acl', 'read' => { 'actors' => %w(u) })
+          }.to update_acls('/organizations/foo/containers/data/_acl', 'read' => { 'actors' => %w(u) })
         end
 
         it 'chef_acl "/*/*/data_bags" changes the acl' do
@@ -674,7 +757,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
                 rights :read, :users => 'u'
               end
             end
-          }.to update_acls('organizations/foo/containers/data/_acl', 'read' => { 'actors' => %w(u) })
+          }.to update_acls('/organizations/foo/containers/data/_acl', 'read' => { 'actors' => %w(u) })
         end
       end
 
@@ -810,7 +893,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
               rights :read, :users => 'blarghle'
             end
           end
-        }.to update_acls('organizations/foo/nodes/data_bags/_acl', 'read' => { 'actors' => %w(blarghle) })
+        }.to update_acls('/organizations/foo/nodes/data_bags/_acl', 'read' => { 'actors' => %w(blarghle) })
       end
     end
 
@@ -825,7 +908,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
               rights :read, :users => 'blarghle'
             end
           end
-        }.to update_acls('users/data_bags/_acl', 'read' => { 'actors' => %w(blarghle) })
+        }.to update_acls('/users/data_bags/_acl', 'read' => { 'actors' => %w(blarghle) })
       end
     end
   end

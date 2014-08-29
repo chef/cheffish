@@ -3,14 +3,22 @@ require 'chef/server_api'
 require 'cheffish'
 require 'cheffish/basic_chef_client'
 require 'chef/provider/chef_acl'
+require 'uri'
 
 module SpecSupport
   include ChefZero::RSpec
 
   def self.extended(klass)
     klass.class_eval do
-      def get(*args)
-        Chef::ServerAPI.new.get(*args)
+      def rest
+        Chef::ServerAPI.new
+      end
+
+      def get(path, *args)
+        if path[0] == '/'
+          path = URI.join(rest.url, path)
+        end
+        rest.get(path, *args)
       end
 
       def chef_run
