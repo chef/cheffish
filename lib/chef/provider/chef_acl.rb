@@ -20,19 +20,19 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
     end
 
     # Find all matching paths so we can update them (resolve * and **)
-    paths, recursive = match_paths(new_resource.path)
+    paths = match_paths(new_resource.path)
     if paths.size == 0 && !new_resource.path.split('/').any? { |p| p == '*' }
       raise "Path #{new_resource.path} cannot have an ACL set on it!"
     end
 
     # Go through the matches and update the ACLs for them
     paths.each do |path|
-      create_acl(path, recursive || new_resource.recursive)
+      create_acl(path)
     end
   end
 
   # Update the ACL if necessary.
-  def create_acl(path, recursive)
+  def create_acl(path)
     changed = false
     # There may not be an ACL path for some valid paths (/ and /organizations,
     # for example).  We want to recurse into these, but we don't want to try to
@@ -78,16 +78,16 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
     # If we have been asked to recurse, do so.
     # If recurse is on_change, then we will recurse if there is no ACL, or if
     # the ACL has changed.
-    if recursive == true || (recursive == :on_change && (!acl || changed))
+    if new_resource.recursive == true || (new_resource.recursive == :on_change && (!acl || changed))
       children, error = list(path, '*')
       Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
         next if child.split('/')[-1] == 'containers'
-        create_acl(child, recursive)
+        create_acl(child)
       end
       # containers mess up our descent, so we do them last
       Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
         next if child.split('/')[-1] != 'containers'
-        create_acl(child, recursive)
+        create_acl(child)
       end
 
     end
@@ -203,27 +203,50 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
   def load_current_resource
   end
 
+  #
+  # Matches chef_acl paths like nodes, nodes/*.
+  #
+  # == Examples
+  # match_paths('nodes'): [ 'nodes' ]
+  # match_paths('nodes/*'): [ 'nodes/x', 'nodes/y', 'nodes/z' ]
+  # match_paths('*'): [ 'clients', 'environments', 'nodes', 'roles', ... ]
+  # match_paths('/'): [ '/' ]
+  # match_paths(''): [ '' ]
+  # match_paths('/*'): [ '/organizations', '/users' ]
+  # match_paths('/organizations/*/*'): [ '/organizations/foo/clients', '/organizations/foo/environments', ..., '/organizations/bar/clients', '/organizations/bar/environments', ... ]
+  #
   def match_paths(path)
     # Turn multiple slashes into one
+    # nodes//x -> nodes/x
     path = path.gsub(/[\/]+/, '/')
+    # If it's absolute, start the matching with /.  If it's relative, start with '' (relative root).
     if path[0] == '/'
       matches = [ '/' ]
     else
       matches = [ '' ]
     end
 
-    # Split the path
+    # Split the path, and get rid of the empty path at the beginning and end
+    # (/a/b/c/ -> [ 'a', 'b', 'c' ])
     parts = path.split('/').select { |x| x != '' }.to_a
 
-    # If there is a **, we will treat it special (and it's only supported in the
-    # last bracket).
-    if parts[-1] == '**'
-      recursive = true
-      parts = parts[0..-2]
-    end
-
-    # Descend until we find the starting path
+    # Descend until we find the matches:
+    # path = 'a/b/c'
+    # parts = [ 'a', 'b', 'c' ]
+    # Starting matches = [ '' ]
     parts.each_with_index do |part, index|
+      # For each match, list <match>/<part> and set matches to that.
+      #
+      # Example: /*/foo
+      # 1. To start,
+      #    matches = [ '/' ], part = '*'.
+      #    list('/', '*')                = [ '/organizations, '/users' ]
+      # 2. matches = [ '/organizations', '/users' ], part = 'foo'
+      #    list('/organizations', 'foo') = [ '/organizations/foo' ]
+      #    list('/users', 'foo')         = [ '/users/foo' ]
+      #
+      # Result: /*/foo = [ '/organizations/foo', '/users/foo' ]
+      #
       matches = Chef::ChefFS::Parallelizer.parallelize(matches) do |path|
         found, error = list(path, part)
         if error
@@ -237,9 +260,19 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
       end.flatten(1).to_a
     end
 
-    [ matches, recursive ]
+    matches
   end
 
+  #
+  # Takes a normal path and finds the Chef path to get / set its ACL.
+  #
+  # nodes/x -> nodes/x/_acl
+  # nodes -> containers/nodes/_acl
+  # '' -> organizations/_acl (the org acl)
+  # /organizations/foo -> /organizations/foo/organizations/_acl
+  # /users/foo -> /users/foo/_acl
+  # /organizations/foo/nodes/x -> /organizations/foo/nodes/x/_acl
+  #
   def acl_path(path)
     parts = path.split('/').select { |x| x != '' }.to_a
     prefix = (path[0] == '/') ? '/' : ''
@@ -295,6 +328,22 @@ class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
     end
   end
 
+  #
+  # Lists the securable children under a path (the ones that either have ACLs
+  # or have children with ACLs).
+  #
+  # list('nodes', 'x') -> [ 'nodes/x' ]
+  # list('nodes', '*') -> [ 'nodes/x', 'nodes/y', 'nodes/z' ]
+  # list('', '*') -> [ 'clients', 'environments', 'nodes', 'roles', ... ]
+  # list('/', '*') -> [ '/organizations']
+  # list('cookbooks', 'x') -> [ 'cookbooks/x' ]
+  # list('cookbooks/x', '*') -> [ ] # Individual cookbook versions do not have their own ACLs
+  # list('/organizations/foo/nodes', '*') -> [ '/organizations/foo/nodes/x', '/organizations/foo/nodes/y' ]
+  #
+  # The list of children of an organization is == the list of containers.  If new
+  # containers are added, the list of children will grow.  This allows the system
+  # to extend to new types of objects and allow cheffish to work with them.
+  #
   def list(path, child)
     # TODO make ChefFS understand top level organizations and stop doing this altogether.
     parts = path.split('/').select { |x| x != '' }.to_a

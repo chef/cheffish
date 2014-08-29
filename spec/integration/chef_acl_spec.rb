@@ -4,7 +4,7 @@ require 'chef/resource/chef_acl'
 require 'chef/provider/chef_acl'
 require 'chef_zero/version'
 
-if ChefZero::VERSION.to_f >= 3.1
+if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
   describe Chef::Resource::ChefAcl do
     extend SpecSupport
 
@@ -282,17 +282,6 @@ if ChefZero::VERSION.to_f >= 3.1
             }.to update_acls('nodes/x/_acl', 'read' => { 'actors' => %w(blarghle) })
           end
 
-          it 'Converging chef_acl "nodes/**" with recursive false changes nodes/x\'s acls' do
-            expect {
-              run_recipe do
-                chef_acl 'nodes/**' do
-                  rights :read, :users => 'blarghle'
-                  recursive false
-                end
-              end
-            }.to update_acls('nodes/x/_acl', 'read' => { 'actors' => %w(blarghle) })
-          end
-
           it 'Converging chef_acl "" with recursive false does not change nodes/x\'s acls' do
             expect {
               run_recipe do
@@ -319,17 +308,6 @@ if ChefZero::VERSION.to_f >= 3.1
             expect {
               run_recipe do
                 chef_acl '' do
-                  rights :read, :users => 'blarghle'
-                  recursive true
-                end
-              end
-            }.to update_acls([ 'organizations/_acl', 'nodes/x/_acl' ], 'read' => { 'actors' => %w(blarghle) })
-          end
-
-          it 'Converging chef_acl "**" with recursive true changes nodes/x\'s acls' do
-            expect {
-              run_recipe do
-                chef_acl '**' do
                   rights :read, :users => 'blarghle'
                   recursive true
                 end
