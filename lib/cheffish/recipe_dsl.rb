@@ -7,6 +7,7 @@ require 'cheffish/chef_run_data'
 require 'cheffish/chef_run_listener'
 require 'chef/client'
 require 'chef/config'
+require 'chef_zero/version'
 require 'cheffish/merged_config'
 require 'chef/resource/chef_acl'
 require 'chef/resource/chef_client'
@@ -51,7 +52,7 @@ class Chef
       def with_chef_local_server(options, &block)
         options[:host] ||= '127.0.0.1'
         options[:log_level] ||= Chef::Log.level
-        options[:port] ||= 8901.upto(9900)
+        options[:port] ||= ChefZero::VERSION.to_f >= 2.2 ? 8901.upto(9900) : 8901
 
         # Create the data store chef-zero will use
         options[:data_store] ||= begin

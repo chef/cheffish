@@ -16,13 +16,16 @@
 # limitations under the License.
 #
 
+require 'chef/version'
 require 'chef/http'
 require 'chef/http/authenticator'
 require 'chef/http/cookie_manager'
 require 'chef/http/decompressor'
 require 'chef/http/json_input'
 require 'chef/http/json_output'
-require 'chef/http/remote_request_id'
+if Gem::Version.new(Chef::VERSION) >= Gem::Version.new('11.12')
+  require 'chef/http/remote_request_id'
+end
 
 module Cheffish
   # Exactly like Chef::ServerAPI, but requires you to pass in what keys you want (no defaults)
@@ -37,6 +40,8 @@ module Cheffish
     use Chef::HTTP::CookieManager
     use Chef::HTTP::Decompressor
     use Chef::HTTP::Authenticator
-    use Chef::HTTP::RemoteRequestID
+    if Gem::Version.new(Chef::VERSION) >= Gem::Version.new('11.12')
+      use Chef::HTTP::RemoteRequestID
+    end
   end
 end
