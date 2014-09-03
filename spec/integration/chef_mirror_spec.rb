@@ -2,7 +2,7 @@ require 'support/spec_support'
 require 'chef/resource/chef_mirror'
 require 'chef/provider/chef_mirror'
 
-describe Chef::Resource::ChefMirror, :focus do
+describe Chef::Resource::ChefMirror do
   extend SpecSupport
 
   when_the_chef_server 'is in multi-org mode', :osc_compat => false, :single_org => false do
@@ -37,6 +37,118 @@ describe Chef::Resource::ChefMirror, :focus do
           expect(chef_run).to have_updated('chef_mirror[]', :upload)
           expect { get('nodes/x') }.not_to raise_error
           expect { get('roles/x') }.not_to raise_error
+        end
+
+        it 'chef_mirror with concurrency 0 fails with a reasonable message' do
+          expect {
+            run_recipe do
+              chef_mirror '' do
+                concurrency 0
+                action :download
+              end
+            end
+          }.to raise_error /chef_mirror.concurrency must be above 0/
+        end
+      end
+
+      when_the_repository 'has stuff but no chef_repo_path' do
+        file 'repo/nodes/x.json', {}
+        file 'repo/roles/x.json', {}
+        file 'repo2/nodes/y.json', {}
+        file 'repo2/roles/y.json', {}
+
+        before do
+          Chef::Config.delete(:chef_repo_path)
+          Chef::Config.delete(:node_path)
+          Chef::Config.delete(:cookbook_path)
+          Chef::Config.delete(:role_path)
+        end
+
+        it "Upload with chef_repo_path('repo') uploads everything" do
+          repo_path = path_to('repo')
+          run_recipe do
+            chef_mirror '' do
+              chef_repo_path repo_path
+              action :upload
+            end
+          end
+          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          expect { get('nodes/x') }.not_to raise_error
+          expect { get('roles/x') }.not_to raise_error
+          expect { get('nodes/y') }.to raise_error
+          expect { get('roles/y') }.to raise_error
+        end
+
+        it "Upload with chef_repo_path(:chef_repo_path) with multiple paths uploads everything" do
+          repo_path = path_to('repo')
+          repo2_path = path_to('repo2')
+          run_recipe do
+            chef_mirror '' do
+              chef_repo_path :chef_repo_path => [ repo_path, repo2_path ]
+              action :upload
+            end
+          end
+          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          expect { get('nodes/x') }.not_to raise_error
+          expect { get('roles/x') }.not_to raise_error
+          expect { get('nodes/y') }.not_to raise_error
+          expect { get('roles/y') }.not_to raise_error
+        end
+
+        it "Upload with chef_repo_path(:node_path, :role_path) uploads everything" do
+          repo_path = path_to('repo')
+          repo2_path = path_to('repo2')
+
+          run_recipe do
+            chef_mirror '' do
+              chef_repo_path :chef_repo_path => '/blahblah',
+                             :node_path => "#{repo_path}/nodes",
+                             :role_path => "#{repo2_path}/roles"
+              action :upload
+            end
+          end
+          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          expect { get('nodes/x') }.not_to raise_error
+          expect { get('roles/x') }.to raise_error
+          expect { get('nodes/y') }.to raise_error
+          expect { get('roles/y') }.not_to raise_error
+        end
+
+        it "Upload with chef_repo_path(:chef_repo_path, :role_path) uploads everything" do
+          repo_path = path_to('repo')
+          repo2_path = path_to('repo2')
+
+          run_recipe do
+            chef_mirror '' do
+              chef_repo_path :chef_repo_path => repo_path,
+                             :role_path => "#{repo2_path}/roles"
+              action :upload
+            end
+          end
+          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          expect { get('nodes/x') }.not_to raise_error
+          expect { get('roles/x') }.to raise_error
+          expect { get('nodes/y') }.to raise_error
+          expect { get('roles/y') }.not_to raise_error
+        end
+
+        it "Upload with chef_repo_path(:node_path, :role_path) with multiple paths uploads everything" do
+          repo_path = path_to('repo')
+          repo2_path = path_to('repo2')
+
+          run_recipe do
+            chef_mirror '' do
+              chef_repo_path :chef_repo_path => [ 'foo', 'bar' ],
+                             :node_path => [ "#{repo_path}/nodes", "#{repo2_path}/nodes" ],
+                             :role_path => [ "#{repo_path}/roles", "#{repo2_path}/roles" ]
+              action :upload
+            end
+          end
+          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          expect { get('nodes/x') }.not_to raise_error
+          expect { get('roles/x') }.not_to raise_error
+          expect { get('nodes/y') }.not_to raise_error
+          expect { get('roles/y') }.not_to raise_error
         end
       end
     end

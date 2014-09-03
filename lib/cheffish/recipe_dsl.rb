@@ -70,16 +70,17 @@ class Chef
 
           # Ensure all paths are given
           %w(acl client cookbook container data_bag environment group node role).each do |type|
-            options["#{type}_path".to_sym] ||= begin
+            options["#{type}_path"] ||= begin
               if options[:chef_repo_path].kind_of?(String)
-                run_context.config.path_join(options[:chef_repo_path], "#{type}s")
+                if defined?(Chef::Util::PathHelper) && Chef::Util::PathHelper.respond_to?(:join)
+                  Chef::Util::PathHelper.join(options[:chef_repo_path], "#{type}s")
+                else
+                  File.join(options[:chef_repo_path], "#{type}s")
+                end
               else
                 options[:chef_repo_path].map { |path| run_context.config.path_join(path, "#{type}s")}
               end
             end
-            # Work around issue in earlier versions of ChefFS where it expects strings for these
-            # instead of symbols
-            options["#{type}_path"] = options["#{type}_path".to_sym]
           end
 
           chef_fs = Chef::ChefFS::Config.new(options).local_fs

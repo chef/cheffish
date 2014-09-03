@@ -20,6 +20,9 @@ class Chef::Provider::ChefMirror < Chef::Provider::LWRPBase
   end
 
   def copy_to(src_root, dest_root)
+    if new_resource.concurrency && new_resource.concurrency <= 0
+      raise "chef_mirror.concurrency must be above 0!  Was set to #{new_resource.concurrency}"
+    end
     # Honor concurrency
     Chef::ChefFS::Parallelizer.threads = (new_resource.concurrency || 10) - 1
 
@@ -44,7 +47,7 @@ class Chef::Provider::ChefMirror < Chef::Provider::LWRPBase
     path_config = new_resource.chef_repo_path
     if path_config.is_a?(Hash)
       chef_repo_path = path_config.delete(:chef_repo_path)
-    elsif chef_repo_path
+    elsif path_config
       chef_repo_path = path_config
       path_config = {}
     else
@@ -54,17 +57,18 @@ class Chef::Provider::ChefMirror < Chef::Provider::LWRPBase
     chef_repo_path = Array(chef_repo_path).flatten
 
     # Go through the expected object paths and figure out the local paths for each.
-    object_paths = {}
     case repo_mode
     when 'hosted_everything'
       object_names = %w(acls clients cookbooks containers data_bags environments groups nodes roles)
     else
       object_names = %w(clients cookbooks data_bags environments nodes roles users)
     end
+
+    object_paths = {}
     object_names.each do |object_name|
       variable_name = "#{object_name[0..-2]}_path" # cookbooks -> cookbook_path
-      if path_config[variable_name]
-        paths = Array(path_config[variable_name]).flatten
+      if path_config[variable_name.to_sym]
+        paths = Array(path_config[variable_name.to_sym]).flatten
       else
         paths = chef_repo_path.map { |path| ::File.join(path, object_name) }
       end

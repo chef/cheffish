@@ -75,7 +75,7 @@ class Chef::Provider::ChefOrganization < Cheffish::ChefProviderBase
   def invites_to_remove
     if new_resource.complete
       if new_resource.invites_specified? || new_resource.members_specified?
-        (existing_members | outstanding_invites.keys) - (new_resource.invites | new_resource.members)
+        outstanding_invites.keys - (new_resource.invites | new_resource.members)
       else
         []
       end
@@ -87,7 +87,7 @@ class Chef::Provider::ChefOrganization < Cheffish::ChefProviderBase
   def members_to_remove
     if new_resource.complete
       if new_resource.members_specified?
-        (existing_members | outstanding_invites.keys) - (new_resource.invites | new_resource.members)
+        existing_members - (new_resource.invites | new_resource.members)
       else
         []
       end

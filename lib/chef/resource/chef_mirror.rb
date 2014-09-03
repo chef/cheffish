@@ -43,5 +43,5 @@ class Chef::Resource::ChefMirror < Chef::Resource::LWRPBase
   attribute :no_diff, :kind_of => [ TrueClass, FalseClass ]
 
   # Number of parallel threads to list/upload/download with.  Defaults to 10.
-  attribute :concurrency, :kind_of => [ TrueClass, FalseClass ]
+  attribute :concurrency, :kind_of => Integer
 end
