@@ -1,5 +1,4 @@
 require 'support/spec_support'
-require 'support/key_support'
 require 'chef/resource/chef_acl'
 require 'chef/provider/chef_acl'
 require 'chef_zero/version'

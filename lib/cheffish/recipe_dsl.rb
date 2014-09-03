@@ -11,20 +11,28 @@ require 'chef_zero/version'
 require 'cheffish/merged_config'
 require 'chef/resource/chef_acl'
 require 'chef/resource/chef_client'
+require 'chef/resource/chef_container'
 require 'chef/resource/chef_data_bag'
 require 'chef/resource/chef_data_bag_item'
 require 'chef/resource/chef_environment'
+require 'chef/resource/chef_group'
+require 'chef/resource/chef_mirror'
 require 'chef/resource/chef_node'
+require 'chef/resource/chef_organization'
 require 'chef/resource/chef_role'
 require 'chef/resource/chef_user'
 require 'chef/resource/private_key'
 require 'chef/resource/public_key'
 require 'chef/provider/chef_acl'
 require 'chef/provider/chef_client'
+require 'chef/provider/chef_container'
 require 'chef/provider/chef_data_bag'
 require 'chef/provider/chef_data_bag_item'
 require 'chef/provider/chef_environment'
+require 'chef/provider/chef_group'
+require 'chef/provider/chef_mirror'
 require 'chef/provider/chef_node'
+require 'chef/provider/chef_organization'
 require 'chef/provider/chef_role'
 require 'chef/provider/chef_user'
 require 'chef/provider/private_key'
@@ -62,16 +70,17 @@ class Chef
 
           # Ensure all paths are given
           %w(acl client cookbook container data_bag environment group node role).each do |type|
-            options["#{type}_path".to_sym] ||= begin
+            options["#{type}_path"] ||= begin
               if options[:chef_repo_path].kind_of?(String)
-                run_context.config.path_join(options[:chef_repo_path], "#{type}s")
+                if defined?(Chef::Util::PathHelper) && Chef::Util::PathHelper.respond_to?(:join)
+                  Chef::Util::PathHelper.join(options[:chef_repo_path], "#{type}s")
+                else
+                  File.join(options[:chef_repo_path], "#{type}s")
+                end
               else
                 options[:chef_repo_path].map { |path| run_context.config.path_join(path, "#{type}s")}
               end
             end
-            # Work around issue in earlier versions of ChefFS where it expects strings for these
-            # instead of symbols
-            options["#{type}_path"] = options["#{type}_path".to_sym]
           end
 
           chef_fs = Chef::ChefFS::Config.new(options).local_fs

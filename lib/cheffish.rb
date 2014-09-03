@@ -9,8 +9,8 @@ require 'chef/application'
 module Cheffish
   NAME_REGEX = /^[.\-[:alnum:]_]+$/
 
-  def self.inline_resource(provider, provider_action, &block)
-    BasicChefClient.inline_resource(provider, provider_action, &block)
+  def self.inline_resource(provider, provider_action, *resources, &block)
+    BasicChefClient.inline_resource(provider, provider_action, *resources, &block)
   end
 
   def self.default_chef_server(config = profiled_config)
