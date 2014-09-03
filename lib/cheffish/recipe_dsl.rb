@@ -1,5 +1,6 @@
 require 'cheffish'
 
+require 'chef/version'
 require 'chef_zero/server'
 require 'chef/chef_fs/chef_fs_data_store'
 require 'chef/chef_fs/config'
@@ -38,6 +39,7 @@ require 'chef/provider/chef_user'
 require 'chef/provider/private_key'
 require 'chef/provider/public_key'
 
+
 class Chef
   module DSL
     module Recipe
@@ -72,13 +74,9 @@ class Chef
           %w(acl client cookbook container data_bag environment group node role).each do |type|
             options["#{type}_path"] ||= begin
               if options[:chef_repo_path].kind_of?(String)
-                if defined?(Chef::Util::PathHelper) && Chef::Util::PathHelper.respond_to?(:join)
-                  Chef::Util::PathHelper.join(options[:chef_repo_path], "#{type}s")
-                else
-                  File.join(options[:chef_repo_path], "#{type}s")
-                end
+                Chef::Util::PathHelper.join(options[:chef_repo_path], "#{type}s")
               else
-                options[:chef_repo_path].map { |path| run_context.config.path_join(path, "#{type}s")}
+                options[:chef_repo_path].map { |path| Chef::Util::PathHelper.join(path, "#{type}s")}
               end
             end
           end
@@ -107,7 +105,7 @@ class Chef
   class Config
     default(:profile) { ENV['CHEF_PROFILE'] || 'default' }
     configurable(:private_keys)
-    default(:private_key_paths) { [ path_join(config_dir, 'keys'), path_join(user_home, '.ssh') ] }
+    default(:private_key_paths) { [ Chef::Util::PathHelper.join(config_dir, 'keys'), Chef::Util::PathHelper.join(user_home, '.ssh') ] }
     default(:private_key_write_path) { private_key_paths.first }
   end
 
@@ -130,4 +128,20 @@ class Chef
     run_status.run_context.cheffish
   end
 
+end
+
+# Chef 12 moved Chef::Config.path_join to PathHelper.join
+if Chef::VERSION.to_i >= 12
+  require 'chef/util/path_helper'
+else
+  require 'chef/config'
+  class Chef
+    class Util
+      class PathHelper
+        def join(*args)
+          Chef::Config.path_join(*args)
+        end
+      end
+    end
+  end
 end
