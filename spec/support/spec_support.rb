@@ -4,12 +4,15 @@ require 'cheffish'
 require 'cheffish/basic_chef_client'
 require 'chef/provider/chef_acl'
 require 'uri'
+require 'support/repository_support'
 
 module SpecSupport
   include ChefZero::RSpec
 
   def self.extended(klass)
     klass.class_eval do
+      extend RepositorySupport
+
       def rest
         Chef::ServerAPI.new
       end

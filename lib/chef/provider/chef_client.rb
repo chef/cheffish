@@ -12,6 +12,10 @@ class Chef::Provider::ChefClient < Cheffish::ActorProviderBase
     'client'
   end
 
+  def actor_path
+    'clients'
+  end
+
   action :create do
     create_actor
   end

@@ -215,10 +215,12 @@ module Cheffish
       def initialize(name, parent = nil)
         @name = name
         @parent = parent
+        @org = nil
       end
 
       attr_reader :name
       attr_reader :parent
+      attr_reader :org
     end
   end
 end
