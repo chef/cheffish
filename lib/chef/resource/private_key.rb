@@ -36,4 +36,9 @@ class Chef::Resource::PrivateKey < Chef::Resource::LWRPBase
   def after(&block)
     block ? @after = block : @after
   end
+
+  # We are not interested in Chef's cloning behavior here.
+  def load_prior_resource
+    Chef::Log.debug("Overloading #{resource_name}.load_prior_resource with NOOP")
+  end
 end

@@ -223,4 +223,9 @@ module Cheffish
       attr_reader :org
     end
   end
+
+  # We are not interested in Chef's cloning behavior here.
+  def load_prior_resource
+    Chef::Log.debug("Overloading #{resource_name}.load_prior_resource with NOOP")
+  end
 end
