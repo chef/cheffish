@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8 (9/5/2014)
+
+- FEATURE: Enterprise and Chef 12 support!
+  - chef_acl, chef_group, chef_container resources to manipulate ACLs and groups
+  - chef_organization resource to create and delete Chef organizations and add members/invitations
+- FEATURE: chef_mirror with :download and :upload support: lets you mirror all or part of a Chef repository and the Chef server.  Uses `ChefFS`, the technology behind `knife upload` and `knife download`, to do the dirty work.
+- Fix issue when specifying Private Key as a string (@johnbellone)
+- Make MergedConfig more readable (@mwrock)
+
 ## 0.7.1 (8/18/2014)
 
 - Fix Cheffish to work with latest Chef
