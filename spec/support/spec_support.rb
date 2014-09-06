@@ -9,6 +9,12 @@ require 'support/repository_support'
 module SpecSupport
   include ChefZero::RSpec
 
+  def when_the_chef_12_server(*args, &block)
+    if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
+      when_the_chef_server(*args, :osc_compat => false, :single_org => false, &block)
+    end
+  end
+
   def self.extended(klass)
     klass.class_eval do
       extend RepositorySupport

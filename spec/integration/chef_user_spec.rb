@@ -44,7 +44,7 @@ describe Chef::Resource::ChefUser do
     end
   end
 
-  when_the_chef_server 'is multitenant', :osc_compat => false, :single_org => false do
+  when_the_chef_12_server 'is in multi-org mode' do
     context 'and chef_server_url is pointed at the top level' do
       context 'and we run a recipe that creates user "blah"'do
         with_converge do

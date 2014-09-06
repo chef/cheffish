@@ -5,7 +5,7 @@ require 'chef/provider/chef_mirror'
 describe Chef::Resource::ChefMirror do
   extend SpecSupport
 
-  when_the_chef_server 'is in multi-org mode', :osc_compat => false, :single_org => false do
+  when_the_chef_12_server 'is in multi-org mode' do
     organization 'foo'
 
     before :each do

@@ -5,7 +5,7 @@ require 'chef/provider/chef_organization'
 describe Chef::Resource::ChefOrganization do
   extend SpecSupport
 
-  when_the_chef_server 'is in multi-org mode', :osc_compat => false, :single_org => false do
+  when_the_chef_12_server 'is in multi-org mode' do
     context 'and chef_server_url is pointed at the top level' do
       user 'u', {}
       user 'u2', {}
