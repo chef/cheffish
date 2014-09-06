@@ -23,8 +23,9 @@ class Chef::Resource::ChefMirror < Chef::Resource::LWRPBase
   # versioned_cookbooks defaults to true.
   attribute :chef_repo_path, :kind_of => [ String, Hash ]
 
-  # Whether the repo path contains / should contain cookbooks with versioned names,
+  # Whether the repo path should contain cookbooks with versioned names,
   # i.e. cookbooks/mysql-1.0.0, cookbooks/mysql-1.2.0, etc.
+  # Defaults to true if chef_repo_path is specified, or to Chef::Config.versioned_cookbooks otherwise.
   attribute :versioned_cookbooks, :kind_of => [ TrueClass, FalseClass ]
 
   # Chef server

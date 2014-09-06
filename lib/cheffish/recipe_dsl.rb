@@ -138,7 +138,7 @@ else
   class Chef
     class Util
       class PathHelper
-        def join(*args)
+        def self.join(*args)
           Chef::Config.path_join(*args)
         end
       end
