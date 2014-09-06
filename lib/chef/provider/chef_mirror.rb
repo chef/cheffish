@@ -12,11 +12,36 @@ class Chef::Provider::ChefMirror < Chef::Provider::LWRPBase
   end
 
   action :upload do
-    copy_to(local_fs, remote_fs)
+    with_modified_config do
+      copy_to(local_fs, remote_fs)
+    end
   end
 
   action :download do
-    copy_to(remote_fs, local_fs)
+    with_modified_config do
+      copy_to(remote_fs, local_fs)
+    end
+  end
+
+  def with_modified_config
+    # pre-Chef-12 ChefFS reads versioned_cookbooks out of Chef::Config instead of
+    # taking it as an input, so we need to modify it for the duration of copy_to
+    @old_versioned_cookbooks = Chef::Config.versioned_cookbooks
+    # If versioned_cookbooks is explicitly set, set it.
+    if !new_resource.versioned_cookbooks.nil?
+      Chef::Config.versioned_cookbooks = new_resource.versioned_cookbooks
+
+    # If new_resource.chef_repo_path is set, versioned_cookbooks defaults to true.
+    # Otherwise, it stays at its current Chef::Config value.
+    elsif new_resource.chef_repo_path
+      Chef::Config.versioned_cookbooks = true
+    end
+
+    begin
+      yield
+    ensure
+      Chef::Config.versioned_cookbooks = @old_versioned_cookbooks
+    end
   end
 
   def copy_to(src_root, dest_root)
@@ -84,7 +109,8 @@ class Chef::Provider::ChefMirror < Chef::Provider::LWRPBase
       :chef_server_url => new_resource.chef_server[:chef_server_url],
       :node_name => new_resource.chef_server[:options][:client_name],
       :client_key => new_resource.chef_server[:options][:client_key],
-      :repo_mode => repo_mode
+      :repo_mode => repo_mode,
+      :versioned_cookbooks => Chef::Config.versioned_cookbooks
     }
     Chef::ChefFS::FileSystem::ChefServerRootDir.new("remote", config)
   end
