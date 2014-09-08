@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.2 (9/8/2014)
+
+- Fix issue with attribute merge
+
 ## 0.8.1 (9/8/2014)
 
 - Fix Cheffish against Chef 11 client
