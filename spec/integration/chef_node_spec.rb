@@ -216,6 +216,7 @@ describe Chef::Resource::ChefNode do
               attributes({})
             end
           end
+          expect(chef_run).to have_updated('chef_node[blah]', :create)
           expect(get('nodes/blah')).to include(
             'normal' => { 'tags' => [ 'a', 'b' ] },
             'automatic' => { 'x' => 'y' },
@@ -229,6 +230,7 @@ describe Chef::Resource::ChefNode do
               attributes 'c' => 'd'
             end
           end
+          expect(chef_run).to have_updated('chef_node[blah]', :create)
           expect(get('nodes/blah')).to include(
             'normal' => { 'c' => 'd', 'tags' => [ 'a', 'b' ] },
             'automatic' => { 'x' => 'y' },
@@ -242,6 +244,7 @@ describe Chef::Resource::ChefNode do
               attributes 'c' => { 'f' => 'g' }, 'y' => 'z'
             end
           end
+          expect(chef_run).to have_updated('chef_node[blah]', :create)
           expect(get('nodes/blah')).to include(
             'normal' => { 'c' => { 'f' => 'g' }, 'y' => 'z', 'tags' => [ 'a', 'b' ] },
             'automatic' => { 'x' => 'y' },
@@ -255,6 +258,7 @@ describe Chef::Resource::ChefNode do
               attributes 'tags' => [ 'x' ]
             end
           end
+          expect(chef_run).to have_updated('chef_node[blah]', :create)
           expect(get('nodes/blah')).to include(
             'normal' => { 'tags' => [ 'x' ] },
             'automatic' => { 'x' => 'y' },
@@ -269,6 +273,7 @@ describe Chef::Resource::ChefNode do
               attributes 'tags' => [ 'y' ]
             end
           end
+          expect(chef_run).to have_updated('chef_node[blah]', :create)
           expect(get('nodes/blah')).to include(
             'normal' => {
               'tags' => [ 'x' ]
@@ -299,6 +304,7 @@ describe Chef::Resource::ChefNode do
             run_recipe do
               chef_node 'blah'
             end
+            expect(chef_run).not_to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -316,6 +322,7 @@ describe Chef::Resource::ChefNode do
                 attribute 'd', 'e'
               end
             end
+            expect(chef_run).to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -334,6 +341,7 @@ describe Chef::Resource::ChefNode do
                 attribute 'tags', [ 'x' ]
               end
             end
+            expect(chef_run).to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -351,6 +359,7 @@ describe Chef::Resource::ChefNode do
                 attribute 'c', 'x'
               end
             end
+            expect(chef_run).to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -368,6 +377,7 @@ describe Chef::Resource::ChefNode do
                 attribute 'c', { 'd' => 'x' }
               end
             end
+            expect(chef_run).to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -385,6 +395,7 @@ describe Chef::Resource::ChefNode do
                 attribute [ 'c', 'd' ], 'x'
               end
             end
+            expect(chef_run).to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -422,11 +433,102 @@ describe Chef::Resource::ChefNode do
                 attribute [ 'x', 'y' ], 'z'
               end
             end
+            expect(chef_run).to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
                 'c' => { 'd' => 'e' },
                 'x' => { 'y' => 'z' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+        end
+
+        context 'delete' do
+          it 'chef_node with attribute a, :delete deletes the attribute' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'a', :delete
+              end
+            end
+            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'c' => { 'd' => 'e' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute c, :delete deletes the attribute' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'c', :delete
+              end
+            end
+            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute [ c, d ], :delete deletes the attribute' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute [ 'c', 'd' ], :delete
+              end
+            end
+            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => {},
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute xyz, :delete does nothing' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'xyz', :delete
+              end
+            end
+            expect(chef_run).not_to have_updated('chef_node[blah]', :create)
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => { 'd' => 'e' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute [ c, x ], :delete does nothing' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute [ 'c', 'x' ], :delete
+              end
+            end
+            expect(chef_run).not_to have_updated('chef_node[blah]', :create)
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => { 'd' => 'e' },
                 'tags' => [ 'a', 'b' ]
               },
               'automatic' => { 'x' => 'y' },
