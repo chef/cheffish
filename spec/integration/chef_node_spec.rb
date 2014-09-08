@@ -129,6 +129,34 @@ describe Chef::Resource::ChefNode do
         end
       end
 
+      context 'with chef_node "blah" and an updated normal attribute value' do
+        with_converge do
+          chef_node 'blah' do
+            attributes 'foo' => 'fum'
+          end
+        end
+
+        it 'new normal attribute is added' do
+          expect(chef_run).to have_updated 'chef_node[blah]', :create
+          node = get('nodes/blah')
+          expect(node['normal']).to eq({ 'foo' => 'fum', 'tags' => [ 'a', 'b' ] })
+        end
+      end
+
+      context 'with chef_node "blah" and a new normal attribute' do
+        with_converge do
+          chef_node 'blah' do
+            attributes 'foe' => 'fum'
+          end
+        end
+
+        it 'new normal attribute is added' do
+          expect(chef_run).to have_updated 'chef_node[blah]', :create
+          node = get('nodes/blah')
+          expect(node['normal']).to eq({ 'foe' => 'fum', 'foo' => 'bar', 'tags' => [ 'a', 'b' ] })
+        end
+      end
+
       context 'with chef_node "blah" with complete true' do
         with_converge do
           chef_node 'blah' do
@@ -147,6 +175,22 @@ describe Chef::Resource::ChefNode do
           expect(node['override']).to eq({ 'foo4' => 'bar4' })
         end
       end
+
+      context 'with chef_node "blah", complete true and a new normal attribute' do
+        with_converge do
+          chef_node 'blah' do
+            attributes 'foe' => 'fum'
+            complete true
+          end
+        end
+
+        it 'normal foo attribute is replaced with new attribute' do
+          expect(chef_run).to have_updated 'chef_node[blah]', :create
+          node = get('nodes/blah')
+          expect(node['normal']).to eq({ 'foe' => 'fum', 'tags' => [ 'a', 'b' ] })
+        end
+      end
+
     end
   end
 
