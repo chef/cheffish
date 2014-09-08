@@ -31,8 +31,8 @@ module Cheffish
         if new_resource.complete
           result = normalize(resource_to_json(new_resource))
         else
-          # If resource is incomplete, use current json to fill any holes
-          result = Chef::Mixin::DeepMerge.hash_only_merge(current_json, resource_to_json(new_resource))
+          # If the resource is incomplete, we use the current json to fill any holes
+          result = current_json.merge(resource_to_json(new_resource))
         end
         augment_new_json(result)
       end
@@ -131,7 +131,18 @@ module Cheffish
       modifiers.each do |path, value|
         path = [path] if !path.kind_of?(Array)
         path = path.map { |path_part| path_part.to_s }
-        parent = path[0..-2].inject(json) { |hash, path_part| hash ? hash[path_part] : nil }
+        parent = 0.upto(path.size-2).inject(json) do |hash, index|
+          if hash.nil?
+            nil
+          elsif !hash.is_a?(Hash)
+            raise "Attempt to set #{path} to #{value} when #{path[0..index-1]} is not a hash"
+          else
+            hash[path[index]]
+          end
+        end
+        if !parent.nil? && !parent.is_a?(Hash)
+          raise "Attempt to set #{path} to #{value} when #{path[0..-2]} is not a hash"
+        end
         existing_value = parent ? parent[path[-1]] : nil
 
         if value.is_a?(Proc)
@@ -139,14 +150,11 @@ module Cheffish
         end
         if value == :delete
           parent.delete(path[-1]) if parent
-          # TODO clean up parent chain if hash is completely emptied
         else
-          if !parent
-            # Create parent if necessary
-            parent = path[0..-2].inject(json) do |hash, path_part|
-              hash[path_part] = {} if !hash[path_part]
-              hash[path_part]
-            end
+          # Create parent if necessary, overwriting values
+          parent = path[0..-2].inject(json) do |hash, path_part|
+            hash[path_part] = {} if !hash[path_part]
+            hash[path_part]
           end
           parent[path[-1]] = value
         end

@@ -109,88 +109,574 @@ describe Chef::Resource::ChefNode do
       end
     end
 
-    context 'has a node named "blah" with everything in it' do
-      node 'blah', {
-        'chef_environment' => 'blah',
-        'run_list'  => [ 'recipe[bjork]' ],
-        'normal'    => { 'foo' => 'bar', 'tags' => [ 'a', 'b' ] },
-        'default'   => { 'foo2' => 'bar2' },
-        'automatic' => { 'foo3' => 'bar3' },
-        'override'  => { 'foo4' => 'bar4' }
-      }
+    describe '#complete' do
+      context 'when the Chef server has a node named "blah" with everything in it' do
+        node 'blah', {
+          'chef_environment' => 'blah',
+          'run_list'  => [ 'recipe[bjork]' ],
+          'normal'    => { 'foo' => 'bar', 'tags' => [ 'a', 'b' ] },
+          'default'   => { 'foo2' => 'bar2' },
+          'automatic' => { 'foo3' => 'bar3' },
+          'override'  => { 'foo4' => 'bar4' }
+        }
 
-      context 'with chef_node "blah"' do
-        with_converge do
-          chef_node 'blah'
+        it 'chef_node with no attributes modifies nothing' do
+          run_recipe do
+            chef_node 'blah'
+          end
+          expect(get('nodes/blah')).to include(
+            'name' => 'blah',
+            'chef_environment' => 'blah',
+            'run_list'  => [ 'recipe[bjork]' ],
+            'normal'    => { 'foo' => 'bar', 'tags' => [ 'a', 'b' ] },
+            'default'   => { 'foo2' => 'bar2' },
+            'automatic' => { 'foo3' => 'bar3' },
+            'override'  => { 'foo4' => 'bar4' }
+          )
         end
 
-        it 'nothing gets updated' do
-          expect(chef_run).not_to have_updated 'chef_node[blah]', :create
+        it 'chef_node with complete true removes everything except default, automatic and override' do
+          run_recipe do
+            chef_node 'blah' do
+              complete true
+            end
+          end
+          expect(get('nodes/blah')).to include(
+            'name' => 'blah',
+            'chef_environment' => '_default',
+            'run_list'  => [ ],
+            'normal'    => { 'tags' => [ 'a', 'b' ] },
+            'default'   => { 'foo2' => 'bar2' },
+            'automatic' => { 'foo3' => 'bar3' },
+            'override'  => { 'foo4' => 'bar4' }
+          )
+        end
+
+        it 'chef_node with complete true sets the given attributes' do
+          run_recipe do
+            chef_node 'blah' do
+              chef_environment 'x'
+              run_list [ 'recipe[y]' ]
+              attributes 'a' => 'b'
+              tags 'c', 'd'
+              complete true
+            end
+          end
+          expect(get('nodes/blah')).to include(
+            'name' => 'blah',
+            'chef_environment' => 'x',
+            'run_list'  => [ 'recipe[y]' ],
+            'normal'    => { 'a' => 'b', 'tags' => [ 'c', 'd' ] },
+            'default'   => { 'foo2' => 'bar2' },
+            'automatic' => { 'foo3' => 'bar3' },
+            'override'  => { 'foo4' => 'bar4' }
+          )
+        end
+
+        it 'chef_node with complete true and partial attributes sets the given attributes' do
+          run_recipe do
+            chef_node 'blah' do
+              chef_environment 'x'
+              recipe 'y'
+              attribute 'a', 'b'
+              tags 'c', 'd'
+              complete true
+            end
+          end
+          expect(get('nodes/blah')).to include(
+            'name' => 'blah',
+            'chef_environment' => 'x',
+            'run_list'  => [ 'recipe[y]' ],
+            'normal'    => { 'a' => 'b', 'tags' => [ 'c', 'd' ] },
+            'default'   => { 'foo2' => 'bar2' },
+            'automatic' => { 'foo3' => 'bar3' },
+            'override'  => { 'foo4' => 'bar4' }
+          )
         end
       end
+    end
 
-      context 'with chef_node "blah" and an updated normal attribute value' do
-        with_converge do
-          chef_node 'blah' do
-            attributes 'foo' => 'fum'
+    describe '#attributes' do
+      context 'with a node with normal attributes a => b and c => { d => e }' do
+        node 'blah', {
+          'normal' => {
+            'a' => 'b',
+            'c' => { 'd' => 'e' },
+            'tags' => [ 'a', 'b' ]
+          },
+          'automatic' => {
+            'x' => 'y'
+          },
+          'chef_environment' => 'desert'
+        }
+
+        it 'chef_node with attributes {} removes all normal attributes but leaves tags, automatic and environment alone' do
+          run_recipe do
+            chef_node 'blah' do
+              attributes({})
+            end
+          end
+          expect(get('nodes/blah')).to include(
+            'normal' => { 'tags' => [ 'a', 'b' ] },
+            'automatic' => { 'x' => 'y' },
+            'chef_environment' => 'desert'
+          )
+        end
+
+        it 'chef_node with attributes { c => d } replaces normal but not tags/automatic/environment' do
+          run_recipe do
+            chef_node 'blah' do
+              attributes 'c' => 'd'
+            end
+          end
+          expect(get('nodes/blah')).to include(
+            'normal' => { 'c' => 'd', 'tags' => [ 'a', 'b' ] },
+            'automatic' => { 'x' => 'y' },
+            'chef_environment' => 'desert'
+          )
+        end
+
+        it 'chef_node with attributes { c => f => g, y => z } replaces normal but not tags/automatic/environment' do
+          run_recipe do
+            chef_node 'blah' do
+              attributes 'c' => { 'f' => 'g' }, 'y' => 'z'
+            end
+          end
+          expect(get('nodes/blah')).to include(
+            'normal' => { 'c' => { 'f' => 'g' }, 'y' => 'z', 'tags' => [ 'a', 'b' ] },
+            'automatic' => { 'x' => 'y' },
+            'chef_environment' => 'desert'
+          )
+        end
+
+        it 'chef_node with attributes { tags => [ "x" ] } replaces normal and tags but not automatic/environment' do
+          run_recipe do
+            chef_node 'blah' do
+              attributes 'tags' => [ 'x' ]
+            end
+          end
+          expect(get('nodes/blah')).to include(
+            'normal' => { 'tags' => [ 'x' ] },
+            'automatic' => { 'x' => 'y' },
+            'chef_environment' => 'desert'
+          )
+        end
+
+        it 'chef_node with tags "x" and attributes { "tags" => [ "y" ] } sets tags to "x"' do
+          run_recipe do
+            chef_node 'blah' do
+              tags 'x'
+              attributes 'tags' => [ 'y' ]
+            end
+          end
+          expect(get('nodes/blah')).to include(
+            'normal' => {
+              'tags' => [ 'x' ]
+            },
+            'automatic' => { 'x' => 'y' },
+            'chef_environment' => 'desert'
+          )
+        end
+      end
+    end
+
+    describe '#attribute' do
+      context 'with a node with normal attributes a => b and c => { d => e }' do
+        node 'blah', {
+          'normal' => {
+            'a' => 'b',
+            'c' => { 'd' => 'e' },
+            'tags' => [ 'a', 'b' ]
+          },
+          'automatic' => {
+            'x' => 'y'
+          },
+          'chef_environment' => 'desert'
+        }
+
+        context 'basic scenarios' do
+          it 'chef_node with no attributes, leaves it alone' do
+            run_recipe do
+              chef_node 'blah'
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => { 'd' => 'e' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute d, e adds the attribute' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'd', 'e'
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => { 'd' => 'e' },
+                'd' => 'e',
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute tags, [ "x" ] replaces tags' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'tags', [ 'x' ]
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => { 'd' => 'e' },
+                'tags' => [ 'x' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute c, x replaces the attribute' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'c', 'x'
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => 'x',
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute c, { d => x } replaces the attribute' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'c', { 'd' => 'x' }
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => { 'd' => 'x' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute [ c, d ], x replaces the attribute' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute [ 'c', 'd' ], 'x'
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => { 'd' => 'x' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute [ a, b ], x raises an error' do
+            expect do
+              run_recipe do
+                chef_node 'blah' do
+                  attribute [ 'a', 'b' ], 'x'
+                end
+              end
+            end.to raise_error /Attempt to set \["a", "b"\] to x when \["a"\] is not a hash/
+          end
+
+          it 'chef_node with attribute [ a, b, c ], x raises an error' do
+            expect do
+              run_recipe do
+                chef_node 'blah' do
+                  attribute [ 'a', 'b', 'c' ], 'x'
+                end
+              end
+            end.to raise_error /Attempt to set \["a", "b", "c"\] to x when \["a"\] is not a hash/
+          end
+
+          it 'chef_node with attribute [ x, y ], z adds a new attribute' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute [ 'x', 'y' ], 'z'
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => { 'd' => 'e' },
+                'x' => { 'y' => 'z' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
           end
         end
 
-        it 'new normal attribute is added' do
-          expect(chef_run).to have_updated 'chef_node[blah]', :create
-          node = get('nodes/blah')
-          expect(node['normal']).to eq({ 'foo' => 'fum', 'tags' => [ 'a', 'b' ] })
-        end
-      end
+        context 'types' do
+          it 'chef_node with attribute a, true sets a to true' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'a', true
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => true,
+                'c' => { 'd' => 'e' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
 
-      context 'with chef_node "blah" and a new normal attribute' do
-        with_converge do
-          chef_node 'blah' do
-            attributes 'foe' => 'fum'
+          it 'chef_node with attribute a, 1 sets a to 1' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'a', 1
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 1,
+                'c' => { 'd' => 'e' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute a, "1" sets a to "1"' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'a', "1"
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => "1",
+                'c' => { 'd' => 'e' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute a, "" sets a to ""' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'a', ""
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => "",
+                'c' => { 'd' => 'e' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute a, nil sets a to nil' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'a', nil
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => nil,
+                'c' => { 'd' => 'e' },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
           end
         end
 
-        it 'new normal attribute is added' do
-          expect(chef_run).to have_updated 'chef_node[blah]', :create
-          node = get('nodes/blah')
-          expect(node['normal']).to eq({ 'foe' => 'fum', 'foo' => 'bar', 'tags' => [ 'a', 'b' ] })
-        end
-      end
+        context 'multiple attribute definitions' do
+          it 'chef_node with attribute a, x and c, y replaces both attributes' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'a', 'x'
+                attribute 'c', 'y'
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'x',
+                'c' => 'y',
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
 
-      context 'with chef_node "blah" with complete true' do
-        with_converge do
-          chef_node 'blah' do
-            complete true
+          it 'chef_node with attribute m, x and n, y adds both attributes' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute 'm', 'x'
+                attribute 'n', 'y'
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => { 'd' => 'e' },
+                'm' => 'x',
+                'n' => 'y',
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          it 'chef_node with attribute [x, y], z and [x, yy], zz adds both attributes' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute [ 'x', 'y' ], 'z'
+                attribute [ 'x', 'yy' ], 'zz'
+              end
+            end
+            expect(get('nodes/blah')).to include(
+              'normal' => {
+                'a' => 'b',
+                'c' => { 'd' => 'e' },
+                'x' => {
+                  'y' => 'z',
+                  'yy' => 'zz'
+                },
+                'tags' => [ 'a', 'b' ]
+              },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
+
+          describe 'precedence' do
+            it 'chef_node with attribute a, 1 and a, 2 sets a to 2' do
+              run_recipe do
+                chef_node 'blah' do
+                  attribute 'a', 1
+                  attribute 'a', 2
+                end
+              end
+              expect(get('nodes/blah')).to include(
+                'normal' => {
+                  'a' => 2,
+                  'c' => { 'd' => 'e' },
+                  'tags' => [ 'a', 'b' ]
+                },
+                'automatic' => { 'x' => 'y' },
+                'chef_environment' => 'desert'
+              )
+            end
+
+            it 'chef_node with attribute [ x, y ], 1 and [ x, y ], 2 sets [ x, y ], 2' do
+              run_recipe do
+                chef_node 'blah' do
+                  attribute [ 'x', 'y' ], 1
+                  attribute [ 'x', 'y' ], 2
+                end
+              end
+              expect(get('nodes/blah')).to include(
+                'normal' => {
+                  'a' => 'b',
+                  'c' => { 'd' => 'e' },
+                  'x' => { 'y' => 2 },
+                  'tags' => [ 'a', 'b' ]
+                },
+                'automatic' => { 'x' => 'y' },
+                'chef_environment' => 'desert'
+              )
+            end
+
+            it 'chef_node with attribute [ c, e ], { a => 1 }, [ c, e ], { b => 2 } sets b only' do
+              run_recipe do
+                chef_node 'blah' do
+                  attribute [ 'c', 'e' ], { 'a' => 1 }
+                  attribute [ 'c', 'e' ], { 'b' => 2 }
+                end
+              end
+              expect(get('nodes/blah')).to include(
+                'normal' => {
+                  'a' => 'b',
+                  'c' => { 'd' => 'e', 'e' => { 'b' => 2 } },
+                  'tags' => [ 'a', 'b' ]
+                },
+                'automatic' => { 'x' => 'y' },
+                'chef_environment' => 'desert'
+              )
+            end
+
+            it 'chef_node with attribute [ c, e ], { a => 1 }, [ c, e, b ], 2 sets both' do
+              run_recipe do
+                chef_node 'blah' do
+                  attribute [ 'c', 'e' ], { 'a' => 1 }
+                  attribute [ 'c', 'e', 'b' ], 2
+                end
+              end
+              expect(get('nodes/blah')).to include(
+                'normal' => {
+                  'a' => 'b',
+                  'c' => { 'd' => 'e', 'e' => { 'a' => 1, 'b' => 2 } },
+                  'tags' => [ 'a', 'b' ]
+                },
+                'automatic' => { 'x' => 'y' },
+                'chef_environment' => 'desert'
+              )
+            end
+
+            it 'chef_node with attribute [ c, e, b ], 2, [ c, e ], { a => 1 } sets a only' do
+              run_recipe do
+                chef_node 'blah' do
+                  attribute [ 'c', 'e', 'b' ], 2
+                  attribute [ 'c', 'e' ], { 'a' => 1 }
+                end
+              end
+              expect(get('nodes/blah')).to include(
+                'normal' => {
+                  'a' => 'b',
+                  'c' => { 'd' => 'e', 'e' => { 'a' => 1 } },
+                  'tags' => [ 'a', 'b' ]
+                },
+                'automatic' => { 'x' => 'y' },
+                'chef_environment' => 'desert'
+              )
+            end
           end
         end
-
-        it 'default, automatic and override attributes are left alone' do
-          expect(chef_run).to have_updated 'chef_node[blah]', :create
-          node = get('nodes/blah')
-          expect(node['chef_environment']).to eq('_default')
-          expect(node['run_list']).to eq([])
-          expect(node['normal']).to eq({ 'tags' => [ 'a', 'b' ] })
-          expect(node['default']).to eq({ 'foo2' => 'bar2' })
-          expect(node['automatic']).to eq({ 'foo3' => 'bar3' })
-          expect(node['override']).to eq({ 'foo4' => 'bar4' })
-        end
       end
-
-      context 'with chef_node "blah", complete true and a new normal attribute' do
-        with_converge do
-          chef_node 'blah' do
-            attributes 'foe' => 'fum'
-            complete true
-          end
-        end
-
-        it 'normal foo attribute is replaced with new attribute' do
-          expect(chef_run).to have_updated 'chef_node[blah]', :create
-          node = get('nodes/blah')
-          expect(node['normal']).to eq({ 'foe' => 'fum', 'tags' => [ 'a', 'b' ] })
-        end
-      end
-
     end
   end
 
