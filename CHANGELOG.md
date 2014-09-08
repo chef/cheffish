@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.1 (9/8/2014)
+
+- Fix Cheffish against Chef 11 client
+- Fix normal attributes that are sometimes overwritten (@mwrock)
+- Get chef_mirror.versioned_cookbooks working
+
 ## 0.8 (9/5/2014)
 
 - FEATURE: Enterprise and Chef 12 support!
