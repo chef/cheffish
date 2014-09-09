@@ -108,7 +108,7 @@ class Chef::Provider::ChefMirror < Chef::Provider::LWRPBase
     config = {
       :chef_server_url => new_resource.chef_server[:chef_server_url],
       :node_name => new_resource.chef_server[:options][:client_name],
-      :client_key => new_resource.chef_server[:options][:client_key],
+      :client_key => new_resource.chef_server[:options][:signing_key_filename],
       :repo_mode => repo_mode,
       :versioned_cookbooks => Chef::Config.versioned_cookbooks
     }
