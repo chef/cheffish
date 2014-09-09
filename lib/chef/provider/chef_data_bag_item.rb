@@ -170,7 +170,7 @@ class Chef::Provider::ChefDataBagItem < Cheffish::ChefProviderBase
         result = current_decrypted.merge(new_resource.raw_data || {})
       end
       result['id'] = new_resource.id
-      apply_modifiers(new_resource.raw_data_modifiers, result)
+      result = apply_modifiers(new_resource.raw_data_modifiers, result)
     end
   end
 

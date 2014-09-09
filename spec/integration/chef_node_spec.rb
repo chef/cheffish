@@ -445,6 +445,20 @@ describe Chef::Resource::ChefNode do
               'chef_environment' => 'desert'
             )
           end
+
+          it 'chef_node with attribute [], {} clears all attributes' do
+            run_recipe do
+              chef_node 'blah' do
+                attribute([], {})
+              end
+            end
+            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            expect(get('nodes/blah')).to include(
+              'normal' => { },
+              'automatic' => { 'x' => 'y' },
+              'chef_environment' => 'desert'
+            )
+          end
         end
 
         context 'delete' do

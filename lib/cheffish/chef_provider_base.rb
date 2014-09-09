@@ -156,7 +156,11 @@ module Cheffish
             hash[path_part] = {} if !hash[path_part]
             hash[path_part]
           end
-          parent[path[-1]] = value
+          if path.size > 0
+            parent[path[-1]] = value
+          else
+            json = value
+          end
         end
       end
       json
