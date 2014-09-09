@@ -73,7 +73,9 @@ class Chef
           # Ensure all paths are given
           %w(acl client cookbook container data_bag environment group node role).each do |type|
             options["#{type}_path"] ||= begin
-              if options[:chef_repo_path].kind_of?(String)
+              if options["#{type}_path".to_sym] 
+                options["#{type}_path".to_sym]
+              elsif options[:chef_repo_path].kind_of?(String)
                 Chef::Util::PathHelper.join(options[:chef_repo_path], "#{type}s")
               else
                 options[:chef_repo_path].map { |path| Chef::Util::PathHelper.join(path, "#{type}s")}
