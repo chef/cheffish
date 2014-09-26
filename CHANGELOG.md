@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.3 (9/26/2014)
+
+- Fix for honoring with_ attributes as symbols or strings
+
 ## 0.8.2 (9/8/2014)
 
 - Fix issue with attribute merge
