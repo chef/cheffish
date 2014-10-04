@@ -41,6 +41,7 @@ class Chef::Provider::ChefUser < Cheffish::ActorProviderBase
     {
       'name' => :name,
       'username' => :name,
+      'display_name' => :display_name,
       'admin' => :admin,
       'email' => :email,
       'password' => :password,
