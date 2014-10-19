@@ -57,7 +57,7 @@ module Cheffish
     Cheffish.profiled_config(chef_config)
   end
 
-  def self.honor_local_mode(local_mode_default = true)
+  def self.honor_local_mode(local_mode_default = true, &block)
     if !Chef::Config.has_key?(:local_mode) && !local_mode_default.nil?
       Chef::Config.local_mode = local_mode_default
     end
