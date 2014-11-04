@@ -2,11 +2,11 @@ require 'chef/event_dispatch/base'
 
 module Cheffish
   class ChefRunListener < Chef::EventDispatch::Base
-    def initialize(run_context)
-      @run_context = run_context
+    def initialize(node)
+      @node = node
     end
 
-    attr_reader :run_context
+    attr_reader :node
 
     def run_complete(node)
       disconnect
@@ -20,7 +20,7 @@ module Cheffish
 
     def disconnect
       # Stop the servers
-      run_context.cheffish.local_servers.each do |server|
+      node.run_context.cheffish.local_servers.each do |server|
         server.stop
       end
     end
