@@ -12,7 +12,6 @@ Gem::Specification.new do |s|
   s.email = 'jkeiser@opscode.com'
   s.homepage = 'http://wiki.opscode.com/display/chef'
 
-  s.add_dependency 'chef', '>= 11.8'
   s.add_dependency 'chef-zero'
 
   s.add_development_dependency 'rake'
