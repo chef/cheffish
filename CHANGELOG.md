@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.4 (11/4/2014)
+
+- Remove Chef as an explicit dependency so it can be included as a plugin
+
 ## 0.8.3 (9/26/2014)
 
 - Fix for honoring with_ attributes as symbols or strings
