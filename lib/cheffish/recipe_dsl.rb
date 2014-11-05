@@ -87,7 +87,7 @@ class Chef
             # Copy over to string keys for things that use string keys (ChefFS)...
             # TODO: Fix ChefFS to take symbols or use something that is insensitive to the difference
             options[string_key] = options[symbol_key]
-          end 
+          end
 
           chef_fs = Chef::ChefFS::Config.new(options).local_fs
           chef_fs.write_pretty_json = true
@@ -119,21 +119,23 @@ class Chef
 
   class RunContext
     def cheffish
-      @cheffish ||= begin
+      node.run_state[:cheffish] ||= begin
         run_data = Cheffish::ChefRunData.new(config)
-        events.register(Cheffish::ChefRunListener.new(self))
+        events.register(Cheffish::ChefRunListener.new(node))
         run_data
       end
     end
 
     def config
-      @config ||= Cheffish.profiled_config(Chef::Config)
+      node.run_state[:chef_config] ||= Cheffish.profiled_config(Chef::Config)
     end
   end
 
   Chef::Client.when_run_starts do |run_status|
     # Pulling on cheffish_run_data makes it initialize right now
-    run_status.run_context.cheffish
+    run_status.node.run_state[:chef_config] = config = Cheffish.profiled_config(Chef::Config)
+    run_status.node.run_state[:cheffish] = run_data = Cheffish::ChefRunData.new(config)
+    run_status.events.register(Cheffish::ChefRunListener.new(run_status.node))
   end
 
 end
