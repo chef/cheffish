@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9 (11/4/2014)
+
+- Work with Chef 12 as well as 11
+
 ## 0.8.4 (11/4/2014)
 
 - Remove Chef as an explicit dependency so it can be included as a plugin
