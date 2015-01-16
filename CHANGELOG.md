@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.1 (1/15/2014)
+
+- Add Chef 12 display_name support to chef_user (@charlesjohnson)
+- Fix chef_mirror when run against real Chef servers (@johnbellone)
+- Fix crash in honor_local_mode (@mwrock)
+- Fix remove_role to actually remove the role (@causton81)
+
 ## 0.9 (11/4/2014)
 
 - Work with Chef 12 as well as 11
