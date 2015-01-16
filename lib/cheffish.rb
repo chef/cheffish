@@ -211,7 +211,7 @@ module Cheffish
           raise ArgumentError, "At least one role must be specified"
         end
         @run_list_removers ||= []
-        @run_list_removers += roles.map { |recipe| Chef::RunList::RunListItem.new("role[#{role}]") }
+        @run_list_removers += roles.map { |role| Chef::RunList::RunListItem.new("role[#{role}]") }
       end
     end
   end
