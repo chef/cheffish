@@ -36,7 +36,11 @@ module Cheffish
   end
 
   def self.load_chef_config(chef_config = Chef::Config)
-    chef_config.config_file = Chef::Knife.locate_config_file
+    if ::Gem::Version.new(::Chef::VERSION) >= ::Gem::Version.new('12.0.0')
+      chef_config.config_file = ::Chef::Knife.chef_config_dir
+    else
+      chef_config.config_file = ::Chef::Knife.locate_config_file
+    end
     config_fetcher = Chef::ConfigFetcher.new(chef_config.config_file, chef_config.config_file_jail)
     if chef_config.config_file.nil?
       Chef::Log.warn("No config file found or specified on command line, using command line options.")
