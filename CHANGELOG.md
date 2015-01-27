@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.9.1 (1/15/2014)
+## 0.9.2 (1/27/2015)
+
+- Fix config file loading in Chef 12 (@elliott-davis)
+
+## 0.9.1 (1/15/2015)
 
 - Add Chef 12 display_name support to chef_user (@charlesjohnson)
 - Fix chef_mirror when run against real Chef servers (@johnbellone)
