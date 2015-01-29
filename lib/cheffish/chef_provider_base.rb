@@ -32,7 +32,7 @@ module Cheffish
           result = normalize(resource_to_json(new_resource))
         else
           # If the resource is incomplete, we use the current json to fill any holes
-          result = current_json.merge(resource_to_json(new_resource))
+          result = Chef::Mixin::DeepMerge.merge(current_json, resource_to_json(new_resource))
         end
         augment_new_json(result)
       end
