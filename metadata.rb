@@ -1,1 +1,2 @@
-version '0.1'
+name    'cheffish'
+version '0.9.2'
