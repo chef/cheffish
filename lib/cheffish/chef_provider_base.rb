@@ -60,6 +60,9 @@ module Cheffish
       json = resource.raw_json || {}
       keys.each do |json_key, resource_key|
         value = resource.send(resource_key)
+        # This takes care of Chef ImmutableMash and ImmutableArray
+        value = value.to_hash if value.is_a?(Hash)
+        value = value.to_a if value.is_a?(Array)
         json[json_key] = value if value
       end
       json
