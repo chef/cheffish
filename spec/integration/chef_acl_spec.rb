@@ -1,4 +1,5 @@
 require 'support/spec_support'
+require 'chef/support/chef_run_support'
 require 'chef/resource/chef_acl'
 require 'chef/provider/chef_acl'
 require 'chef_zero/version'
@@ -6,7 +7,7 @@ require 'uri'
 
 if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
   describe Chef::Resource::ChefAcl do
-    extend SpecSupport
+    extend Chef::Support::ChefRunSupport
 
     context "Rights attributes" do
       when_the_chef_server 'has a node named x', :osc_compat => false do

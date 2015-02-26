@@ -1,9 +1,10 @@
 require 'support/spec_support'
+require 'chef/support/chef_run_support'
 require 'chef/resource/chef_container'
 require 'chef/provider/chef_container'
 
 describe Chef::Resource::ChefContainer do
-  extend SpecSupport
+  extend Chef::Support::ChefRunSupport
 
   when_the_chef_12_server 'is in multi-org mode' do
     organization 'foo'

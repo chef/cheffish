@@ -1,10 +1,11 @@
 require 'support/spec_support'
+require 'chef/support/chef_run_support'
 require 'chef/resource/chef_node'
 require 'chef/provider/chef_node'
 require 'tmpdir'
 
 describe 'Cheffish Recipe DSL' do
-  extend SpecSupport
+  extend Chef::Support::ChefRunSupport
 
   context 'when we include with_chef_local_server' do
     before :each do
