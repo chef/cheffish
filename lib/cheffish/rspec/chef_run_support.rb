@@ -1,11 +1,11 @@
 require 'chef_zero/rspec'
 require 'chef/server_api'
-require 'chef/support/repository_support'
+require 'cheffish/rspec/repository_support'
 require 'uri'
 require 'cheffish/basic_chef_client'
 
-class Chef
-  module Support
+module Cheffish
+  module RSpec
     module ChefRunSupport
       include ChefZero::RSpec
 

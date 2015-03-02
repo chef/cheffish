@@ -1,5 +1,5 @@
 require 'support/spec_support'
-require 'chef/support/chef_run_support'
+require 'cheffish/rspec/chef_run_support'
 require 'chef/resource/private_key'
 require 'chef/provider/private_key'
 require 'chef/resource/public_key'
@@ -9,7 +9,7 @@ require 'support/key_support'
 repo_path = Dir.mktmpdir('chef_repo')
 
 describe Chef::Resource::PrivateKey do
-  extend Chef::Support::ChefRunSupport
+  extend Cheffish::RSpec::ChefRunSupport
 
   before :each do
     FileUtils.remove_entry_secure(repo_path)

@@ -1,7 +1,7 @@
 
 require 'cheffish'
 require 'chef/provider/chef_acl'
-require 'chef/support/chef_run_support'
+require 'cheffish/rspec/chef_run_support'
 
 RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
   match do |actual|

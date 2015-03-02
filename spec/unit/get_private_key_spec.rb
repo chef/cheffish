@@ -1,5 +1,5 @@
 require 'support/spec_support'
-require 'chef/support/chef_run_support'
+require 'cheffish/rspec/chef_run_support'
 
 describe Cheffish do
   let(:directory_that_exists) {

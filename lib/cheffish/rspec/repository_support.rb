@@ -1,5 +1,5 @@
-class Chef
-  module Support
+module Cheffish
+  module RSpec
     module RepositorySupport
       def when_the_repository(desc, *tags, &block)
         context("when the chef repo #{desc}", *tags) do
