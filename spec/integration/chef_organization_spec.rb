@@ -1,9 +1,10 @@
 require 'support/spec_support'
+require 'cheffish/rspec/chef_run_support'
 require 'chef/resource/chef_organization'
 require 'chef/provider/chef_organization'
 
 describe Chef::Resource::ChefOrganization do
-  extend SpecSupport
+  extend Cheffish::RSpec::ChefRunSupport
 
   when_the_chef_12_server 'is in multi-org mode' do
     context 'and chef_server_url is pointed at the top level' do

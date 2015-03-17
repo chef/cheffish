@@ -1,9 +1,10 @@
 require 'support/spec_support'
+require 'cheffish/rspec/chef_run_support'
 require 'chef/resource/chef_mirror'
 require 'chef/provider/chef_mirror'
 
 describe Chef::Resource::ChefMirror do
-  extend SpecSupport
+  extend Cheffish::RSpec::ChefRunSupport
 
   when_the_chef_12_server 'is in multi-org mode' do
     organization 'foo'

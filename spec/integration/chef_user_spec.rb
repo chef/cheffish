@@ -1,4 +1,5 @@
 require 'support/spec_support'
+require 'cheffish/rspec/chef_run_support'
 require 'support/key_support'
 require 'chef/resource/chef_user'
 require 'chef/provider/chef_user'
@@ -6,7 +7,7 @@ require 'chef/provider/chef_user'
 repo_path = Dir.mktmpdir('chef_repo')
 
 describe Chef::Resource::ChefUser do
-  extend SpecSupport
+  extend Cheffish::RSpec::ChefRunSupport
 
   with_recipe do
     private_key "#{repo_path}/blah.pem"

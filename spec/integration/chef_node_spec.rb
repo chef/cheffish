@@ -1,9 +1,10 @@
 require 'support/spec_support'
+require 'cheffish/rspec/chef_run_support'
 require 'chef/resource/chef_node'
 require 'chef/provider/chef_node'
 
 describe Chef::Resource::ChefNode do
-  extend SpecSupport
+  extend Cheffish::RSpec::ChefRunSupport
 
   when_the_chef_12_server 'is in multi-org mode' do
     organization 'foo'
