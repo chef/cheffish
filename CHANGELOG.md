@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10 (3/17/2015)
+
+- Move Cheffish RSpec helpers into top level Cheffish for external projects to use (@tyler-ball)
+- Let node attributes (ImmutableMash) be used in new_json (fixes chef/chef-provisioning#21)
+
 ## 0.9.2 (1/27/2015)
 
 - Fix config file loading in Chef 12 (@elliott-davis)
