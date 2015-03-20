@@ -9,9 +9,9 @@ module Cheffish
     module ChefRunSupport
       include ChefZero::RSpec
 
-      def when_the_chef_12_server(*args, &block)
+      def when_the_chef_12_server(*args, **options, &block)
         if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
-          when_the_chef_server(*args, :osc_compat => false, :single_org => false, &block)
+          when_the_chef_server(*args, :osc_compat => false, :single_org => false, **options, &block)
         end
       end
 
