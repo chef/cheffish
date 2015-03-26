@@ -24,7 +24,7 @@ module Cheffish
       end
 
       key_format[:type] = type_of(key)
-      key_format[:size] = size_of(key)
+      key_format[:size] = size_of(key) if size_of(key)
       key_format[:pass_phrase] = pass_phrase if pass_phrase
       # TODO cipher, exponent
 
@@ -102,8 +102,12 @@ module Cheffish
     end
 
     def self.size_of(key)
-      # TODO DSA -- this is RSA only
-      key.n.num_bytes * 8
+      case key.class
+      when OpenSSL::PKey::RSA
+        key.n.num_bytes * 8
+      else
+        nil
+      end
     end
   end
 end
