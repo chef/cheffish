@@ -209,6 +209,7 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
         end
       rescue
         # If there's an error reading, we assume format and type are wrong and don't futz with them
+        Chef::Log.warn("Error reading #{new_path}: #{$!}")
       end
     else
       resource.action :delete

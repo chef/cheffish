@@ -103,7 +103,7 @@ module Cheffish
           message << "---                  ---\n"
           message << "--- Chef Client Logs ---\n"
           message << "---                  ---\n"
-          message << logs.string
+          message << logs
         end
         message
       end
