@@ -1,5 +1,6 @@
 # Changelog
 
+## 1.0.0.rc.1 (3/31/2015)
 ## 0.10 (3/17/2015)
 
 - Move Cheffish RSpec helpers into top level Cheffish for external projects to use (@tyler-ball)
