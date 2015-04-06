@@ -30,7 +30,7 @@ module Cheffish
         end
 
         after :each do
-          if !@converged
+          if !chef_client.converge_failed? && !chef_client.converged?
             raise "Never tried to converge!"
           end
         end
@@ -72,7 +72,7 @@ module Cheffish
         end
 
         def chef_run
-          chef_client.converge if !@converged
+          converge if !chef_client.converged?
           event_sink.events
         end
 
@@ -96,14 +96,12 @@ module Cheffish
         def reset_chef_client
           @event_sink = nil
           @basic_chef_client = nil
-          @converged = false
         end
 
         def converge
-          if @converged
+          if chef_client.converged?
             raise "Already converged! Cannot converge twice, that's bad mojo."
           end
-          @converged = true
           chef_client.converge
         end
       end
