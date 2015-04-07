@@ -19,10 +19,9 @@ describe Chef::Resource::ChefGroup do
       client 'c', {}
 
       it 'Converging chef_group "x" creates the group with no members' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x'
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :create)
+        }.to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -35,25 +34,22 @@ describe Chef::Resource::ChefGroup do
       end
 
       it 'chef_group "x" action :delete does nothing' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             action :delete
           end
-        end
-        expect(chef_run).not_to have_updated('chef_group[x]', :delete)
-        expect(chef_run).not_to have_updated('chef_group[x]', :create)
+        }.to not_have_updated('chef_group[x]', :delete).and not_have_updated('chef_group[x]', :create)
         expect { get('groups/x') }.to raise_error(Net::HTTPServerException)
       end
 
       it 'Converging chef_group "x" creates the group with the given members' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             groups 'g'
             users 'u'
             clients 'c'
           end
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :create)
+        }.to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -87,10 +83,9 @@ describe Chef::Resource::ChefGroup do
       }
 
       it 'Converging chef_group "x" changes nothing' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x'
-        end
-        expect(chef_run).not_to have_updated('chef_group[x]', :create)
+        }.not_to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -103,24 +98,22 @@ describe Chef::Resource::ChefGroup do
       end
 
       it 'chef_group "x" action :delete deletes the group' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             action :delete
           end
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :delete)
+        }.to have_updated('chef_group[x]', :delete)
         expect { get('groups/x') }.to raise_error(Net::HTTPServerException)
       end
 
       it 'Converging chef_group "x" with existing users changes nothing' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             users 'u'
             clients 'c'
             groups 'g'
           end
-        end
-        expect(chef_run).not_to have_updated('chef_group[x]', :create)
+        }.not_to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -133,14 +126,13 @@ describe Chef::Resource::ChefGroup do
       end
 
       it 'Converging chef_group "x" adds new users' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             users 'u3'
             clients 'c3'
             groups 'g3'
           end
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :create)
+        }.to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -153,14 +145,13 @@ describe Chef::Resource::ChefGroup do
       end
 
       it 'Converging chef_group "x" with multiple users adds new users' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             users 'u3', 'u4'
             clients 'c3', 'c4'
             groups 'g3', 'g4'
           end
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :create)
+        }.to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -173,14 +164,13 @@ describe Chef::Resource::ChefGroup do
       end
 
       it 'Converging chef_group "x" with multiple users in an array adds new users' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             users [ 'u3', 'u4' ]
             clients [ 'c3', 'c4' ]
             groups [ 'g3', 'g4' ]
           end
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :create)
+        }.to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -193,7 +183,7 @@ describe Chef::Resource::ChefGroup do
       end
 
       it 'Converging chef_group "x" with multiple users declarations adds new users' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             users 'u3'
             users 'u4'
@@ -202,8 +192,7 @@ describe Chef::Resource::ChefGroup do
             groups 'g3'
             groups 'g4'
           end
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :create)
+        }.to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -216,14 +205,13 @@ describe Chef::Resource::ChefGroup do
       end
 
       it 'Converging chef_group "x" removes desired users' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             remove_users 'u2'
             remove_clients 'c2'
             remove_groups 'g2'
           end
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :create)
+        }.to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -236,14 +224,13 @@ describe Chef::Resource::ChefGroup do
       end
 
       it 'Converging chef_group "x" with multiple users removes desired users' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             remove_users 'u', 'u2'
             remove_clients 'c', 'c2'
             remove_groups 'g', 'g2'
           end
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :create)
+        }.to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -256,14 +243,13 @@ describe Chef::Resource::ChefGroup do
       end
 
       it 'Converging chef_group "x" with multiple users in an array removes desired users' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             remove_users [ 'u', 'u2' ]
             remove_clients [ 'c', 'c2' ]
             remove_groups [ 'g', 'g2' ]
           end
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :create)
+        }.to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -276,7 +262,7 @@ describe Chef::Resource::ChefGroup do
       end
 
       it 'Converging chef_group "x" with multiple remove_ declarations removes desired users' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             remove_users 'u'
             remove_users 'u2'
@@ -285,8 +271,7 @@ describe Chef::Resource::ChefGroup do
             remove_groups 'g'
             remove_groups 'g2'
           end
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :create)
+        }.to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',
@@ -299,7 +284,7 @@ describe Chef::Resource::ChefGroup do
       end
 
       it 'Converging chef_group "x" adds and removes desired users' do
-        run_recipe do
+        expect_recipe {
           chef_group 'x' do
             users 'u3'
             clients 'c3'
@@ -308,8 +293,7 @@ describe Chef::Resource::ChefGroup do
             remove_clients 'c'
             remove_groups 'g'
           end
-        end
-        expect(chef_run).to have_updated('chef_group[x]', :create)
+        }.to have_updated('chef_group[x]', :create)
         expect(get('groups/x')).to eq({
           'name' => 'x',
           'groupname' => 'x',

@@ -5,4 +5,4 @@ if RUBY_VERSION.to_f < 2.0
   gem 'openssl_pkcs8'
 end
 
-#gem 'chef-zero', :path => '../chef-zero'
+gem 'chef-zero', path: '../chef-zero'

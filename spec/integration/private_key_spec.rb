@@ -17,12 +17,10 @@ describe Chef::Resource::PrivateKey do
   end
 
   context 'with a recipe with a private_key' do
-    with_recipe do
-      private_key "#{repo_path}/blah"
-    end
-
     it 'the private_key is created in pem format' do
-      expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+      expect_recipe {
+        private_key "#{repo_path}/blah"
+      }.to have_updated "private_key[#{repo_path}/blah]", :create
       expect(IO.read("#{repo_path}/blah")).to start_with('-----BEGIN')
       expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
     end
@@ -34,12 +32,10 @@ describe Chef::Resource::PrivateKey do
       Chef::Config.private_key_paths = [ repo_path, "#{repo_path}/other_keys" ]
     end
 
-    with_recipe do
-      private_key 'blah'
-    end
-
     it 'the private key is created in the private_key_write_path' do
-      expect(chef_run).to have_updated "private_key[blah]", :create
+      expect_recipe {
+        private_key 'blah'
+      }.to have_updated "private_key[blah]", :create
       expect(Chef::Config.private_key_write_path).to eq(repo_path)
       expect(File.exist?("#{repo_path}/blah")).to be true
       expect(File.exist?("#{repo_path}/other_keys/blah")).to be false
@@ -49,13 +45,13 @@ describe Chef::Resource::PrivateKey do
 
     context 'and the private key already exists somewhere not in the write path' do
       before :each do
-        Cheffish::BasicChefClient.converge_block do
-          private_key "#{repo_path}/other_keys/blah"
-        end
+        recipe { private_key "#{repo_path}/other_keys/blah" }.converge
       end
 
       it 'the private expect(key).to not update' do
-        expect(chef_run).not_to have_updated "private_key[blah]", :create
+        expect_recipe {
+          private_key 'blah'
+        }.not_to have_updated "private_key[blah]", :create
 
         expect(File.exist?("#{repo_path}/blah")).to be false
         expect(File.exist?("#{repo_path}/other_keys/blah")).to be true
@@ -71,15 +67,13 @@ describe Chef::Resource::PrivateKey do
     end
 
     context 'and a private_key that copies it in der format' do
-      with_converge do
-        private_key "#{repo_path}/blah.der" do
-          source_key_path "#{repo_path}/blah"
-          format :der
-        end
-      end
-
       it 'the private_key is copied in der format and is identical' do
-        expect(chef_run).to have_updated "private_key[#{repo_path}/blah.der]", :create
+        expect_recipe {
+          private_key "#{repo_path}/blah.der" do
+            source_key_path "#{repo_path}/blah"
+            format :der
+          end
+        }.to have_updated "private_key[#{repo_path}/blah.der]", :create
         key_str = IO.read("#{repo_path}/blah.der")
         expect(key_str).not_to start_with('-----BEGIN')
         expect(key_str).not_to start_with('ssh-')
@@ -88,14 +82,12 @@ describe Chef::Resource::PrivateKey do
     end
 
     it 'a private_key that copies it from in-memory as a string succeeds' do
-      run_recipe do
+      expect_recipe {
         private_key "#{repo_path}/blah.der" do
           source_key IO.read("#{repo_path}/blah")
           format :der
         end
-      end
-
-      expect(chef_run).to have_updated "private_key[#{repo_path}/blah.der]", :create
+      }.to have_updated "private_key[#{repo_path}/blah.der]", :create
       key_str = IO.read("#{repo_path}/blah.der")
       expect(key_str).not_to start_with('-----BEGIN')
       expect(key_str).not_to start_with('ssh-')
@@ -104,14 +96,12 @@ describe Chef::Resource::PrivateKey do
 
     it 'a private_key that copies it from in-memory as a key succeeds' do
       key = OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))
-      run_recipe do
+      expect_recipe {
         private_key "#{repo_path}/blah.der" do
           source_key key
           format :der
         end
-      end
-
-      expect(chef_run).to have_updated "private_key[#{repo_path}/blah.der]", :create
+      }.to have_updated "private_key[#{repo_path}/blah.der]", :create
       key_str = IO.read("#{repo_path}/blah.der")
       expect(key_str).not_to start_with('-----BEGIN')
       expect(key_str).not_to start_with('ssh-')
@@ -119,14 +109,12 @@ describe Chef::Resource::PrivateKey do
     end
 
     context 'and a public_key recipe' do
-      with_converge do
-        public_key "#{repo_path}/blah.pub" do
-          source_key_path "#{repo_path}/blah"
-        end
-      end
-
       it 'the public_key is created' do
-        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect_recipe {
+          public_key "#{repo_path}/blah.pub" do
+            source_key_path "#{repo_path}/blah"
+          end
+        }.to have_updated "public_key[#{repo_path}/blah.pub]", :create
         expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
         expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
       end
@@ -142,28 +130,24 @@ describe Chef::Resource::PrivateKey do
       end
 
       context 'and public_key resource based off the public key file' do
-        with_converge do
-          public_key "#{repo_path}/blah.pub2" do
-            source_key_path "#{repo_path}/blah.pub"
-          end
-        end
-
         it 'the second public_key is created' do
-          expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub2]", :create
+          expect_recipe {
+            public_key "#{repo_path}/blah.pub2" do
+              source_key_path "#{repo_path}/blah.pub"
+            end
+          }.to have_updated "public_key[#{repo_path}/blah.pub2]", :create
           expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
           expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
         end
       end
 
       context 'and another public_key based off the first public_key in-memory in a string' do
-        with_converge do
-          public_key "#{repo_path}/blah.pub2" do
-            source_key IO.read("#{repo_path}/blah.pub")
-          end
-        end
-
         it 'the second public_key is created' do
-          expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub2]", :create
+          expect_recipe {
+            public_key "#{repo_path}/blah.pub2" do
+              source_key IO.read("#{repo_path}/blah.pub")
+            end
+          }.to have_updated "public_key[#{repo_path}/blah.pub2]", :create
           expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
           expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
         end
@@ -172,42 +156,36 @@ describe Chef::Resource::PrivateKey do
       it 'and another public_key based off the first public_key in-memory in a key, the second public_key is created' do
         key, format = Cheffish::KeyFormatter.decode(IO.read("#{repo_path}/blah.pub"))
 
-        run_recipe do
+        expect_recipe {
           public_key "#{repo_path}/blah.pub2" do
             source_key key
           end
-        end
-
-        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub2]", :create
+        }.to have_updated "public_key[#{repo_path}/blah.pub2]", :create
         expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
         expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
       end
 
       context 'and another public_key in :pem format based off the first public_key' do
-        with_converge do
-          public_key "#{repo_path}/blah.pub2" do
-            source_key_path "#{repo_path}/blah.pub"
-            format :pem
-          end
-        end
-
         it 'the second public_key is created' do
-          expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub2]", :create
+          expect_recipe {
+            public_key "#{repo_path}/blah.pub2" do
+              source_key_path "#{repo_path}/blah.pub"
+              format :pem
+            end
+          }.to have_updated "public_key[#{repo_path}/blah.pub2]", :create
           expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
           expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
         end
       end
 
       context 'and another public_key in :der format based off the first public_key' do
-        with_converge do
-          public_key "#{repo_path}/blah.pub2" do
-            source_key_path "#{repo_path}/blah.pub"
-            format :pem
-          end
-        end
-
         it 'the second public_key is created' do
-          expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub2]", :create
+          expect_recipe {
+            public_key "#{repo_path}/blah.pub2" do
+              source_key_path "#{repo_path}/blah.pub"
+              format :pem
+            end
+          }.to have_updated "public_key[#{repo_path}/blah.pub2]", :create
           expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
           expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
         end
@@ -215,30 +193,26 @@ describe Chef::Resource::PrivateKey do
     end
 
     context 'and a public_key resource in pem format' do
-      with_converge do
-        public_key "#{repo_path}/blah.pub" do
-          source_key_path "#{repo_path}/blah"
-          format :pem
-        end
-      end
-
       it 'the public_key is created' do
-        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect_recipe {
+          public_key "#{repo_path}/blah.pub" do
+            source_key_path "#{repo_path}/blah"
+            format :pem
+          end
+        }.to have_updated "public_key[#{repo_path}/blah.pub]", :create
         expect(IO.read("#{repo_path}/blah.pub")).to start_with('-----BEGIN')
         expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
       end
     end
 
     context 'and a public_key resource in der format' do
-      with_converge do
-        public_key "#{repo_path}/blah.pub" do
-          source_key_path "#{repo_path}/blah"
-          format :der
-        end
-      end
-
       it 'the public_key is created in openssh format' do
-        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect_recipe {
+          public_key "#{repo_path}/blah.pub" do
+            source_key_path "#{repo_path}/blah"
+            format :der
+          end
+        }.to have_updated "public_key[#{repo_path}/blah.pub]", :create
         expect(IO.read("#{repo_path}/blah.pub")).not_to start_with('-----BEGIN')
         expect(IO.read("#{repo_path}/blah.pub")).not_to start_with('ssh-rsa')
         expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
@@ -247,14 +221,12 @@ describe Chef::Resource::PrivateKey do
   end
 
   context 'with a recipe with a private_key in der format' do
-    with_recipe do
-      private_key "#{repo_path}/blah" do
-        format :der
-      end
-    end
-
     it 'the private_key is created' do
-      expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+      expect_recipe {
+        private_key "#{repo_path}/blah" do
+          format :der
+        end
+      }.to have_updated "private_key[#{repo_path}/blah]", :create
       expect(IO.read("#{repo_path}/blah")).not_to start_with('-----BEGIN')
       expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
     end
@@ -270,14 +242,12 @@ describe Chef::Resource::PrivateKey do
     end
 
     context 'and a public_key' do
-      with_converge do
-        public_key "#{repo_path}/blah.pub" do
-          source_key_path "#{repo_path}/blah"
-        end
-      end
-
       it 'the public_key is created in openssh format' do
-        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect_recipe {
+          public_key "#{repo_path}/blah.pub" do
+            source_key_path "#{repo_path}/blah"
+          end
+        }.to have_updated "public_key[#{repo_path}/blah.pub]", :create
         expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
         expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah"
       end
@@ -285,14 +255,12 @@ describe Chef::Resource::PrivateKey do
   end
 
   context 'with a recipe with a private_key with a pass_phrase' do
-    with_converge do
-      private_key "#{repo_path}/blah" do
-        pass_phrase 'hello'
-      end
-    end
-
     it 'the private_key is created' do
-      expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+      expect_recipe {
+        private_key "#{repo_path}/blah" do
+          pass_phrase 'hello'
+        end
+      }.to have_updated "private_key[#{repo_path}/blah]", :create
       expect(IO.read("#{repo_path}/blah")).to start_with('-----BEGIN')
       expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"), 'hello')).to be_kind_of(OpenSSL::PKey::RSA)
     end
@@ -308,16 +276,14 @@ describe Chef::Resource::PrivateKey do
     end
 
     context 'and a private_key that copies it in der format' do
-      with_converge do
-        private_key "#{repo_path}/blah.der" do
-          source_key_path "#{repo_path}/blah"
-          source_key_pass_phrase 'hello'
-          format :der
-        end
-      end
-
       it 'the private_key is copied in der format and is identical' do
-        expect(chef_run).to have_updated "private_key[#{repo_path}/blah.der]", :create
+        expect_recipe {
+          private_key "#{repo_path}/blah.der" do
+            source_key_path "#{repo_path}/blah"
+            source_key_pass_phrase 'hello'
+            format :der
+          end
+        }.to have_updated "private_key[#{repo_path}/blah.der]", :create
         key_str = IO.read("#{repo_path}/blah.der")
         expect(key_str).not_to start_with('-----BEGIN')
         expect(key_str).not_to start_with('ssh-')
@@ -326,39 +292,35 @@ describe Chef::Resource::PrivateKey do
     end
 
     context 'and a private_key resource pointing at it without a pass_phrase' do
-      with_recipe do
-        private_key "#{repo_path}/blah"
-      end
-
       it 'the run fails with an exception' do
-        expect { chef_run }.to raise_error
+        expect {
+          converge {
+            private_key "#{repo_path}/blah"
+          }
+        }.to raise_error
       end
     end
 
     context 'and a private_key resource with no pass phrase and regenerate_if_different' do
-      with_recipe do
-        private_key "#{repo_path}/blah" do
-          regenerate_if_different true
-        end
-      end
-
       it 'the private_key is regenerated' do
-        expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+        expect_recipe {
+          private_key "#{repo_path}/blah" do
+            regenerate_if_different true
+          end
+        }.to have_updated "private_key[#{repo_path}/blah]", :create
         expect(IO.read("#{repo_path}/blah")).to start_with('-----BEGIN')
         expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
       end
     end
 
     it 'a private_key resource that copies it from in-memory as a string succeeds' do
-      run_recipe do
+      expect_recipe {
         private_key "#{repo_path}/blah.der" do
           source_key IO.read("#{repo_path}/blah")
           source_key_pass_phrase 'hello'
           format :der
         end
-      end
-
-      expect(chef_run).to have_updated "private_key[#{repo_path}/blah.der]", :create
+      }.to have_updated "private_key[#{repo_path}/blah.der]", :create
       key_str = IO.read("#{repo_path}/blah.der")
       expect(key_str).not_to start_with('-----BEGIN')
       expect(key_str).not_to start_with('ssh-')
@@ -366,30 +328,26 @@ describe Chef::Resource::PrivateKey do
     end
 
     context 'and a public_key' do
-      with_converge do
-        public_key "#{repo_path}/blah.pub" do
-          source_key_path "#{repo_path}/blah"
-          source_key_pass_phrase 'hello'
-        end
-      end
-
       it 'the public_key is created in openssh format' do
-        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect_recipe {
+          public_key "#{repo_path}/blah.pub" do
+            source_key_path "#{repo_path}/blah"
+            source_key_pass_phrase 'hello'
+          end
+        }.to have_updated "public_key[#{repo_path}/blah.pub]", :create
         expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
         expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah", 'hello'
       end
     end
 
     context 'and a public_key derived from the private key in an in-memory string' do
-      with_converge do
-        public_key "#{repo_path}/blah.pub" do
-          source_key IO.read("#{repo_path}/blah")
-          source_key_pass_phrase 'hello'
-        end
-      end
-
       it 'the public_key is created in openssh format' do
-        expect(chef_run).to have_updated "public_key[#{repo_path}/blah.pub]", :create
+        expect_recipe {
+          public_key "#{repo_path}/blah.pub" do
+            source_key IO.read("#{repo_path}/blah")
+            source_key_pass_phrase 'hello'
+          end
+        }.to have_updated "public_key[#{repo_path}/blah.pub]", :create
         expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
         expect("#{repo_path}/blah.pub").to be_public_key_for "#{repo_path}/blah", 'hello'
       end
@@ -397,14 +355,12 @@ describe Chef::Resource::PrivateKey do
   end
 
   context 'with a recipe with a private_key and public_key_path' do
-    with_converge do
-      private_key "#{repo_path}/blah" do
-        public_key_path "#{repo_path}/blah.pub"
-      end
-    end
-
     it 'the private_key and public_key are created' do
-      expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+      expect_recipe {
+        private_key "#{repo_path}/blah" do
+          public_key_path "#{repo_path}/blah.pub"
+        end
+      }.to have_updated "private_key[#{repo_path}/blah]", :create
       expect(IO.read("#{repo_path}/blah")).to start_with('-----BEGIN')
       expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
       expect(IO.read("#{repo_path}/blah.pub")).to start_with('ssh-rsa ')
@@ -413,15 +369,13 @@ describe Chef::Resource::PrivateKey do
   end
 
   context 'with a recipe with a private_key and public_key_path and public_key_format' do
-    with_converge do
-      private_key "#{repo_path}/blah" do
-        public_key_path "#{repo_path}/blah.pub.der"
-        public_key_format :der
-      end
-    end
-
     it 'the private_key and public_key are created' do
-      expect(chef_run).to have_updated "private_key[#{repo_path}/blah]", :create
+      expect_recipe {
+        private_key "#{repo_path}/blah" do
+          public_key_path "#{repo_path}/blah.pub.der"
+          public_key_format :der
+        end
+      }.to have_updated "private_key[#{repo_path}/blah]", :create
       expect(IO.read("#{repo_path}/blah")).to start_with('-----BEGIN')
       expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
       expect(IO.read("#{repo_path}/blah.pub.der")).not_to start_with('ssh-rsa ')
@@ -432,14 +386,12 @@ describe Chef::Resource::PrivateKey do
   context 'with a recipe with a private_key with path :none' do
     it 'the private_key is created' do
       got_private_key = nil
-      run_recipe do
+      expect_recipe {
         private_key 'in_memory' do
           path :none
           after { |resource, private_key| got_private_key = private_key }
         end
-      end
-
-      expect(chef_run).to have_updated "private_key[in_memory]", :create
+      }.to have_updated "private_key[in_memory]", :create
       expect(got_private_key).to be_kind_of(OpenSSL::PKey::RSA)
     end
   end

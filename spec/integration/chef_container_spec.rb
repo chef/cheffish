@@ -14,10 +14,9 @@ describe Chef::Resource::ChefContainer do
     end
 
     it 'Converging chef_container "x" creates the container' do
-      run_recipe do
+      expect_recipe {
         chef_container 'x'
-      end
-      expect(chef_run).to have_updated('chef_container[x]', :create)
+      }.to have_updated('chef_container[x]', :create)
       expect { get('containers/x') }.not_to raise_error
     end
 
@@ -25,10 +24,9 @@ describe Chef::Resource::ChefContainer do
       container 'x', {}
 
       it 'Converging chef_container "x" changes nothing' do
-        run_recipe do
+        expect_recipe {
           chef_container 'x'
-        end
-        expect(chef_run).not_to have_updated('chef_container[x]', :create)
+        }.not_to have_updated('chef_container[x]', :create)
       end
     end
   end

@@ -18,19 +18,17 @@ describe Chef::Resource::ChefClient do
 
     context 'and is empty' do
       context 'and we have a private key with a path' do
-        with_recipe do
+        with_converge do
           private_key "#{repo_path}/blah.pem"
         end
 
         context 'and we run a recipe that creates client "blah"' do
-          with_converge do
-            chef_client 'blah' do
-              source_key_path "#{repo_path}/blah.pem"
-            end
-          end
-
           it 'the client gets created' do
-            expect(chef_run).to have_updated 'chef_client[blah]', :create
+            expect_recipe {
+              chef_client 'blah' do
+                source_key_path "#{repo_path}/blah.pem"
+              end
+            }.to have_updated 'chef_client[blah]', :create
             client = get('clients/blah')
             expect(client['name']).to eq('blah')
             key, format = Cheffish::KeyFormatter.decode(client['public_key'])
@@ -58,19 +56,17 @@ describe Chef::Resource::ChefClient do
           Chef::Config.private_key_paths = [ repo_path ]
         end
 
-        with_recipe do
+        with_converge do
           private_key 'blah'
         end
 
         context "and a chef_client 'foobar' resource with source_key_path 'blah'" do
-          with_converge do
-            chef_client 'foobar' do
-              source_key_path 'blah'
-            end
-          end
-
           it 'the client is accessible via the given private key' do
-            expect(chef_run).to have_updated 'chef_client[foobar]', :create
+            expect_recipe {
+              chef_client 'foobar' do
+                source_key_path 'blah'
+              end
+            }.to have_updated 'chef_client[foobar]', :create
             client = get('clients/foobar')
             key, format = Cheffish::KeyFormatter.decode(client['public_key'])
             expect(key).to be_public_key_for("#{repo_path}/blah.pem")
@@ -86,19 +82,17 @@ describe Chef::Resource::ChefClient do
   when_the_chef_server 'is in OSC mode' do
     context 'and is empty' do
       context 'and we have a private key with a path' do
-        with_recipe do
+        with_converge do
           private_key "#{repo_path}/blah.pem"
         end
 
         context 'and we run a recipe that creates client "blah"' do
-          with_converge do
-            chef_client 'blah' do
-              source_key_path "#{repo_path}/blah.pem"
-            end
-          end
-
           it 'the client gets created' do
-            expect(chef_run).to have_updated 'chef_client[blah]', :create
+            expect_recipe {
+              chef_client 'blah' do
+                source_key_path "#{repo_path}/blah.pem"
+              end
+            }.to have_updated 'chef_client[blah]', :create
             client = get('clients/blah')
             expect(client['name']).to eq('blah')
             key, format = Cheffish::KeyFormatter.decode(client['public_key'])
