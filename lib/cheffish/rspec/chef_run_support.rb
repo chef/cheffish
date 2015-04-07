@@ -66,43 +66,6 @@ module Cheffish
         def chef_client
           @chef_client ||= ChefRunWrapper.new(chef_config)
         end
-<<<<<<< HEAD
-
-        def chef_run
-          converge if !chef_client.converged?
-          event_sink.events
-        end
-
-        def event_sink
-          chef_client.event_sink
-        end
-
-        def basic_chef_client
-          chef_client.client
-        end
-
-        def load_recipe(&recipe)
-          chef_client.client.load_block(&recipe)
-        end
-
-        def run_recipe(&recipe)
-          load_recipe(&recipe)
-          converge
-        end
-
-        def reset_chef_client
-          @event_sink = nil
-          @basic_chef_client = nil
-        end
-
-        def converge
-          if chef_client.converged?
-            raise "Already converged! Cannot converge twice, that's bad mojo."
-          end
-          chef_client.converge
-        end
-=======
->>>>>>> Remove most automatic recipe support
       end
     end
   end

@@ -55,9 +55,9 @@ module Cheffish
         hexes = Digest::MD5.hexdigest(data)
         hexes.scan(/../).join(':')
       when :pkcs8sha1fingerprint
-        # if RUBY_VERSION.to_f >= 2.0
-        #   raise "PKCS8 SHA1 not supported in Ruby #{RUBY_VERSION}"
-        # end
+        if RUBY_VERSION.to_f >= 2.0
+          raise "PKCS8 SHA1 not supported in Ruby #{RUBY_VERSION}"
+        end
         require 'openssl_pkcs8'
         pkcs8_pem = key.to_pem_pkcs8
         pkcs8_base64 = pkcs8_pem.split("\n").reject { |l| l =~ /^-----/ }
