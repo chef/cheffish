@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0 (4/7/2015
+
+- Add encapsulated Chef runs that capture and stream output (@jkeiser)
+
 ## 1.0.0 (4/2/2015)
 ## 1.0.0.rc.1 (3/31/2015)
 ## 0.10 (3/17/2015)
