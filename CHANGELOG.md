@@ -1,6 +1,12 @@
 # Changelog
 
-## 1.1.0 (4/7/2015
+## 1.1.1 (4/7/2015)
+
+- Reverting chef-zero dependency from `~> 4.2` to `~> 4.0` - 4.2 only contained development
+  and testing improvments.  Doing this fixes a chef omnibus issue where chef is pinned to
+  chef-zero 4.0 and chef-provisioning / cheffish want 4.2 (@tyler-ball)
+
+## 1.1.0 (4/7/2015)
 
 - Add encapsulated Chef runs that capture and stream output (@jkeiser)
 
