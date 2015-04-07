@@ -24,22 +24,20 @@ module Cheffish
         end
       end
 
-      def with_recipe(&block)
+      def with_recipe(&recipe)
         before :each do
-          load_recipe(&block)
-        end
-
-        after :each do
-          if !chef_client.converge_failed? && !chef_client.converged?
-            raise "Never tried to converge!"
-          end
+          r = recipe(&recipe)
+          r.converge
+          expect(r).to be_updated
+          r
         end
       end
 
-      def with_converge(&block)
+      def with_converge(&recipe)
+        attr_reader :chef_run
         before :each do
-          load_recipe(&block) if block_given?
-          converge
+          @chef_run = recipe(&recipe)
+          @chef_run.converge
         end
       end
 
@@ -60,7 +58,11 @@ module Cheffish
         end
 
         def expect_recipe(&recipe)
-          expect(recipe(&recipe))
+          r = recipe(&recipe)
+          expect {
+            r.converge if !r.converged?
+            r
+          }
         end
 
         def recipe(&recipe)
@@ -70,6 +72,7 @@ module Cheffish
         def chef_client
           @chef_client ||= ChefRunWrapper.new(chef_config)
         end
+<<<<<<< HEAD
 
         def chef_run
           converge if !chef_client.converged?
@@ -104,6 +107,8 @@ module Cheffish
           end
           chef_client.converge
         end
+=======
+>>>>>>> Remove most automatic recipe support
       end
     end
   end

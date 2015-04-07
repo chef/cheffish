@@ -45,12 +45,10 @@ describe Chef::Resource::ChefMirror do
         end
 
         it 'chef_mirror with concurrency 0 fails with a reasonable message' do
-          expect {
-            run_recipe do
-              chef_mirror '' do
-                concurrency 0
-                action :download
-              end
+          expect_recipe {
+            chef_mirror '' do
+              concurrency 0
+              action :download
             end
           }.to raise_error /chef_mirror.concurrency must be above 0/
         end

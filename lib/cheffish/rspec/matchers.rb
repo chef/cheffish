@@ -1,9 +1,14 @@
 RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
-  match do |actual|
-    actual_actions = actual.select { |event, resource, action| event == :resource_updated && resource.to_s == resource_name }.map { |event, resource, action| action }
+  match do |recipe|
+    @recipe = recipe.is_a?(Proc) ? recipe.call : recipe
+    actual = @recipe.event_sink.events
+    actual_actions = actual.select { |event, resource, action| event == :resource_updated && resource.to_s == resource_name }.
+                               map { |event, resource, action| action }
     expect(actual_actions).to eq(expected_actions)
   end
-  failure_message do |actual|
+
+  failure_message do
+    actual = @recipe.event_sink.events
     updates = actual.select { |event, resource, action| event == :resource_updated }.to_a
     result = "expected that the chef_run would #{expected_actions.join(',')} #{resource_name}."
     if updates.size > 0
@@ -13,7 +18,9 @@ RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
     end
     result
   end
-  failure_message_when_negated do |actual|
+
+  failure_message_when_negated do
+    actual = @recipe.event_sink.events
     updates = actual.select { |event, resource, action| event == :resource_updated }.to_a
     result = "expected that the chef_run would not #{expected_actions.join(',')} #{resource_name}."
     if updates.size > 0
@@ -23,11 +30,13 @@ RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
     end
     result
   end
+
+  supports_block_expectations
 end
 
 RSpec::Matchers.define :be_idempotent do
   match do |recipe|
-    @recipe = recipe
+    @recipe = recipe.is_a?(Proc) ? recipe.call : recipe
     recipe.reset
     recipe.converge
     recipe.up_to_date?
@@ -36,20 +45,26 @@ RSpec::Matchers.define :be_idempotent do
   failure_message {
     "#{@recipe} is not idempotent!  Converging it a second time caused updates.\n#{@recipe.output_for_failure_message}"
   }
+
+  supports_block_expectations
 end
 
 
 RSpec::Matchers.define :update_acls do |acl_paths, expected_acls|
 
+  rest = ::Chef::ServerAPI.new
+
   errors = []
-
-  match do |block|
-    orig_json = {}
-    Array(acl_paths).each do |acl_path|
-      orig_json[acl_path] = get(acl_path)
+  orig_json = {}
+  Array(acl_paths).each do |acl_path|
+    if acl_path[0] == '/'
+      acl_path = URI.join(rest.url, acl_path).to_s
     end
+    orig_json[acl_path] = rest.get(acl_path)
+  end
 
-    block.call
+  match do |recipe|
+    @recipe = recipe.is_a?(Proc) ? recipe.call : recipe
 
     orig_json.each_pair do |acl_path, orig|
       changed = get(acl_path)
@@ -73,7 +88,7 @@ RSpec::Matchers.define :update_acls do |acl_paths, expected_acls|
     errors.size == 0
   end
 
-  failure_message do |block|
+  failure_message do
     errors.join("\n")
   end
 
