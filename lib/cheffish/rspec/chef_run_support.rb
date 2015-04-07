@@ -3,70 +3,24 @@ require 'chef/server_api'
 require 'cheffish/rspec/repository_support'
 require 'uri'
 require 'cheffish/basic_chef_client'
+require 'cheffish/rspec/chef_run_wrapper'
+require 'cheffish/rspec/recipe_run_wrapper'
 
 module Cheffish
   module RSpec
     module ChefRunSupport
       include ChefZero::RSpec
-
-      def when_the_chef_12_server(*args, &block)
-        if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
-          when_the_chef_server(*args, :osc_compat => false, :single_org => false, &block)
-        end
-      end
+      include RepositorySupport
 
       def self.extended(klass)
         klass.class_eval do
-          extend RepositorySupport
+          include ChefRunSupportInstanceMethods
+        end
+      end
 
-          def rest
-            ::Chef::ServerAPI.new
-          end
-
-          def get(path, *args)
-            if path[0] == '/'
-              path = URI.join(rest.url, path)
-            end
-            rest.get(path, *args)
-          end
-
-          def chef_run
-            converge if !@converged
-            event_sink.events
-          end
-
-          def event_sink
-            @event_sink ||= EventSink.new
-          end
-
-          def basic_chef_client
-            @basic_chef_client ||= begin
-              ::Cheffish::BasicChefClient.new(nil, event_sink)
-            end
-          end
-
-          def load_recipe(&block)
-            basic_chef_client.load_block(&block)
-          end
-
-          def run_recipe(&block)
-            load_recipe(&block)
-            converge
-          end
-
-          def reset_chef_client
-            @event_sink = nil
-            @basic_chef_client = nil
-            @converged = false
-          end
-
-          def converge
-            if @converged
-              raise "Already converged! Cannot converge twice, that's bad mojo."
-            end
-            @converged = true
-            basic_chef_client.converge
-          end
+      def when_the_chef_12_server(*args, **options, &block)
+        if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
+          when_the_chef_server(*args, :osc_compat => false, :single_org => false, **options, &block)
         end
       end
 
@@ -76,7 +30,7 @@ module Cheffish
         end
 
         after :each do
-          if !@converged
+          if !chef_client.converge_failed? && !chef_client.converged?
             raise "Never tried to converge!"
           end
         end
@@ -89,18 +43,68 @@ module Cheffish
         end
       end
 
-      class EventSink
-        def initialize
-          @events = []
+      module ChefRunSupportInstanceMethods
+        def rest
+          ::Chef::ServerAPI.new
         end
 
-        attr_reader :events
+        def get(path, *args)
+          if path[0] == '/'
+            path = URI.join(rest.url, path)
+          end
+          rest.get(path, *args)
+        end
 
-        def method_missing(method, *args)
-          @events << [ method, *args ]
+        def chef_config
+          {}
+        end
+
+        def expect_recipe(&recipe)
+          expect(recipe(&recipe))
+        end
+
+        def recipe(&recipe)
+          RecipeRunWrapper.new(chef_config, &recipe)
+        end
+
+        def chef_client
+          @chef_client ||= ChefRunWrapper.new(chef_config)
+        end
+
+        def chef_run
+          converge if !chef_client.converged?
+          event_sink.events
+        end
+
+        def event_sink
+          chef_client.event_sink
+        end
+
+        def basic_chef_client
+          chef_client.client
+        end
+
+        def load_recipe(&recipe)
+          chef_client.client.load_block(&recipe)
+        end
+
+        def run_recipe(&recipe)
+          load_recipe(&recipe)
+          converge
+        end
+
+        def reset_chef_client
+          @event_sink = nil
+          @basic_chef_client = nil
+        end
+
+        def converge
+          if chef_client.converged?
+            raise "Already converged! Cannot converge twice, that's bad mojo."
+          end
+          chef_client.converge
         end
       end
-
     end
   end
 end

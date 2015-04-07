@@ -1,11 +1,3 @@
-require 'chef/run_list/run_list_item'
-require 'cheffish/basic_chef_client'
-require 'cheffish/server_api'
-require 'chef/knife'
-require 'chef/config_fetcher'
-require 'chef/log'
-require 'chef/application'
-
 module Cheffish
   NAME_REGEX = /^[.\-[:alnum:]_]+$/
 
@@ -92,8 +84,10 @@ module Cheffish
   def self.get_private_key_with_path(name, config = profiled_config)
     if config[:private_keys] && config[:private_keys][name]
       if config[:private_keys][name].is_a?(String)
+        Chef::Log.info("Got key #{name} from Chef::Config.private_keys.#{name}, which points at #{config[:private_keys[name]]}.  Reading key from there ...")
         return [ IO.read(config[:private_keys][name]), config[:private_keys][name] ]
       else
+        Chef::Log.info("Got key #{name} raw from Chef::Config.private_keys.#{name}.")
         return [ config[:private_keys][name].to_pem, nil ]
       end
     elsif config[:private_key_paths]
@@ -104,6 +98,7 @@ module Cheffish
           if ext == '' || ext == '.pem'
             key_name = key[0..-(ext.length+1)]
             if key_name == name
+              Chef::Log.info("Reading key #{name} from file #{private_key_path}/#{key}")
               return [ IO.read("#{private_key_path}/#{key}"), "#{private_key_path}/#{key}" ]
             end
           end
@@ -223,4 +218,11 @@ end
 
 # Include all recipe objects so require 'cheffish' brings in the whole recipe DSL
 
+require 'chef/run_list/run_list_item'
+require 'cheffish/basic_chef_client'
+require 'cheffish/server_api'
+require 'chef/knife'
+require 'chef/config_fetcher'
+require 'chef/log'
+require 'chef/application'
 require 'cheffish/recipe_dsl'

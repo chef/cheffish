@@ -25,6 +25,20 @@ RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
   end
 end
 
+RSpec::Matchers.define :be_idempotent do
+  match do |recipe|
+    @recipe = recipe
+    recipe.reset
+    recipe.converge
+    recipe.up_to_date?
+  end
+
+  failure_message {
+    "#{@recipe} is not idempotent!  Converging it a second time caused updates.\n#{@recipe.output_for_failure_message}"
+  }
+end
+
+
 RSpec::Matchers.define :update_acls do |acl_paths, expected_acls|
 
   errors = []
