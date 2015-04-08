@@ -23,6 +23,7 @@ describe Cheffish do
     File.open(key_file, "w+") do |f|
       f.write private_key_contents
     end
+    key_file
   end
 
   def setup_pem_key
@@ -30,6 +31,7 @@ describe Cheffish do
     File.open(key_file, "w+") do |f|
       f.write private_key_pem_contents
     end
+    key_file
   end
 
   def setup_garbage_key
@@ -37,6 +39,7 @@ describe Cheffish do
     File.open(key_file, "w+") do |f|
       f.write private_key_garbage_contents
     end
+    key_file
   end
 
   shared_examples_for "returning the contents of the key file if it finds one" do
@@ -62,7 +65,7 @@ describe Cheffish do
     end
   end
 
-  context "#get_private_key" do
+  describe "#get_private_key" do
     context "when private_key_paths has a directory which is empty" do
       let(:config) {
         { :private_key_paths => [ directory_that_exists ] }
@@ -89,6 +92,40 @@ describe Cheffish do
       }
 
       it_behaves_like "returning the contents of the key file if it finds one"
+    end
+
+    context "when private_keys is empty" do
+      let(:config) {
+        { :private_keys => {} }
+      }
+
+      it "returns nil" do
+        expect(Cheffish.get_private_key("ned_stark", config)).to be_nil
+      end
+    end
+
+    context "when private_keys contains the path to a key" do
+      let(:name) { "ned_stark" }
+      let(:config) {
+        { :private_keys => {name => setup_key} }
+      }
+
+      it "returns the contents of the key file" do
+        setup_key
+        expect(Cheffish.get_private_key(name, config)).to eq(private_key_contents)
+      end
+    end
+
+    context "when private_keys contains the path to a key" do
+      let(:name) { "ned_stark" }
+      let(:key) {double("key", :to_pem => private_key_contents)}
+      let(:config) {
+        { :private_keys => {name => key} }
+      }
+
+      it "returns the contents of the key file" do
+        expect(Cheffish.get_private_key(name, config)).to eq(private_key_contents)
+      end
     end
   end
 end

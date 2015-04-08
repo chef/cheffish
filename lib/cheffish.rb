@@ -83,12 +83,13 @@ module Cheffish
 
   def self.get_private_key_with_path(name, config = profiled_config)
     if config[:private_keys] && config[:private_keys][name]
-      if config[:private_keys][name].is_a?(String)
-        Chef::Log.info("Got key #{name} from Chef::Config.private_keys.#{name}, which points at #{config[:private_keys[name]]}.  Reading key from there ...")
-        return [ IO.read(config[:private_keys][name]), config[:private_keys][name] ]
+      named_key = config[:private_keys][name]
+      if named_key.is_a?(String)
+        Chef::Log.info("Got key #{name} from Chef::Config.private_keys.#{name}, which points at #{named_key}.  Reading key from there ...")
+        return [ IO.read(named_key), named_key]
       else
         Chef::Log.info("Got key #{name} raw from Chef::Config.private_keys.#{name}.")
-        return [ config[:private_keys][name].to_pem, nil ]
+        return [ named_key.to_pem, nil ]
       end
     elsif config[:private_key_paths]
       config[:private_key_paths].each do |private_key_path|
