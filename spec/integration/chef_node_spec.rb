@@ -15,12 +15,10 @@ describe Chef::Resource::ChefNode do
 
     context 'and is empty' do
       context 'and we run a recipe that creates node "blah"' do
-        with_converge do
-          chef_node 'blah'
-        end
-
         it 'the node gets created' do
-          expect(chef_run).to have_updated 'chef_node[blah]', :create
+          expect_recipe {
+            chef_node 'blah'
+          }.to have_updated 'chef_node[blah]', :create
           expect(get('nodes/blah')['name']).to eq('blah')
         end
       end
@@ -39,13 +37,11 @@ describe Chef::Resource::ChefNode do
 
         context 'and a recipe is run that creates node "blah" on the second chef server using with_chef_server' do
 
-          with_converge do
-            with_chef_server 'http://127.0.0.1:8899'
-            chef_node 'blah'
-          end
-
           it 'the node is created on the second chef server but not the first' do
-            expect(chef_run).to have_updated 'chef_node[blah]', :create
+            expect_recipe {
+              with_chef_server 'http://127.0.0.1:8899'
+              chef_node 'blah'
+            }.to have_updated 'chef_node[blah]', :create
             expect { get('nodes/blah') }.to raise_error(Net::HTTPServerException)
             expect(get('http://127.0.0.1:8899/nodes/blah')['name']).to eq('blah')
           end
@@ -53,14 +49,12 @@ describe Chef::Resource::ChefNode do
 
         context 'and a recipe is run that creates node "blah" on the second chef server using chef_server' do
 
-          with_converge do
-            chef_node 'blah' do
-              chef_server({ :chef_server_url => 'http://127.0.0.1:8899' })
-            end
-          end
-
           it 'the node is created on the second chef server but not the first' do
-            expect(chef_run).to have_updated 'chef_node[blah]', :create
+            expect_recipe {
+              chef_node 'blah' do
+                chef_server({ :chef_server_url => 'http://127.0.0.1:8899' })
+              end
+            }.to have_updated 'chef_node[blah]', :create
             expect { get('nodes/blah') }.to raise_error(Net::HTTPServerException)
             expect(get('http://127.0.0.1:8899/nodes/blah')['name']).to eq('blah')
           end
@@ -71,12 +65,10 @@ describe Chef::Resource::ChefNode do
     context 'and has a node named "blah"' do
       node 'blah', {}
 
-      with_converge do
-        chef_node 'blah'
-      end
-
       it 'chef_node "blah" does not get created or updated' do
-        expect(chef_run).not_to have_updated 'chef_node[blah]', :create
+        expect_recipe {
+          chef_node 'blah'
+        }.not_to have_updated 'chef_node[blah]', :create
       end
     end
 
@@ -122,9 +114,9 @@ describe Chef::Resource::ChefNode do
         }
 
         it 'chef_node with no attributes modifies nothing' do
-          run_recipe do
+          expect_recipe {
             chef_node 'blah'
-          end
+          }.to be_up_to_date
           expect(get('nodes/blah')).to include(
             'name' => 'blah',
             'chef_environment' => 'blah',
@@ -137,11 +129,11 @@ describe Chef::Resource::ChefNode do
         end
 
         it 'chef_node with complete true removes everything except default, automatic and override' do
-          run_recipe do
+          expect_recipe {
             chef_node 'blah' do
               complete true
             end
-          end
+          }.to be_updated
           expect(get('nodes/blah')).to include(
             'name' => 'blah',
             'chef_environment' => '_default',
@@ -154,7 +146,7 @@ describe Chef::Resource::ChefNode do
         end
 
         it 'chef_node with complete true sets the given attributes' do
-          run_recipe do
+          expect_recipe {
             chef_node 'blah' do
               chef_environment 'x'
               run_list [ 'recipe[y]' ]
@@ -162,7 +154,7 @@ describe Chef::Resource::ChefNode do
               tags 'c', 'd'
               complete true
             end
-          end
+          }.to be_updated
           expect(get('nodes/blah')).to include(
             'name' => 'blah',
             'chef_environment' => 'x',
@@ -175,7 +167,7 @@ describe Chef::Resource::ChefNode do
         end
 
         it 'chef_node with complete true and partial attributes sets the given attributes' do
-          run_recipe do
+          expect_recipe {
             chef_node 'blah' do
               chef_environment 'x'
               recipe 'y'
@@ -183,7 +175,7 @@ describe Chef::Resource::ChefNode do
               tags 'c', 'd'
               complete true
             end
-          end
+          }.to be_updated
           expect(get('nodes/blah')).to include(
             'name' => 'blah',
             'chef_environment' => 'x',
@@ -212,12 +204,11 @@ describe Chef::Resource::ChefNode do
         }
 
         it 'chef_node with attributes {} removes all normal attributes but leaves tags, automatic and environment alone' do
-          run_recipe do
+          expect_recipe {
             chef_node 'blah' do
               attributes({})
             end
-          end
-          expect(chef_run).to have_updated('chef_node[blah]', :create)
+          }.to have_updated('chef_node[blah]', :create)
           expect(get('nodes/blah')).to include(
             'normal' => { 'tags' => [ 'a', 'b' ] },
             'automatic' => { 'x' => 'y' },
@@ -226,12 +217,11 @@ describe Chef::Resource::ChefNode do
         end
 
         it 'chef_node with attributes { c => d } replaces normal but not tags/automatic/environment' do
-          run_recipe do
+          expect_recipe {
             chef_node 'blah' do
               attributes 'c' => 'd'
             end
-          end
-          expect(chef_run).to have_updated('chef_node[blah]', :create)
+          }.to have_updated('chef_node[blah]', :create)
           expect(get('nodes/blah')).to include(
             'normal' => { 'c' => 'd', 'tags' => [ 'a', 'b' ] },
             'automatic' => { 'x' => 'y' },
@@ -240,12 +230,11 @@ describe Chef::Resource::ChefNode do
         end
 
         it 'chef_node with attributes { c => f => g, y => z } replaces normal but not tags/automatic/environment' do
-          run_recipe do
+          expect_recipe {
             chef_node 'blah' do
               attributes 'c' => { 'f' => 'g' }, 'y' => 'z'
             end
-          end
-          expect(chef_run).to have_updated('chef_node[blah]', :create)
+          }.to have_updated('chef_node[blah]', :create)
           expect(get('nodes/blah')).to include(
             'normal' => { 'c' => { 'f' => 'g' }, 'y' => 'z', 'tags' => [ 'a', 'b' ] },
             'automatic' => { 'x' => 'y' },
@@ -254,12 +243,11 @@ describe Chef::Resource::ChefNode do
         end
 
         it 'chef_node with attributes { tags => [ "x" ] } replaces normal and tags but not automatic/environment' do
-          run_recipe do
+          expect_recipe {
             chef_node 'blah' do
               attributes 'tags' => [ 'x' ]
             end
-          end
-          expect(chef_run).to have_updated('chef_node[blah]', :create)
+          }.to have_updated('chef_node[blah]', :create)
           expect(get('nodes/blah')).to include(
             'normal' => { 'tags' => [ 'x' ] },
             'automatic' => { 'x' => 'y' },
@@ -268,13 +256,12 @@ describe Chef::Resource::ChefNode do
         end
 
         it 'chef_node with tags "x" and attributes { "tags" => [ "y" ] } sets tags to "x"' do
-          run_recipe do
+          expect_recipe {
             chef_node 'blah' do
               tags 'x'
               attributes 'tags' => [ 'y' ]
             end
-          end
-          expect(chef_run).to have_updated('chef_node[blah]', :create)
+          }.to have_updated('chef_node[blah]', :create)
           expect(get('nodes/blah')).to include(
             'normal' => {
               'tags' => [ 'x' ]
@@ -302,10 +289,9 @@ describe Chef::Resource::ChefNode do
 
         context 'basic scenarios' do
           it 'chef_node with no attributes, leaves it alone' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah'
-            end
-            expect(chef_run).not_to have_updated('chef_node[blah]', :create)
+            }.not_to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -318,12 +304,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute d, e adds the attribute' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'd', 'e'
               end
-            end
-            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            }.to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -337,12 +322,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute tags, [ "x" ] replaces tags' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'tags', [ 'x' ]
               end
-            end
-            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            }.to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -355,12 +339,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute c, x replaces the attribute' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'c', 'x'
               end
-            end
-            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            }.to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -373,12 +356,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute c, { d => x } replaces the attribute' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'c', { 'd' => 'x' }
               end
-            end
-            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            }.to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -391,12 +373,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute [ c, d ], x replaces the attribute' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute [ 'c', 'd' ], 'x'
               end
-            end
-            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            }.to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -409,32 +390,31 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute [ a, b ], x raises an error' do
-            expect do
-              run_recipe do
+            expect {
+              converge {
                 chef_node 'blah' do
                   attribute [ 'a', 'b' ], 'x'
                 end
-              end
-            end.to raise_error /Attempt to set \["a", "b"\] to x when \["a"\] is not a hash/
+              }
+            }.to raise_error /Attempt to set \["a", "b"\] to x when \["a"\] is not a hash/
           end
 
           it 'chef_node with attribute [ a, b, c ], x raises an error' do
-            expect do
-              run_recipe do
+            expect {
+              converge {
                 chef_node 'blah' do
                   attribute [ 'a', 'b', 'c' ], 'x'
                 end
-              end
-            end.to raise_error /Attempt to set \["a", "b", "c"\] to x when \["a"\] is not a hash/
+              }
+            }.to raise_error /Attempt to set \["a", "b", "c"\] to x when \["a"\] is not a hash/
           end
 
           it 'chef_node with attribute [ x, y ], z adds a new attribute' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute [ 'x', 'y' ], 'z'
               end
-            end
-            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            }.to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -448,12 +428,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute [], {} clears all attributes' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute([], {})
               end
-            end
-            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            }.to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => { },
               'automatic' => { 'x' => 'y' },
@@ -464,12 +443,11 @@ describe Chef::Resource::ChefNode do
 
         context 'delete' do
           it 'chef_node with attribute a, :delete deletes the attribute' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'a', :delete
               end
-            end
-            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            }.to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'c' => { 'd' => 'e' },
@@ -481,12 +459,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute c, :delete deletes the attribute' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'c', :delete
               end
-            end
-            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            }.to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -498,12 +475,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute [ c, d ], :delete deletes the attribute' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute [ 'c', 'd' ], :delete
               end
-            end
-            expect(chef_run).to have_updated('chef_node[blah]', :create)
+            }.to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -516,12 +492,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute xyz, :delete does nothing' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'xyz', :delete
               end
-            end
-            expect(chef_run).not_to have_updated('chef_node[blah]', :create)
+            }.not_to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -534,12 +509,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute [ c, x ], :delete does nothing' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute [ 'c', 'x' ], :delete
               end
-            end
-            expect(chef_run).not_to have_updated('chef_node[blah]', :create)
+            }.not_to have_updated('chef_node[blah]', :create)
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -554,11 +528,11 @@ describe Chef::Resource::ChefNode do
 
         context 'types' do
           it 'chef_node with attribute a, true sets a to true' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'a', true
               end
-            end
+            }.to be_updated
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => true,
@@ -571,11 +545,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute a, 1 sets a to 1' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'a', 1
               end
-            end
+            }.to be_updated
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 1,
@@ -588,11 +562,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute a, "1" sets a to "1"' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'a', "1"
               end
-            end
+            }.to be_updated
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => "1",
@@ -605,11 +579,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute a, "" sets a to ""' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'a', ""
               end
-            end
+            }.to be_updated
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => "",
@@ -622,11 +596,11 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute a, nil sets a to nil' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'a', nil
               end
-            end
+            }.to be_updated
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => nil,
@@ -641,12 +615,12 @@ describe Chef::Resource::ChefNode do
 
         context 'multiple attribute definitions' do
           it 'chef_node with attribute a, x and c, y replaces both attributes' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'a', 'x'
                 attribute 'c', 'y'
               end
-            end
+            }.to be_updated
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'x',
@@ -659,12 +633,12 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute m, x and n, y adds both attributes' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute 'm', 'x'
                 attribute 'n', 'y'
               end
-            end
+            }.to be_updated
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -679,12 +653,12 @@ describe Chef::Resource::ChefNode do
           end
 
           it 'chef_node with attribute [x, y], z and [x, yy], zz adds both attributes' do
-            run_recipe do
+            expect_recipe {
               chef_node 'blah' do
                 attribute [ 'x', 'y' ], 'z'
                 attribute [ 'x', 'yy' ], 'zz'
               end
-            end
+            }.to be_updated
             expect(get('nodes/blah')).to include(
               'normal' => {
                 'a' => 'b',
@@ -702,12 +676,12 @@ describe Chef::Resource::ChefNode do
 
           describe 'precedence' do
             it 'chef_node with attribute a, 1 and a, 2 sets a to 2' do
-              run_recipe do
+              expect_recipe {
                 chef_node 'blah' do
                   attribute 'a', 1
                   attribute 'a', 2
                 end
-              end
+              }.to be_updated
               expect(get('nodes/blah')).to include(
                 'normal' => {
                   'a' => 2,
@@ -720,12 +694,12 @@ describe Chef::Resource::ChefNode do
             end
 
             it 'chef_node with attribute [ x, y ], 1 and [ x, y ], 2 sets [ x, y ], 2' do
-              run_recipe do
+              expect_recipe {
                 chef_node 'blah' do
                   attribute [ 'x', 'y' ], 1
                   attribute [ 'x', 'y' ], 2
                 end
-              end
+              }.to be_updated
               expect(get('nodes/blah')).to include(
                 'normal' => {
                   'a' => 'b',
@@ -739,12 +713,12 @@ describe Chef::Resource::ChefNode do
             end
 
             it 'chef_node with attribute [ c, e ], { a => 1 }, [ c, e ], { b => 2 } sets b only' do
-              run_recipe do
+              expect_recipe {
                 chef_node 'blah' do
                   attribute [ 'c', 'e' ], { 'a' => 1 }
                   attribute [ 'c', 'e' ], { 'b' => 2 }
                 end
-              end
+              }.to be_updated
               expect(get('nodes/blah')).to include(
                 'normal' => {
                   'a' => 'b',
@@ -757,12 +731,12 @@ describe Chef::Resource::ChefNode do
             end
 
             it 'chef_node with attribute [ c, e ], { a => 1 }, [ c, e, b ], 2 sets both' do
-              run_recipe do
+              expect_recipe {
                 chef_node 'blah' do
                   attribute [ 'c', 'e' ], { 'a' => 1 }
                   attribute [ 'c', 'e', 'b' ], 2
                 end
-              end
+              }.to be_updated
               expect(get('nodes/blah')).to include(
                 'normal' => {
                   'a' => 'b',
@@ -775,12 +749,12 @@ describe Chef::Resource::ChefNode do
             end
 
             it 'chef_node with attribute [ c, e, b ], 2, [ c, e ], { a => 1 } sets a only' do
-              run_recipe do
+              expect_recipe {
                 chef_node 'blah' do
                   attribute [ 'c', 'e', 'b' ], 2
                   attribute [ 'c', 'e' ], { 'a' => 1 }
                 end
-              end
+              }.to be_updated
               expect(get('nodes/blah')).to include(
                 'normal' => {
                   'a' => 'b',
@@ -800,12 +774,10 @@ describe Chef::Resource::ChefNode do
   when_the_chef_server 'is in OSC mode' do
     context 'and is empty' do
       context 'and we run a recipe that creates node "blah"' do
-        with_converge do
-          chef_node 'blah'
-        end
-
         it 'the node gets created' do
-          expect(chef_run).to have_updated 'chef_node[blah]', :create
+          expect_recipe {
+            chef_node 'blah'
+          }.to have_updated 'chef_node[blah]', :create
           expect(get('nodes/blah')['name']).to eq('blah')
         end
       end

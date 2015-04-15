@@ -9,20 +9,18 @@ repo_path = Dir.mktmpdir('chef_repo')
 describe Chef::Resource::ChefUser do
   extend Cheffish::RSpec::ChefRunSupport
 
-  with_recipe do
+  with_converge do
     private_key "#{repo_path}/blah.pem"
   end
 
   when_the_chef_server 'is empty' do
     context 'and we run a recipe that creates user "blah"'do
-      with_converge do
-        chef_user 'blah' do
-          source_key_path "#{repo_path}/blah.pem"
-        end
-      end
-
       it 'the user gets created' do
-        expect(chef_run).to have_updated 'chef_user[blah]', :create
+        expect_recipe {
+          chef_user 'blah' do
+            source_key_path "#{repo_path}/blah.pem"
+          end
+        }.to have_updated 'chef_user[blah]', :create
         user = get('/users/blah')
         expect(user['name']).to eq('blah')
         key, format = Cheffish::KeyFormatter.decode(user['public_key'])
@@ -48,14 +46,12 @@ describe Chef::Resource::ChefUser do
   when_the_chef_12_server 'is in multi-org mode' do
     context 'and chef_server_url is pointed at the top level' do
       context 'and we run a recipe that creates user "blah"'do
-        with_converge do
-          chef_user 'blah' do
-            source_key_path "#{repo_path}/blah.pem"
-          end
-        end
-
         it 'the user gets created' do
-          expect(chef_run).to have_updated 'chef_user[blah]', :create
+          expect_recipe {
+            chef_user 'blah' do
+              source_key_path "#{repo_path}/blah.pem"
+            end
+          }.to have_updated 'chef_user[blah]', :create
           user = get('/users/blah')
           expect(user['name']).to eq('blah')
           key, format = Cheffish::KeyFormatter.decode(user['public_key'])
@@ -72,14 +68,12 @@ describe Chef::Resource::ChefUser do
       end
 
       context 'and we run a recipe that creates user "blah"'do
-        with_converge do
-          chef_user 'blah' do
-            source_key_path "#{repo_path}/blah.pem"
-          end
-        end
-
         it 'the user gets created' do
-          expect(chef_run).to have_updated 'chef_user[blah]', :create
+          expect_recipe {
+            chef_user 'blah' do
+              source_key_path "#{repo_path}/blah.pem"
+            end
+          }.to have_updated 'chef_user[blah]', :create
           user = get('/users/blah')
           expect(user['name']).to eq('blah')
           key, format = Cheffish::KeyFormatter.decode(user['public_key'])

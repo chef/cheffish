@@ -9,7 +9,7 @@ module Cheffish
         end
       end
 
-      RSpec.shared_context "with a chef repo" do
+      ::RSpec.shared_context "with a chef repo" do
         before :each do
           raise "Can only create one directory per test" if @repository_dir
           @repository_dir = Dir.mktmpdir('chef_repo')

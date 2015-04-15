@@ -24,22 +24,10 @@ module Cheffish
         end
       end
 
-      def with_recipe(&block)
+      def with_converge(&recipe)
         before :each do
-          load_recipe(&block)
-        end
-
-        after :each do
-          if !chef_client.converge_failed? && !chef_client.converged?
-            raise "Never tried to converge!"
-          end
-        end
-      end
-
-      def with_converge(&block)
-        before :each do
-          load_recipe(&block) if block_given?
-          converge
+          r = recipe(&recipe)
+          r.converge
         end
       end
 
@@ -60,49 +48,23 @@ module Cheffish
         end
 
         def expect_recipe(&recipe)
-          expect(recipe(&recipe))
+          r = recipe(&recipe)
+          r.converge
+          expect(r)
         end
 
         def recipe(&recipe)
           RecipeRunWrapper.new(chef_config, &recipe)
         end
 
+        def converge(&recipe)
+          r = RecipeRunWrapper.new(chef_config, &recipe)
+          r.converge
+          r
+        end
+
         def chef_client
           @chef_client ||= ChefRunWrapper.new(chef_config)
-        end
-
-        def chef_run
-          converge if !chef_client.converged?
-          event_sink.events
-        end
-
-        def event_sink
-          chef_client.event_sink
-        end
-
-        def basic_chef_client
-          chef_client.client
-        end
-
-        def load_recipe(&recipe)
-          chef_client.client.load_block(&recipe)
-        end
-
-        def run_recipe(&recipe)
-          load_recipe(&recipe)
-          converge
-        end
-
-        def reset_chef_client
-          @event_sink = nil
-          @basic_chef_client = nil
-        end
-
-        def converge
-          if chef_client.converged?
-            raise "Already converged! Cannot converge twice, that's bad mojo."
-          end
-          chef_client.converge
         end
       end
     end

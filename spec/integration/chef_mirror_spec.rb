@@ -22,23 +22,21 @@ describe Chef::Resource::ChefMirror do
         end
 
         it "Download grabs defaults" do
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               action :download
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :download)
+          }.to have_updated('chef_mirror[]', :download)
           expect(File.exist?(path_to('groups/admins.json'))).to be true
           expect(File.exist?(path_to('environments/_default.json'))).to be true
         end
 
         it "Upload uploads everything" do
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               action :upload
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          }.to have_updated('chef_mirror[]', :upload)
           expect { get('nodes/x') }.not_to raise_error
           expect { get('roles/x') }.not_to raise_error
           expect { get('cookbooks/x/2.0.0') }.not_to raise_error
@@ -46,12 +44,12 @@ describe Chef::Resource::ChefMirror do
 
         it 'chef_mirror with concurrency 0 fails with a reasonable message' do
           expect {
-            run_recipe do
+            converge {
               chef_mirror '' do
                 concurrency 0
                 action :download
               end
-            end
+            }
           }.to raise_error /chef_mirror.concurrency must be above 0/
         end
       end
@@ -63,23 +61,21 @@ describe Chef::Resource::ChefMirror do
 
       when_the_repository 'is empty' do
         it "Download grabs the node and role" do
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               action :download
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :download)
+          }.to have_updated('chef_mirror[]', :download)
           expect(File.exist?(path_to('nodes/x.json'))).to be true
           expect(File.exist?(path_to('roles/x.json'))).to be true
         end
 
         it "Upload uploads nothing" do
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               action :upload
             end
-          end
-          expect(chef_run).not_to have_updated('chef_mirror[]', :upload)
+          }.not_to have_updated('chef_mirror[]', :upload)
         end
       end
     end
@@ -93,12 +89,11 @@ describe Chef::Resource::ChefMirror do
         file 'roles/y.json', {}
 
         it "Download grabs the x's" do
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               action :download
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :download)
+          }.to have_updated('chef_mirror[]', :download)
           expect(File.exist?(path_to('nodes/x.json'))).to be true
           expect(File.exist?(path_to('roles/x.json'))).to be true
           expect(File.exist?(path_to('nodes/y.json'))).to be true
@@ -106,12 +101,11 @@ describe Chef::Resource::ChefMirror do
         end
 
         it "Upload uploads the y's" do
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               action :upload
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          }.to have_updated('chef_mirror[]', :upload)
           expect { get('nodes/x') }.not_to raise_error
           expect { get('roles/x') }.not_to raise_error
           expect { get('nodes/y') }.not_to raise_error
@@ -119,25 +113,23 @@ describe Chef::Resource::ChefMirror do
         end
 
         it "Download with purge grabs the x's and deletes the y's" do
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               purge true
               action :download
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :download)
+          }.to have_updated('chef_mirror[]', :download)
           expect(File.exist?(path_to('nodes/x.json'))).to be true
           expect(File.exist?(path_to('roles/x.json'))).to be true
         end
 
         it "Upload with :purge uploads the y's and deletes the x's" do
-          run_recipe do
+          expect_recipe {
             chef_mirror '*/*.json' do
               purge true
               action :upload
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[*/*.json]', :upload)
+          }.to have_updated('chef_mirror[*/*.json]', :upload)
           expect { get('nodes/y') }.not_to raise_error
           expect { get('roles/y') }.not_to raise_error
         end
@@ -160,13 +152,12 @@ describe Chef::Resource::ChefMirror do
 
         it "Upload with chef_repo_path('repo') uploads everything" do
           repo_path = path_to('repo')
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               chef_repo_path repo_path
               action :upload
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          }.to have_updated('chef_mirror[]', :upload)
           expect { get('nodes/x') }.not_to raise_error
           expect { get('roles/x') }.not_to raise_error
           expect { get('nodes/y') }.to raise_error
@@ -176,13 +167,12 @@ describe Chef::Resource::ChefMirror do
         it "Upload with chef_repo_path(:chef_repo_path) with multiple paths uploads everything" do
           repo_path = path_to('repo')
           repo2_path = path_to('repo2')
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               chef_repo_path :chef_repo_path => [ repo_path, repo2_path ]
               action :upload
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          }.to have_updated('chef_mirror[]', :upload)
           expect { get('nodes/x') }.not_to raise_error
           expect { get('roles/x') }.not_to raise_error
           expect { get('nodes/y') }.not_to raise_error
@@ -193,15 +183,14 @@ describe Chef::Resource::ChefMirror do
           repo_path = path_to('repo')
           repo2_path = path_to('repo2')
 
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               chef_repo_path :chef_repo_path => '/blahblah',
                              :node_path => "#{repo_path}/nodes",
                              :role_path => "#{repo2_path}/roles"
               action :upload
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          }.to have_updated('chef_mirror[]', :upload)
           expect { get('nodes/x') }.not_to raise_error
           expect { get('roles/x') }.to raise_error
           expect { get('nodes/y') }.to raise_error
@@ -212,14 +201,13 @@ describe Chef::Resource::ChefMirror do
           repo_path = path_to('repo')
           repo2_path = path_to('repo2')
 
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               chef_repo_path :chef_repo_path => repo_path,
                              :role_path => "#{repo2_path}/roles"
               action :upload
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          }.to have_updated('chef_mirror[]', :upload)
           expect { get('nodes/x') }.not_to raise_error
           expect { get('roles/x') }.to raise_error
           expect { get('nodes/y') }.to raise_error
@@ -230,15 +218,14 @@ describe Chef::Resource::ChefMirror do
           repo_path = path_to('repo')
           repo2_path = path_to('repo2')
 
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               chef_repo_path :chef_repo_path => [ 'foo', 'bar' ],
                              :node_path => [ "#{repo_path}/nodes", "#{repo2_path}/nodes" ],
                              :role_path => [ "#{repo_path}/roles", "#{repo2_path}/roles" ]
               action :upload
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          }.to have_updated('chef_mirror[]', :upload)
           expect { get('nodes/x') }.not_to raise_error
           expect { get('roles/x') }.not_to raise_error
           expect { get('nodes/y') }.not_to raise_error
@@ -253,12 +240,11 @@ describe Chef::Resource::ChefMirror do
         file 'cookbooks/y-1.0.0/metadata.rb', 'name "y-3.0.0"; version "4.0.0"'
 
         it "chef_mirror :upload uploads everything" do
-          run_recipe do
+          expect_recipe {
             chef_mirror '' do
               action :upload
             end
-          end
-          expect(chef_run).to have_updated('chef_mirror[]', :upload)
+          }.to have_updated('chef_mirror[]', :upload)
           expect { get('cookbooks/x-1.0.0/2.0.0') }.not_to raise_error
           expect { get('cookbooks/y-3.0.0/4.0.0') }.not_to raise_error
         end
@@ -268,12 +254,11 @@ describe Chef::Resource::ChefMirror do
             Chef::Config.versioned_cookbooks false
           end
           it "chef_mirror :upload uploads everything" do
-            run_recipe do
+            expect_recipe {
               chef_mirror '' do
                 action :upload
               end
-            end
-            expect(chef_run).to have_updated('chef_mirror[]', :upload)
+            }.to have_updated('chef_mirror[]', :upload)
             expect { get('cookbooks/x-1.0.0/2.0.0') }.not_to raise_error
             expect { get('cookbooks/y-3.0.0/4.0.0') }.not_to raise_error
           end
@@ -287,14 +272,13 @@ describe Chef::Resource::ChefMirror do
 
           it "chef_mirror :upload with chef_repo_path and versioned_cookbooks false uploads cookbooks with name including version" do
             repository_dir = @repository_dir
-            run_recipe do
+            expect_recipe {
               chef_mirror '' do
                 chef_repo_path repository_dir
                 versioned_cookbooks false
                 action :upload
               end
-            end
-            expect(chef_run).to have_updated('chef_mirror[]', :upload)
+            }.to have_updated('chef_mirror[]', :upload)
             expect { get('cookbooks/x-1.0.0/2.0.0') }.not_to raise_error
             expect { get('cookbooks/y-3.0.0/4.0.0') }.not_to raise_error
           end
@@ -310,12 +294,11 @@ describe Chef::Resource::ChefMirror do
             Chef::Config.versioned_cookbooks true
           end
           it "chef_mirror :upload uploads everything" do
-            run_recipe do
+            expect_recipe {
               chef_mirror '' do
                 action :upload
               end
-            end
-            expect(chef_run).to have_updated('chef_mirror[]', :upload)
+            }.to have_updated('chef_mirror[]', :upload)
             expect { get('cookbooks/x/1.0.0') }.not_to raise_error
             expect { get('cookbooks/x/2.0.0') }.not_to raise_error
           end
@@ -327,13 +310,12 @@ describe Chef::Resource::ChefMirror do
           end
           it "chef_mirror :upload with chef_repo_path uploads cookbooks" do
             repository_dir = @repository_dir
-            run_recipe do
+            expect_recipe {
               chef_mirror '' do
                 chef_repo_path repository_dir
                 action :upload
               end
-            end
-            expect(chef_run).to have_updated('chef_mirror[]', :upload)
+            }.to have_updated('chef_mirror[]', :upload)
             expect { get('cookbooks/x/1.0.0') }.not_to raise_error
             expect { get('cookbooks/x/2.0.0') }.not_to raise_error
           end
@@ -347,27 +329,25 @@ describe Chef::Resource::ChefMirror do
 
           it "chef_mirror :upload with chef_repo_path uploads cookbooks with name split from version" do
             repository_dir = @repository_dir
-            run_recipe do
+            expect_recipe {
               chef_mirror '' do
                 chef_repo_path repository_dir
                 action :upload
               end
-            end
-            expect(chef_run).to have_updated('chef_mirror[]', :upload)
+            }.to have_updated('chef_mirror[]', :upload)
             expect { get('cookbooks/x/1.0.0') }.not_to raise_error
             expect { get('cookbooks/x/2.0.0') }.not_to raise_error
           end
 
           it "chef_mirror :upload with chef_repo_path and versioned_cookbooks uploads cookbooks with name split from version" do
             repository_dir = @repository_dir
-            run_recipe do
+            expect_recipe {
               chef_mirror '' do
                 chef_repo_path repository_dir
                 versioned_cookbooks true
                 action :upload
               end
-            end
-            expect(chef_run).to have_updated('chef_mirror[]', :upload)
+            }.to have_updated('chef_mirror[]', :upload)
             expect { get('cookbooks/x/1.0.0') }.not_to raise_error
             expect { get('cookbooks/x/2.0.0') }.not_to raise_error
           end
@@ -380,13 +360,12 @@ describe Chef::Resource::ChefMirror do
           end
           it "chef_mirror :upload with chef_repo_path uploads cookbooks with name split from version" do
             repository_dir = @repository_dir
-            run_recipe do
+            expect_recipe {
               chef_mirror '' do
                 chef_repo_path repository_dir
                 action :upload
               end
-            end
-            expect(chef_run).to have_updated('chef_mirror[]', :upload)
+            }.to have_updated('chef_mirror[]', :upload)
             expect { get('cookbooks/x/1.0.0') }.not_to raise_error
             expect { get('cookbooks/x/2.0.0') }.not_to raise_error
           end
@@ -401,23 +380,21 @@ describe Chef::Resource::ChefMirror do
 
         when_the_repository 'is empty' do
           it 'chef_mirror :download downloads the latest version of the cookbook' do
-            run_recipe do
+            expect_recipe {
               chef_mirror '' do
                 action :download
               end
-            end
-            expect(chef_run).to have_updated('chef_mirror[]', :download)
+            }.to have_updated('chef_mirror[]', :download)
             expect(File.read(path_to('cookbooks/x/metadata.rb'))).to eq('name "x"; version "2.0.0"')
           end
 
           it 'chef_mirror :download with versioned_cookbooks = true downloads all versions of the cookbook' do
-            run_recipe do
+            expect_recipe {
               chef_mirror '' do
                 versioned_cookbooks true
                 action :download
               end
-            end
-            expect(chef_run).to have_updated('chef_mirror[]', :download)
+            }.to have_updated('chef_mirror[]', :download)
             expect(File.read(path_to('cookbooks/x-1.0.0/metadata.rb'))).to eq('name "x"; version "1.0.0"')
             expect(File.read(path_to('cookbooks/x-2.0.0/metadata.rb'))).to eq('name "x"; version "2.0.0"')
           end
@@ -429,27 +406,25 @@ describe Chef::Resource::ChefMirror do
 
             it 'chef_mirror :download with chef_repo_path downloads all versions of the cookbook' do
               repository_dir = @repository_dir
-              run_recipe do
+              expect_recipe {
                 chef_mirror '' do
                   chef_repo_path repository_dir
                   action :download
                 end
-              end
-              expect(chef_run).to have_updated('chef_mirror[]', :download)
+              }.to have_updated('chef_mirror[]', :download)
               expect(File.read(path_to('cookbooks/x-1.0.0/metadata.rb'))).to eq('name "x"; version "1.0.0"')
               expect(File.read(path_to('cookbooks/x-2.0.0/metadata.rb'))).to eq('name "x"; version "2.0.0"')
             end
 
             it 'chef_mirror :download with chef_repo_path and versioned_cookbooks = false downloads the latest version of the cookbook' do
               repository_dir = @repository_dir
-              run_recipe do
+              expect_recipe {
                 chef_mirror '' do
                   chef_repo_path repository_dir
                   versioned_cookbooks false
                   action :download
                 end
-              end
-              expect(chef_run).to have_updated('chef_mirror[]', :download)
+              }.to have_updated('chef_mirror[]', :download)
               expect(File.read(path_to('cookbooks/x/metadata.rb'))).to eq('name "x"; version "2.0.0"')
             end
           end
@@ -460,24 +435,22 @@ describe Chef::Resource::ChefMirror do
             end
 
             it 'chef_mirror :download downloads all versions of the cookbook' do
-              run_recipe do
+              expect_recipe {
                 chef_mirror '' do
                   action :download
                 end
-              end
-              expect(chef_run).to have_updated('chef_mirror[]', :download)
+              }.to have_updated('chef_mirror[]', :download)
               expect(File.read(path_to('cookbooks/x-1.0.0/metadata.rb'))).to eq('name "x"; version "1.0.0"')
               expect(File.read(path_to('cookbooks/x-2.0.0/metadata.rb'))).to eq('name "x"; version "2.0.0"')
             end
 
             it 'chef_mirror :download with versioned_cookbooks = false downloads the latest version of the cookbook' do
-              run_recipe do
+              expect_recipe {
                 chef_mirror '' do
                   versioned_cookbooks false
                   action :download
                 end
-              end
-              expect(chef_run).to have_updated('chef_mirror[]', :download)
+              }.to have_updated('chef_mirror[]', :download)
               expect(File.read(path_to('cookbooks/x/metadata.rb'))).to eq('name "x"; version "2.0.0"')
             end
 
@@ -488,27 +461,25 @@ describe Chef::Resource::ChefMirror do
 
               it 'chef_mirror :download with chef_repo_path downloads all versions of the cookbook' do
                 repository_dir = @repository_dir
-                run_recipe do
+                expect_recipe {
                   chef_mirror '' do
                     chef_repo_path repository_dir
                     action :download
                   end
-                end
-                expect(chef_run).to have_updated('chef_mirror[]', :download)
+                }.to have_updated('chef_mirror[]', :download)
                 expect(File.read(path_to('cookbooks/x-1.0.0/metadata.rb'))).to eq('name "x"; version "1.0.0"')
                 expect(File.read(path_to('cookbooks/x-2.0.0/metadata.rb'))).to eq('name "x"; version "2.0.0"')
               end
 
               it 'chef_mirror :download with chef_repo_path and versioned_cookbooks = false downloads the latest version of the cookbook' do
                 repository_dir = @repository_dir
-                run_recipe do
+                expect_recipe {
                   chef_mirror '' do
                     chef_repo_path repository_dir
                     versioned_cookbooks false
                     action :download
                   end
-                end
-                expect(chef_run).to have_updated('chef_mirror[]', :download)
+                }.to have_updated('chef_mirror[]', :download)
                 expect(File.read(path_to('cookbooks/x/metadata.rb'))).to eq('name "x"; version "2.0.0"')
               end
             end
