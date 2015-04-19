@@ -23,21 +23,17 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
         end
 
         it 'Converging chef_acl "nodes/x" with "complete true" and no rights raises an error' do
-          expect {
-            converge do
-              chef_acl 'nodes/x' do
-                complete true
-              end
+          expect_converge {
+            chef_acl 'nodes/x' do
+              complete true
             end
           }.to raise_error(RuntimeError)
         end
 
         it 'Removing all :grant rights from a node raises an error' do
-          expect {
-            converge do
-              chef_acl 'nodes/x' do
-                remove_rights :grant, users: %w(pivotal), groups:  %w(admins users clients)
-              end
+          expect_converge {
+            chef_acl 'nodes/x' do
+              remove_rights :grant, users: %w(pivotal), groups:  %w(admins users clients)
             end
           }.to raise_error(RuntimeError)
         end
@@ -182,10 +178,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
         end
 
         it 'Converging chef_acl "nodes/y" throws a 404' do
-          expect {
-            converge do
-              chef_acl 'nodes/y'
-            end
+          expect_converge {
+            chef_acl 'nodes/y'
           }.to raise_error(Net::HTTPServerException)
         end
       end
@@ -440,43 +434,35 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
             end
 
             it "chef_acl '/organizations/foo/cookbooks/x/1.0.0' raises an error" do
-              expect {
-                converge do
-                  chef_acl "/organizations/foo/cookbooks/x/1.0.0" do
-                    rights :read, users: %w(u)
-                  end
+              expect_converge {
+                chef_acl "/organizations/foo/cookbooks/x/1.0.0" do
+                  rights :read, users: %w(u)
                 end
               }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/cookbooks\/x/)
             end
 
             it "chef_acl '/organizations/foo/cookbooks/*/*' raises an error" do
               pending
-              expect {
-                converge do
-                  chef_acl "/organizations/foo/cookbooks/*/*" do
-                    rights :read, users: %w(u)
-                  end
+              expect_converge {
+                chef_acl "/organizations/foo/cookbooks/*/*" do
+                  rights :read, users: %w(u)
                 end
               }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/cookbooks\/*/)
             end
 
             it 'chef_acl "/organizations/foo/data/x/y" raises an error' do
-              expect {
-                converge do
-                  chef_acl '/organizations/foo/data/x/y' do
-                    rights :read, users: %w(u)
-                  end
+              expect_converge {
+                chef_acl '/organizations/foo/data/x/y' do
+                  rights :read, users: %w(u)
                 end
               }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/data\/x/)
             end
 
             it 'chef_acl "/organizations/foo/data/*/*" raises an error' do
               pending
-              expect {
-                converge do
-                  chef_acl '/organizations/foo/data/*/*' do
-                    rights :read, users: %w(u)
-                  end
+              expect_converge {
+                chef_acl '/organizations/foo/data/*/*' do
+                  rights :read, users: %w(u)
                 end
               }.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/data\/*/)
             end

@@ -53,6 +53,11 @@ module Cheffish
           expect(r)
         end
 
+        def expect_converge(&recipe)
+          r = recipe(&recipe)
+          expect { r.converge }
+        end
+
         def recipe(&recipe)
           RecipeRunWrapper.new(chef_config, &recipe)
         end
