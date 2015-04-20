@@ -2,9 +2,9 @@ require 'chef_zero/rspec'
 require 'chef/server_api'
 require 'cheffish/rspec/repository_support'
 require 'uri'
-require 'cheffish/basic_chef_client'
-require 'cheffish/rspec/chef_run_wrapper'
+require 'cheffish/chef_run'
 require 'cheffish/rspec/recipe_run_wrapper'
+require 'cheffish/rspec/matchers'
 
 module Cheffish
   module RSpec
@@ -69,7 +69,7 @@ module Cheffish
         end
 
         def chef_client
-          @chef_client ||= ChefRunWrapper.new(chef_config)
+          @chef_client ||= ChefRun.new(chef_config)
         end
       end
     end

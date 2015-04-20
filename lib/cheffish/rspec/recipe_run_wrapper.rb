@@ -1,8 +1,8 @@
-require 'cheffish/rspec/chef_run_wrapper'
+require 'cheffish/chef_run'
 
 module Cheffish
   module RSpec
-    class RecipeRunWrapper < ChefRunWrapper
+    class RecipeRunWrapper < ChefRun
       def initialize(chef_config, &recipe)
         super(chef_config)
         @recipe = recipe

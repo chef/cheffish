@@ -62,9 +62,22 @@ module Cheffish
     def logs
       @client ? client.chef_config[:log_location].string : nil
     end
+    def logged_warnings
+      logs.lines.select { |l| l =~ /^\[[^\]]*\] WARN:/ }.join("\n")
+    end
+    def logged_errors
+      logs.lines.select { |l| l =~ /^\[[^\]]*\] ERROR:/ }.join("\n")
+    end
+    def logged_info
+      logs.lines.select { |l| l =~ /^\[[^\]]*\] INFO:/ }.join("\n")
+    end
 
     def resources
       client.resource_collection
+    end
+
+    def compile_recipe(&recipe)
+      client.load_block(&recipe)
     end
 
     def converge
