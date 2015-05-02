@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2 (5/1/2015)
+
+- expect_converge, logged_warnings and logged_errors in the RSpec plugin ([@jkeiser])
+
 ## 1.1.2 (4/8/2015)
 
 - Fixing bug in log statement - was causing NoMethodError ([@tyler-ball][])
