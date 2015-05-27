@@ -35,10 +35,11 @@ class Chef::Resource::ChefOrganization < Chef::Resource::LWRPBase
     !!@invites
   end
 
-  # A list of users who must be members of the org.  This will use the new Chef 12
-  # POST /organizations/ORG/users/NAME endpoint to add them directly to the org.
-  # If you do not have permission to perform this operation, and the users are not
-  # a part of the org, the resource update will fail.
+  # A list of users who must be members of the org.  This will use the
+  # new Chef 12 POST /organizations/ORG/users endpoint to add them
+  # directly to the org.  If you do not have permission to perform
+  # this operation, and the users are not a part of the org, the
+  # resource update will fail.
   def members(*users)
     if users.size == 0
       @members || []
