@@ -48,7 +48,7 @@ module Cheffish
     attr_reader :run_context
     attr_accessor :cookbook_name
     attr_accessor :recipe_name
-    def_delegators :@run_context, :resource_collection, :immediate_notifications, :delayed_notifications
+    def_delegators :@run_context, :resource_collection, :immediate_notifications, :delayed_notifications, :has_crashed?, :has_crashed!
 
     def add_resource(resource)
       with_chef_config do
