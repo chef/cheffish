@@ -33,7 +33,7 @@ To support the resource/provider pairs.
 
 ## RSpec Support
 
-Most of these were developed for testing the resource/provider pairs above; *however*, you can also `require cheffish/rspec/chef_run_support` for any RSpec `expect`s you'd like, as we do for `chef-provisioning` and its drivers (especially `chef-provisioning-aws`).
+Most of these RSpec...things were developed for testing the resource/provider pairs above; *however*, you can also `require cheffish/rspec/chef_run_support` for any RSpec `expect`s you'd like, as we do for `chef-provisioning` and its drivers (especially `chef-provisioning-aws`).
 
 The awesomeness here is that instead of instantiating a `run_context` and a `node` and a `resource` as Ruby objects, you can test your resources in an actual recipe:
 
@@ -67,7 +67,7 @@ Converges the recipe using `expect()` (parentheses), which tests for a value and
 ```ruby
 expect_converge {
   # unquoted recipe DSL here.
-}.to be_truthy    # or write your own matchers.
+}.to raise_error(ArgumentException)
 ```
 
 Converges the recipe using `expect{ }` (curly brackets), which wraps the block in a `begin..rescue..end` to detect when the block raises an exception; hence, this is **only** for `raise_error`.
@@ -85,3 +85,33 @@ The blocks for the following appear to be mostly optional: what they actually do
 
 get_private_key(name)
 
+
+### RSpec matchers
+
+These are used with `expect_recipe` or `expect_converge`:
+
+```ruby
+expect_recipe {
+  file "/tmp/a_file.json" do
+    content "Very important content."
+  end
+}.to be_idempotent.and emit_no_warnings_or_errors
+```
+
+`be_idempotent`
+
+- Runs the provided recipe *again* (`expect_(recipe|converge)` ran it the first time) and asks the Chef run if it updated anything (using `updated?`, which appears to be defined on `Chef::Resource` instead of `Chef::Client`, so there's some clarification to be done there); the matcher is satisfied if the answer is "no."
+
+
+`emit_no_warnings_or_errors`
+
+- Greps the Chef client run's log output for WARN/ERROR lines; matcher is satisfied if there aren't any.
+
+`have_updated`
+
+- Sifts the recipe's event stream(!) to determine if any resources were updated; matcher is satisfied is the answer is "yes."
+- This is *not* the opposite of `be_idempotent`.
+
+`partially_match`
+
+- TBD
