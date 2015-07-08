@@ -35,9 +35,13 @@ To support the resource/provider pairs.
 
 Most of these were developed for testing the resource/provider pairs above; *however*, you can also `require cheffish/rspec/chef_run_support` for any RSpec `expect`s you'd like, as we do for `chef-provisioning` and its drivers (especially `chef-provisioning-aws`).
 
+The awesomeness here is that instead of instantiating a `run_context` and a `node` and a `resource` as Ruby objects, you can test your resources in an actual recipe:
+
 ```ruby
 when_the_chef_12_server "exists", organization: 'some-org', server_scope: :context, port: 8900..9000 do
-  # examples here.
+  file "/tmp/something_important.json" do
+    content "A resource in its native environment."
+  end
 end
 ```
 
@@ -58,7 +62,7 @@ expect_recipe {
 }.to be_truthy    # or write your own matchers.
 ```
 
-Converges the recipe using `expect()` (parentheses), which tests for a value and cannot be used with `raise_error`.
+Converges the recipe using `expect()` (parentheses), which tests for a value and **cannot** be used with `raise_error`.
 
 ```ruby
 expect_converge {
