@@ -8,23 +8,23 @@ There are essentially 3 collections here:
 
 ## Resource/Provider Pairs for Manipulating Chef Servers
 
-You'd use these in cookbooks.
+You'd use these in recipes/cookbooks. They are documented on the [main Chef docs site](https://docs.chef.io).
 
-- chef_acl
-- chef_client
-- chef_container
-- chef_data_bag
-- chef_data_bag_item
-- chef_environment
-- chef_group
-- chef_mirror
-- chef_node
-- chef_organization
-- chef_resolved_cookbooks
-- chef_role
-- chef_user
-- private_key
-- public_key
+- [chef_acl](https://docs.chef.io/resource_chef_acl.html)
+- [chef_client](https://docs.chef.io/resource_chef_client.html)
+- [chef_container](https://docs.chef.io/resource_chef_container.html)
+- [chef_data_bag](https://docs.chef.io/resource_chef_data_bag.html)
+- [chef_data_bag_item](https://docs.chef.io/resource_chef_data_bag_item.html)
+- [chef_environment](https://docs.chef.io/resource_chef_environment.html)
+- [chef_group](https://docs.chef.io/resource_chef_group.html)
+- [chef_mirror](https://docs.chef.io/resource_chef_mirror.html)
+- [chef_node](https://docs.chef.io/resource_chef_node.html)
+- [chef_organization](https://docs.chef.io/resource_chef_organization.html)
+- [chef_resolved_cookbooks](https://docs.chef.io/resource_chef_resolved_cookbooks.html)
+- [chef_role](https://docs.chef.io/resource_chef_role.html)
+- [chef_user](https://docs.chef.io/resource_chef_user.html)
+- [private_key](https://docs.chef.io/resource_private_key.html)
+- [public_key](https://docs.chef.io/resource_public_key.html)
 
 ## Base/Helper Classes
 
