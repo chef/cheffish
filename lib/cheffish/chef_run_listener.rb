@@ -20,8 +20,10 @@ module Cheffish
 
     def disconnect
       # Stop the servers
-      node.run_context.cheffish.local_servers.each do |server|
-        server.stop
+      if node.run_context
+        node.run_context.cheffish.local_servers.each do |server|
+          server.stop
+        end
       end
     end
   end
