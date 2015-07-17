@@ -1,3 +1,3 @@
 module Cheffish
-  VERSION = '1.3.0.dev.0'
+  VERSION = '1.2.1'
 end

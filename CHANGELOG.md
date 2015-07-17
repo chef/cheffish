@@ -1,8 +1,13 @@
 # Changelog
 
+## 1.2.1 (7/17/2015)
+
+- Fix nil error when trying to shutdown a server without a run_context ([@lamont-granquist][])
+- Adding a README ([@randomcamel][])
+
 ## 1.2 (5/1/2015)
 
-- expect_converge, logged_warnings and logged_errors in the RSpec plugin ([@jkeiser])
+- expect_converge, logged_warnings and logged_errors in the RSpec plugin ([@jkeiser][])
 
 ## 1.1.2 (4/8/2015)
 
@@ -130,6 +135,8 @@
 [@elliott-davis]: https://github.com/elliott-davis
 [@jkeiser]: https://github.com/jkeiser
 [@johnbellone]: https://github.com/johnbellone
+[@lamont-granquist]: https://github.com/lamont-granquist
 [@lcg]: https://github.com/lcg
 [@mwrock]: https://github.com/mwrock
+[@randomcamel]: https://github.com/randomcamel
 [@tyler-ball]: https://github.com/tyler-ball
