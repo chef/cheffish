@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.0 (7/29/2015)
+
+- Make let variables visible to recipes and resources declared in recipes) in rspec `converge` and `recipe` stuff ([@jkeiser])
+- Make `converge` and `recipe` take strings as well as blocks ([@jkeiser])
+
 ## 1.2.1 (7/17/2015)
 
 - Fix nil error when trying to shutdown a server without a run_context ([@lamont-granquist][])
