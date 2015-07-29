@@ -47,23 +47,29 @@ module Cheffish
           {}
         end
 
-        def expect_recipe(&recipe)
-          r = recipe(&recipe)
+        def expect_recipe(str=nil, file=nil, line=nil, &recipe)
+          r = recipe(str, file, line, &recipe)
           r.converge
           expect(r)
         end
 
-        def expect_converge(&recipe)
-          r = recipe(&recipe)
-          expect { r.converge }
+        def expect_converge(str=nil, file=nil, line=nil, &recipe)
+          expect { converge(str, file, line, &recipe) }
         end
 
-        def recipe(&recipe)
+        def recipe(str=nil, file=nil, line=nil, &recipe)
+          if !recipe
+            if file && line
+              recipe = proc { eval(str, nil, file, line) }
+            else
+              recipe = proc { eval(str) }
+            end
+          end
           RecipeRunWrapper.new(chef_config, &recipe)
         end
 
-        def converge(&recipe)
-          r = RecipeRunWrapper.new(chef_config, &recipe)
+        def converge(str=nil, file=nil, line=nil, &recipe)
+          r = recipe(str, file, line, &recipe)
           r.converge
           r
         end
