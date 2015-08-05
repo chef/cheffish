@@ -16,7 +16,11 @@ module Cheffish
   end
 
   def self.chef_server_api(chef_server = default_chef_server)
-    Cheffish::ServerAPI.new(chef_server[:chef_server_url], chef_server[:options] || {})
+    # Pin the server api version to 0 until https://github.com/chef/cheffish/issues/56
+    # gets the correct compatibility fix.
+    chef_server[:options] ||= {}
+    chef_server[:options].merge!(api_version: "0")
+    Cheffish::ServerAPI.new(chef_server[:chef_server_url], chef_server[:options])
   end
 
   def self.profiled_config(config = Chef::Config)
