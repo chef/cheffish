@@ -17,7 +17,7 @@ describe 'Cheffish::RSpec::ChefRunSupport' do
       expect(IO.read(tempfile.path)).to eq ''
     end
 
-    it "recipe 'file ...' updates the file" do
+    it "recipe 'file ...' does not update the file" do
       result = recipe <<-EOM
         file tempfile.path do
           content 'test'
@@ -27,7 +27,7 @@ describe 'Cheffish::RSpec::ChefRunSupport' do
       expect(IO.read(tempfile.path)).to eq ''
     end
 
-    it "recipe 'file ...' with file and line number updates the file" do
+    it "recipe 'file ...' with file and line number does not update the file" do
       result = recipe(<<-EOM, __FILE__, __LINE__+1)
         file tempfile.path do
           content 'test'
