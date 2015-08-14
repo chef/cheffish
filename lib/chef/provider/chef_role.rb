@@ -3,6 +3,7 @@ require 'chef/resource/chef_role'
 require 'chef/chef_fs/data_handler/role_data_handler'
 
 class Chef::Provider::ChefRole < Cheffish::ChefProviderBase
+  provides :chef_role
 
   def whyrun_supported?
     true

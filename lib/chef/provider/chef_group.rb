@@ -3,6 +3,7 @@ require 'chef/resource/chef_group'
 require 'chef/chef_fs/data_handler/group_data_handler'
 
 class Chef::Provider::ChefGroup < Cheffish::ChefProviderBase
+  provides :chef_group
 
   def whyrun_supported?
     true

@@ -4,6 +4,7 @@ require 'chef/chef_fs/data_handler/data_bag_item_data_handler'
 require 'chef/encrypted_data_bag_item'
 
 class Chef::Provider::ChefDataBagItem < Cheffish::ChefProviderBase
+  provides :chef_data_bag_item
 
   def whyrun_supported?
     true

@@ -3,6 +3,7 @@ require 'chef/resource/chef_node'
 require 'chef/chef_fs/data_handler/node_data_handler'
 
 class Chef::Provider::ChefNode < Cheffish::ChefProviderBase
+  provides :chef_node
 
   def whyrun_supported?
     true
