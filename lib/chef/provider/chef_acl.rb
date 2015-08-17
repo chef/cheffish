@@ -5,6 +5,7 @@ require 'chef/chef_fs/parallelizer'
 require 'uri'
 
 class Chef::Provider::ChefAcl < Cheffish::ChefProviderBase
+  provides :chef_acl
 
   def whyrun_supported?
     true

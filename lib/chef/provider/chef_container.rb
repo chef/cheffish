@@ -3,6 +3,7 @@ require 'chef/resource/chef_container'
 require 'chef/chef_fs/data_handler/container_data_handler'
 
 class Chef::Provider::ChefContainer < Cheffish::ChefProviderBase
+  provides :chef_container
 
   def whyrun_supported?
     true

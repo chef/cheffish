@@ -2,6 +2,7 @@ require 'chef/provider/lwrp_base'
 require 'chef_zero'
 
 class Chef::Provider::ChefResolvedCookbooks < Chef::Provider::LWRPBase
+  provides :chef_resolved_cookbooks
 
   action :resolve do
     new_resource.cookbooks_from.each do |path|

@@ -3,6 +3,7 @@ require 'openssl'
 require 'cheffish/key_formatter'
 
 class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
+  provides :private_key
 
   action :create do
     create_key(false, :create)

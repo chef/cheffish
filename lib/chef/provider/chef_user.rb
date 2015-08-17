@@ -3,6 +3,7 @@ require 'chef/resource/chef_user'
 require 'chef/chef_fs/data_handler/user_data_handler'
 
 class Chef::Provider::ChefUser < Cheffish::ActorProviderBase
+  provides :chef_user
 
   def whyrun_supported?
     true

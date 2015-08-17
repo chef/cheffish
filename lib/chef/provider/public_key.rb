@@ -3,6 +3,8 @@ require 'openssl'
 require 'cheffish/key_formatter'
 
 class Chef::Provider::PublicKey < Chef::Provider::LWRPBase
+  provides :public_key
+
   action :create do
     if !new_source_key
       raise "No source key specified"
