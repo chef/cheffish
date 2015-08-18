@@ -1,5 +1,38 @@
-rvm:
-  - 2.0.0
-  - 2.1.1
+sudo: false
+language: ruby
+cache: bundler
 
-script: bundle exec rake spec
+rvm:
+  # - 2.0.0
+  # - 2.1.1
+  - 2.1.2
+
+gemfile:
+  - chef-client-version.gemfile
+
+env:
+  - CHEF_VERSION=master
+  - CHEF_VERSION=12.4.1
+  - CHEF_VERSION=12.4.0
+  - CHEF_VERSION=12.3.0
+  - CHEF_VERSION=12.2.1
+  - CHEF_VERSION=12.1.2
+
+matrix:
+  # fast_finish: true
+  allow_failures:
+    - env:
+      - CHEF_VERSION=master
+      - CHEF_VERSION=12.4.0
+      - CHEF_VERSION=12.3.0
+      - CHEF_VERSION=12.2.1
+      - CHEF_VERSION=12.1.2
+
+script:
+  - bundle install --jobs=3 --retry=3
+  - bundle exec rake build
+  - bundle exec rake spec
+
+notifications:
+  slack:
+    secure: W2QBW06FQcKP8F6VrVJZjhJDZkz46meV0Zuj/AHcexYbGvB9zWE8Vb/U5h7YW5CS1U2y0hKwl1VgdOmLf+SWDZLFLZ5hYcc44VJqQl5XZlaOw4OCeUvp4aluzTl9n4qRh1DTPrvb37iZbA2uMcLlyhiv1jVS8NnNaqqh9Uy/A5A=
