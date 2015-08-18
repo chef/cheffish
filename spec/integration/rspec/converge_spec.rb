@@ -4,107 +4,107 @@ require 'cheffish/rspec/chef_run_support'
 describe 'Cheffish::RSpec::ChefRunSupport' do
   extend Cheffish::RSpec::ChefRunSupport
 
-  let(:tempfile) { Tempfile.new('test') }
+  let(:temp_file) { Tempfile.new('test') }
 
   context "#recipe" do
     it "recipe { file ... } updates the file" do
       result = recipe {
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       }
       expect(result.updated?).to be_falsey
-      expect(IO.read(tempfile.path)).to eq ''
+      expect(IO.read(temp_file.path)).to eq ''
     end
 
     it "recipe 'file ...' does not update the file" do
       result = recipe <<-EOM
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       EOM
       expect(result.updated?).to be_falsey
-      expect(IO.read(tempfile.path)).to eq ''
+      expect(IO.read(temp_file.path)).to eq ''
     end
 
     it "recipe 'file ...' with file and line number does not update the file" do
       result = recipe(<<-EOM, __FILE__, __LINE__+1)
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       EOM
       expect(result.updated?).to be_falsey
-      expect(IO.read(tempfile.path)).to eq ''
+      expect(IO.read(temp_file.path)).to eq ''
     end
   end
 
   context "#converge" do
     it "converge { file ... } updates the file" do
       result = converge {
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       }
       expect(result.updated?).to be_truthy
-      expect(IO.read(tempfile.path)).to eq 'test'
+      expect(IO.read(temp_file.path)).to eq 'test'
     end
 
     it "converge 'file ...' updates the file" do
       result = converge <<-EOM
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       EOM
       expect(result.updated?).to be_truthy
-      expect(IO.read(tempfile.path)).to eq 'test'
+      expect(IO.read(temp_file.path)).to eq 'test'
     end
 
     it "converge 'file ...' with file and line number updates the file" do
       result = converge(<<-EOM, __FILE__, __LINE__+1)
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       EOM
       expect(result.updated?).to be_truthy
-      expect(IO.read(tempfile.path)).to eq 'test'
+      expect(IO.read(temp_file.path)).to eq 'test'
     end
   end
 
   context "#expect_recipe" do
     it "expect_recipe { file ... }.to be_updated updates the file, and be_idempotent does not fail" do
       expect_recipe {
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       }.to be_updated.and be_idempotent
 
-      expect(IO.read(tempfile.path)).to eq 'test'
+      expect(IO.read(temp_file.path)).to eq 'test'
     end
 
     it "expect_recipe 'file ...'.to be_updated updates the file, and be_idempotent does not fail" do
       expect_recipe(<<-EOM).to be_updated.and be_idempotent
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       EOM
 
-      expect(IO.read(tempfile.path)).to eq 'test'
+      expect(IO.read(temp_file.path)).to eq 'test'
     end
 
     it "expect_recipe('file ...', file, line).to be_updated updates the file, and be_idempotent does not fail" do
       expect_recipe(<<-EOM, __FILE__, __LINE__+1).to be_updated.and be_idempotent
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       EOM
 
-      expect(IO.read(tempfile.path)).to eq 'test'
+      expect(IO.read(temp_file.path)).to eq 'test'
     end
 
     it "expect_recipe { file ... }.to be_up_to_date fails" do
       expect {
         expect_recipe {
-          file tempfile.path do
+          file temp_file.path do
             content 'test'
           end
         }.to be_up_to_date
@@ -129,29 +129,29 @@ describe 'Cheffish::RSpec::ChefRunSupport' do
   context "#expect_converge" do
     it "expect_converge { file ... }.not_to raise_error updates the file" do
       expect_converge {
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       }.not_to raise_error
-      expect(IO.read(tempfile.path)).to eq 'test'
+      expect(IO.read(temp_file.path)).to eq 'test'
     end
 
     it "expect_converge('file ...').not_to raise_error updates the file" do
       expect_converge(<<-EOM).not_to raise_error
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       EOM
-      expect(IO.read(tempfile.path)).to eq 'test'
+      expect(IO.read(temp_file.path)).to eq 'test'
     end
 
     it "expect_converge('file ...', file, line).not_to raise_error updates the file" do
       expect_converge(<<-EOM, __FILE__, __LINE__+1).not_to raise_error
-        file tempfile.path do
+        file temp_file.path do
           content 'test'
         end
       EOM
-      expect(IO.read(tempfile.path)).to eq 'test'
+      expect(IO.read(temp_file.path)).to eq 'test'
     end
 
     it "expect_converge { raise 'oh no' }.to raise_error passes" do
@@ -173,11 +173,11 @@ describe 'Cheffish::RSpec::ChefRunSupport' do
 
     it "converge with a file resource referencing let_variable accesses let_variable" do
       converge {
-        file tempfile.path do
+        file temp_file.path do
           content let_variable
         end
       }
-      expect(IO.read(tempfile.path)).to eq 'test'
+      expect(IO.read(temp_file.path)).to eq 'test'
     end
   end
 end
