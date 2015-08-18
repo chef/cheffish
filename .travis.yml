@@ -1,5 +1,7 @@
 sudo: false
 language: ruby
+cache: bundler
+
 rvm:
   # - 2.0.0
   # - 2.1.1
@@ -21,6 +23,7 @@ matrix:
   allow_failures:
     - env:
       - CHEF_VERSION=master
+      - CHEF_VERSION=12.4.0
       - CHEF_VERSION=12.3.0
       - CHEF_VERSION=12.2.1
       - CHEF_VERSION=12.1.2
