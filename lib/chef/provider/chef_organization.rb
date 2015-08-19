@@ -53,9 +53,22 @@ class Chef::Provider::ChefOrganization < Cheffish::ChefProviderBase
     new_resource.members.each do |user|
       if !existing_members.include?(user)
         converge_by "Add #{user} to organization #{new_resource.name}" do
-          rest.post("#{rest.root_url}/organizations/#{new_resource.name}/users/#{user}", {})
+          add_user_to_org(user, new_resource.name)
         end
       end
+    end
+  end
+
+  def add_user_to_org(user, org)
+    response = rest.post("#{rest.root_url}/organizations/#{org}/association_requests", { 'user' => user })
+    association_id = response["uri"].split("/").last
+    rest.put("#{rest.root_url}/users/#{user}/association_requests/#{association_id}", { 'response' => 'accept' })
+  rescue Net::HTTPServerException => e
+    if e.response.code == "409"
+      rest.delete("#{rest.root_url}/organizations/#{org}/association_requests/#{outstanding_invites[user]}")
+      add_user_to_org(user, org)
+    else
+      raise
     end
   end
 
