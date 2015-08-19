@@ -35,7 +35,7 @@ module Cheffish
           # enclosing_provider).
           # Please don't hurt me
           @client.define_singleton_method(:is_a?) do |klass|
-            klass == Chef::Provider || super
+            klass == Chef::Provider || super(klass)
           end
 
           @client.load_block(&recipe)
