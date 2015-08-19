@@ -297,7 +297,7 @@ describe Chef::Resource::PrivateKey do
           converge {
             private_key "#{repo_path}/blah"
           }
-        }.to raise_error
+        }.to raise_error /missing pass phrase?/
       end
     end
 

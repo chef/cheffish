@@ -108,13 +108,13 @@ describe 'Cheffish::RSpec::ChefRunSupport' do
             content 'test'
           end
         }.to be_up_to_date
-      }.to raise_error
+      }.to raise_error RSpec::Expectations::ExpectationNotMetError
     end
 
     it "expect_recipe { }.to be_updated fails" do
       expect {
         expect_recipe { }.to be_updated
-      }.to raise_error
+      }.to raise_error RSpec::Expectations::ExpectationNotMetError
     end
 
     it "expect_recipe { }.to be_up_to_date succeeds" do
@@ -157,7 +157,7 @@ describe 'Cheffish::RSpec::ChefRunSupport' do
     it "expect_converge { raise 'oh no' }.to raise_error passes" do
       expect_converge {
         raise 'oh no'
-      }.to raise_error
+      }.to raise_error('oh no')
     end
   end
 

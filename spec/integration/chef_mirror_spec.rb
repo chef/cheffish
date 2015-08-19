@@ -160,8 +160,8 @@ describe Chef::Resource::ChefMirror do
           }.to have_updated('chef_mirror[]', :upload)
           expect { get('nodes/x') }.not_to raise_error
           expect { get('roles/x') }.not_to raise_error
-          expect { get('nodes/y') }.to raise_error
-          expect { get('roles/y') }.to raise_error
+          expect { get('nodes/y') }.to raise_error /404/
+          expect { get('roles/y') }.to raise_error /404/
         end
 
         it "Upload with chef_repo_path(:chef_repo_path) with multiple paths uploads everything" do
@@ -192,8 +192,8 @@ describe Chef::Resource::ChefMirror do
             end
           }.to have_updated('chef_mirror[]', :upload)
           expect { get('nodes/x') }.not_to raise_error
-          expect { get('roles/x') }.to raise_error
-          expect { get('nodes/y') }.to raise_error
+          expect { get('roles/x') }.to raise_error /404/
+          expect { get('nodes/y') }.to raise_error /404/
           expect { get('roles/y') }.not_to raise_error
         end
 
@@ -209,8 +209,8 @@ describe Chef::Resource::ChefMirror do
             end
           }.to have_updated('chef_mirror[]', :upload)
           expect { get('nodes/x') }.not_to raise_error
-          expect { get('roles/x') }.to raise_error
-          expect { get('nodes/y') }.to raise_error
+          expect { get('roles/x') }.to raise_error /404/
+          expect { get('nodes/y') }.to raise_error /404/
           expect { get('roles/y') }.not_to raise_error
         end
 
