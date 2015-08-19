@@ -19,10 +19,14 @@ module Cheffish
 
           # Call into the rspec example's let variables and other methods
           @client.define_singleton_method(:method_missing) do |name, *args, &block|
-            if example.respond_to?(name)
-              example.public_send(name, *args, &block)
-            else
+            begin
               super(name, *args, &block)
+            rescue NameError
+              if example.respond_to?(name)
+                example.public_send(name, *args, &block)
+              else
+                raise
+              end
             end
           end
           # This is called by respond_to?, and is required to make sure the
