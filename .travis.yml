@@ -19,8 +19,6 @@ env:
 
 matrix:
   allow_failures:
-    - env: CHEF_VERSION=master
-    - env: CHEF_VERSION=12.4.1
     - env: CHEF_VERSION=12.2.1
     - env: CHEF_VERSION=12.1.2
 
