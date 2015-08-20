@@ -53,7 +53,7 @@ class Chef::Provider::ChefOrganization < Cheffish::ChefProviderBase
     new_resource.members.each do |user|
       if !existing_members.include?(user)
         converge_by "Add #{user} to organization #{new_resource.name}" do
-          rest.post("#{rest.root_url}/organizations/#{new_resource.name}/users/#{user}", {})
+          rest.post("#{rest.root_url}/organizations/#{new_resource.name}/users/", { 'username' => user })
         end
       end
     end
