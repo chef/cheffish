@@ -19,20 +19,28 @@ module Cheffish
 
           # Call into the rspec example's let variables and other methods
           @client.define_singleton_method(:method_missing) do |name, *args, &block|
-            begin
-              super(name, *args, &block)
-            rescue NameError
+            # the elimination of a bunch of metaprogramming in 12.4 changed how Chef DSL is defined in code,
+            # requiring a slight contortion for earlier versions.
+            if Gem::Version.new(Chef::VERSION) >= Gem::Version.new('12.4')    # incompatibility introduced at 2b364df
               if example.respond_to?(name)
                 example.public_send(name, *args, &block)
-              else
-                raise
+              end
+            else
+              begin
+                super(name, *args, &block)
+              rescue NameError
+                if example.respond_to?(name)
+                  example.public_send(name, *args, &block)
+                else
+                  raise
+                end
               end
             end
           end
           # This is called by respond_to?, and is required to make sure the
           # resource knows that we will in fact call the given method.
           @client.define_singleton_method(:respond_to_missing?) do |name, include_private = false|
-            example.respond_to?(name)
+            example.respond_to?(name) || super(name, include_private)
           end
           # Respond true to is_a?(Chef::Provider) so that Chef::Recipe::DSL.build_resource
           # will hook resources up to the example let variables as well (via

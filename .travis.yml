@@ -3,9 +3,9 @@ language: ruby
 cache: bundler
 
 rvm:
-  # - 2.0.0
-  # - 2.1.1
-  - 2.1.2
+  - 2.0.0
+  - 2.1.6
+  - 2.2.2
 
 gemfile:
   - chef-client-version.gemfile
@@ -15,11 +15,10 @@ env:
   - CHEF_VERSION=12.4.1
   - CHEF_VERSION=12.3.0
   - CHEF_VERSION=12.2.1
-  - CHEF_VERSION=12.1.2
+  - CHEF_VERSION=12.1.2    # known broken due to ffi-yajl versioning issues.
 
 matrix:
   allow_failures:
-    - env: CHEF_VERSION=12.2.1
     - env: CHEF_VERSION=12.1.2
 
 script:

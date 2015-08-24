@@ -150,6 +150,13 @@ module Cheffish
       def method_missing(method, *args)
         @events << [ method, *args ]
       end
+
+      def respond_to_missing?(method_name, include_private = false)
+        # Chef::EventDispatch::Dispatcher calls #respond_to? to see (basically) if we'll accept an event;
+        # obviously, per above #method_missing, we'll accept whatever we're given. if there's a problem, it
+        # will surface higher up the stack.
+        true
+      end
     end
   end
 end
