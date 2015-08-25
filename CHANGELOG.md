@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.2 (?)
+
+- Added Travis testing against multiple Chef versions.
+- Dropped support for Chef 12.1.
+
 ## 1.3.1 (8/5/2015)
 
 - Pin to use chef server v0 ([#57][], [@sersut][])
