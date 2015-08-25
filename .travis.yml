@@ -15,11 +15,10 @@ env:
   - CHEF_VERSION=12.4.1
   - CHEF_VERSION=12.3.0
   - CHEF_VERSION=12.2.1
-  - CHEF_VERSION=12.1.2    # known broken due to ffi-yajl versioning issues.
 
 matrix:
   allow_failures:
-    - env: CHEF_VERSION=12.1.2
+    # - env: CHEF_VERSION=12.1.2
 
 script:
   - bundle install --jobs=3 --retry=3
