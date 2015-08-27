@@ -77,21 +77,23 @@ Converges the recipe using `expect{ }` (curly brackets), which wraps the block i
 
 The blocks for the following appear to be mostly optional: what they actually do is set the `Chef::Config` variable in the name to the given value, and if you provide a block, the change is scoped to that block. Probably this would be clearer if it were aliased to (and preferring) `using` rather than `with`.
 
-- with_chef_server(server_url, options = {}, &block)
-- with_chef_local_server(options, &block)
-- with_chef_environment(name, &block)
-- with_chef_data_bag_item_encryption(encryption_options, &block)
-- with_chef_data_bag(name)
+- **`with_chef_server`**(server_url, options = {}, &block)
+- **`with_chef_local_server`**(options, &block)
+- **`with_chef_environment`**(name, &block)
+- **`with_chef_data_bag_item_encryption`**(encryption_options, &block)
+- **`with_chef_data_bag`**(name)
   - Takes a block, though this is not noted in the method signature.
 
+- **`with_converge`**(&recipe)
+  - Add a `before(:each)` that converge `&recipe` before each RSpec example.
 
 
-get_private_key(name)
+**`get_private_key`**(name)
 
 
 ### RSpec matchers
 
-These are used with `expect_recipe` or `expect_converge`:
+These are used with **`expect_recipe`** or **`expect_converge`**:
 
 ```ruby
 expect_recipe {
@@ -101,20 +103,20 @@ expect_recipe {
 }.to be_idempotent.and emit_no_warnings_or_errors
 ```
 
-`be_idempotent`
+**`be_idempotent`**
 
 - Runs the provided recipe *again* (`expect_(recipe|converge)` ran it the first time) and asks the Chef run if it updated anything (using `updated?`, which appears to be defined on `Chef::Resource` instead of `Chef::Client`, so there's some clarification to be done there); the matcher is satisfied if the answer is "no."
 
 
-`emit_no_warnings_or_errors`
+**`emit_no_warnings_or_errors`**
 
 - Greps the Chef client run's log output for WARN/ERROR lines; matcher is satisfied if there aren't any.
 
-`have_updated`
+**`have_updated`**
 
 - Sifts the recipe's event stream(!) to determine if any resources were updated; matcher is satisfied is the answer is "yes."
 - This is *not* the opposite of `be_idempotent`.
 
-`partially_match`
+**`partially_match`**
 
 - TBD
