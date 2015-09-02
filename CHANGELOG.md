@@ -1,153 +1,235 @@
-# Changelog
+# Change Log
 
-## 1.3.1 (8/5/2015)
+## [Unreleased](https://github.com/chef/cheffish/tree/HEAD)
 
-- Pin to use chef server v0 ([#57][], [@sersut][])
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.3.1...HEAD)
 
-## 1.3.0 (7/29/2015)
+**Fixed bugs:**
 
-- Make let variables visible to recipes and resources declared in recipes) in rspec `converge` and `recipe` stuff ([@jkeiser])
-- Make `converge` and `recipe` take strings as well as blocks ([@jkeiser])
+- chef\_server\_api does not correctly handle MergedConfig [\#65](https://github.com/chef/cheffish/issues/65)
+- Modified Resources and Providers creation [\#70](https://github.com/chef/cheffish/pull/70) ([afiune](https://github.com/afiune))
+- A handful of fixes to make the Cheffish matrix pass on all the relevant Chef versions. [\#68](https://github.com/chef/cheffish/pull/68) ([randomcamel](https://github.com/randomcamel))
+- Fix sense typos in test names. [\#59](https://github.com/chef/cheffish/pull/59) ([randomcamel](https://github.com/randomcamel))
+- Use correct user-association endpoint for Chef 12 [\#50](https://github.com/chef/cheffish/pull/50) ([stevendanna](https://github.com/stevendanna))
 
-## 1.2.1 (7/17/2015)
+**Closed issues:**
 
-- Fix nil error when trying to shutdown a server without a run_context ([@lamont-granquist][])
-- Adding a README ([@randomcamel][])
+- ffi-yajl version incompatibility with Chef 12.1.2 [\#67](https://github.com/chef/cheffish/issues/67)
 
-## 1.2 (5/1/2015)
+**Merged pull requests:**
 
-- expect_converge, logged_warnings and logged_errors in the RSpec plugin ([@jkeiser][])
+- cdoherty's travis matrix with 12.3.0 fixes [\#64](https://github.com/chef/cheffish/pull/64) ([jkeiser](https://github.com/jkeiser))
+- Add provides statements to avoid chef-client warnings [\#60](https://github.com/chef/cheffish/pull/60) ([stevendanna](https://github.com/stevendanna))
 
-## 1.1.2 (4/8/2015)
+## [v1.3.1](https://github.com/chef/cheffish/tree/v1.3.1) (2015-08-05)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.3.0...v1.3.1)
 
-- Fixing bug in log statement - was causing NoMethodError ([@tyler-ball][])
+**Fixed bugs:**
 
-## 1.1.1 (4/7/2015)
+- Idempotency of machine resource is broken due to v1 vs v0 differences in clients API [\#56](https://github.com/chef/cheffish/issues/56)
+- Pin chef server api version to 0, fixes \#56 [\#57](https://github.com/chef/cheffish/pull/57) ([sersut](https://github.com/sersut))
 
-- Reverting chef-zero dependency from `~> 4.2` to `~> 4.0` - 4.2 only contained development
-  and testing improvments.  Doing this fixes a chef omnibus issue where chef is pinned to
-  chef-zero 4.0 and chef-provisioning / cheffish want 4.2 ([@tyler-ball][])
+## [v1.3.0](https://github.com/chef/cheffish/tree/v1.3.0) (2015-07-29)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.2.1...v1.3.0)
 
-## 1.1.0 (4/7/2015)
+## [v1.2.1](https://github.com/chef/cheffish/tree/v1.2.1) (2015-07-17)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.2...v1.2.1)
 
-- Add encapsulated Chef runs that capture and stream output ([@jkeiser][])
+**Closed issues:**
 
-## 1.0.0 (4/2/2015)
-## 1.0.0.rc.1 (3/31/2015)
-## 0.10 (3/17/2015)
+- There is no documentation / README [\#48](https://github.com/chef/cheffish/issues/48)
+- document how to disable ssl verification [\#37](https://github.com/chef/cheffish/issues/37)
+- A better Readme [\#30](https://github.com/chef/cheffish/issues/30)
 
-- Move Cheffish RSpec helpers into top level Cheffish for external projects to use ([@tyler-ball][])
-- Let node attributes (ImmutableMash) be used in new_json (fixes https://github.com/chef/chef-provisioning/issues/21)
+**Merged pull requests:**
 
-## 0.9.2 (1/27/2015)
+- avoid nilerror [\#55](https://github.com/chef/cheffish/pull/55) ([lamont-granquist](https://github.com/lamont-granquist))
+- Rewrite README.md [\#51](https://github.com/chef/cheffish/pull/51) ([randomcamel](https://github.com/randomcamel))
 
-- Fix config file loading in Chef 12 ([@elliott-davis][])
+## [v1.2](https://github.com/chef/cheffish/tree/v1.2) (2015-05-02)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.1.2...v1.2)
 
-## 0.9.1 (1/15/2015)
+**Merged pull requests:**
 
-- Add Chef 12 display_name support to chef_user ([@charlesjohnson][])
-- Fix chef_mirror when run against real Chef servers ([@johnbellone][])
-- Fix crash in honor_local_mode ([@mwrock][])
-- Fix remove_role to actually remove the role ([@causton81][])
+- Add .logged\_warnings/errors/info to ChefRun; add emit\_no\_warnings\_or\_err... [\#47](https://github.com/chef/cheffish/pull/47) ([jkeiser](https://github.com/jkeiser))
+- Use expect\_recipe universally in Cheffish, use generic rspec matchers instead of update\_acl [\#44](https://github.com/chef/cheffish/pull/44) ([jkeiser](https://github.com/jkeiser))
 
-## 0.9 (11/4/2014)
+## [v1.1.2](https://github.com/chef/cheffish/tree/v1.1.2) (2015-04-08)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.1.1...v1.1.2)
 
-- Work with Chef 12 as well as 11
+**Merged pull requests:**
 
-## 0.8.4 (11/4/2014)
+- Fixing bug @patrick-wright discovered in debug log [\#45](https://github.com/chef/cheffish/pull/45) ([tyler-ball](https://github.com/tyler-ball))
 
-- Remove Chef as an explicit dependency so it can be included as a plugin
+## [v1.1.1](https://github.com/chef/cheffish/tree/v1.1.1) (2015-04-07)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.1.0...v1.1.1)
 
-## 0.8.3 (9/26/2014)
+## [v1.1.0](https://github.com/chef/cheffish/tree/v1.1.0) (2015-04-07)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.0.0...v1.1.0)
 
-- Fix for honoring with_ attributes as symbols or strings
+**Merged pull requests:**
 
-## 0.8.2 (9/8/2014)
+- Add encapsulated Chef runs that capture and stream output [\#43](https://github.com/chef/cheffish/pull/43) ([jkeiser](https://github.com/jkeiser))
 
-- Fix issue with attribute merge
+## [v1.0.0](https://github.com/chef/cheffish/tree/v1.0.0) (2015-04-02)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.0.0.rc.1...v1.0.0)
 
-## 0.8.1 (9/8/2014)
+## [v1.0.0.rc.1](https://github.com/chef/cheffish/tree/v1.0.0.rc.1) (2015-04-01)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.10...v1.0.0.rc.1)
 
-- Fix Cheffish against Chef 11 client
-- Fix normal attributes that are sometimes overwritten ([@mwrock][])
-- Get chef_mirror.versioned_cookbooks working
+## [v0.10](https://github.com/chef/cheffish/tree/v0.10) (2015-03-17)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.9.2...v0.10)
 
-## 0.8 (9/5/2014)
+**Fixed bugs:**
 
-- FEATURE: Enterprise and Chef 12 support!
-  - chef_acl, chef_group, chef_container resources to manipulate ACLs and groups
-  - chef_organization resource to create and delete Chef organizations and add members/invitations
-- FEATURE: chef_mirror with :download and :upload support: lets you mirror all or part of a Chef repository and the Chef server.  Uses `ChefFS`, the technology behind `knife upload` and `knife download`, to do the dirty work.
-- Fix issue when specifying Private Key as a string ([@johnbellone][])
-- Make MergedConfig more readable ([@mwrock][])
+- chef\_node creates node resource that cannot update itself [\#2](https://github.com/chef/cheffish/issues/2)
 
-## 0.7.1 (8/18/2014)
+**Closed issues:**
 
-- Fix Cheffish to work with latest Chef
+- chef group resource/provider seems broken against chef 12 server [\#38](https://github.com/chef/cheffish/issues/38)
 
-## 0.7 (7/15/2014)
+**Merged pull requests:**
 
-- fix issue with encrypted private keys being overwritten
-- fix private key discovery when directories are missing ([@lcg][])
+- Allow node attributes to be used as input to new\_json / augment\_new\_json \(fixes chef/chef-provisioning\#21\) [\#42](https://github.com/chef/cheffish/pull/42) ([jkeiser](https://github.com/jkeiser))
+- Extracting the spec helper to its own class in lib so we can leverage it in chef-provisioning for testing there [\#41](https://github.com/chef/cheffish/pull/41) ([tyler-ball](https://github.com/tyler-ball))
+- Update metadata.rb [\#39](https://github.com/chef/cheffish/pull/39) ([oker1](https://github.com/oker1))
 
-## 0.6.2 (6/18/2014)
+## [v0.9.2](https://github.com/chef/cheffish/tree/v0.9.2) (2015-01-27)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.9.1...v0.9.2)
 
-- fix Cheffish.get_private_key when private key does not exist
+**Merged pull requests:**
 
-## 0.6 (6/18/2014)
+- Use appropriate function call for chef 12 [\#33](https://github.com/chef/cheffish/pull/33) ([elliott-davis](https://github.com/elliott-davis))
 
-- remove PKCS8 as a required dependency
-- Allow `chef_client.source_key_path` and `chef_user.source_key_path` to specify keys in `Chef::Config.private_key_paths`
-- Robustify `private_key` named key handling to deal with multiple key paths so `private_key 'blah'` will Just Work
-- Fix bug with direct calls to Cheffish.get_private_key
+## [v0.9.1](https://github.com/chef/cheffish/tree/v0.9.1) (2015-01-16)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.9...v0.9.1)
 
-## 0.5 (6/3/2014)
+**Fixed bugs:**
 
-- Support relative directories and Chef::Config.private_key_paths in private_key resource
-- add support for profiled configs with Cheffish::MergedConfig and Cheffish.profiled_config
-- work better with multiple threads (store config in instances)
-- Add helper methods Cheffish.load_chef_config and Cheffish.honor_local_mode for embedders
-- Fix crashes with PKCS8 on Ruby 2.0+
+- chef\_user resource does not provide display\_name [\#26](https://github.com/chef/cheffish/issues/26)
 
-## 0.4.1 (5/7/2014)
+**Merged pull requests:**
 
-- Expose Cheffish.default_chef_server
-- Make prettier green text when chef objects update
+- Fix remove\_role calling self.role instead of referencing block variable. [\#31](https://github.com/chef/cheffish/pull/31) ([causton81](https://github.com/causton81))
+- Add user full name to chef\_user [\#27](https://github.com/chef/cheffish/pull/27) ([charlesjohnson](https://github.com/charlesjohnson))
+- Fix ChefMirror referencing chef\_server :client\_key [\#23](https://github.com/chef/cheffish/pull/23) ([johnbellone](https://github.com/johnbellone))
 
-## 0.4 (5/1/2014)
+## [v0.9](https://github.com/chef/cheffish/tree/v0.9) (2014-11-05)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.8.4...v0.9)
 
-- Interface: change Cheffish.inline_resource() to take both provider and action
-- Interface: Rename enclosing_chef_server, enclosing_* to current_*
-- Use Chef client in a more standard and extensible way
-- Internal changes to make Cheffish more parallizable (no more globals)
+**Merged pull requests:**
 
-## 0.3 (4/23/2014)
+- Work with chef12 [\#29](https://github.com/chef/cheffish/pull/29) ([jkeiser](https://github.com/jkeiser))
 
-- Preserve tags when attributes hash is set
-- Remove ability to specify automatic/default/override attributes (these are for recipes!)
-- Preserve automatic/default/override attributes when modifying nodes (don't overwrite what recipes wrote)
-- [@doubt72][] new Cheffish::RecipeDSL.stop_local_servers method to stop all local servers after running a recipe
+## [v0.8.4](https://github.com/chef/cheffish/tree/v0.8.4) (2014-11-04)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.8.3...v0.8.4)
 
-## 0.2.2 (4/12/2014)
+## [v0.8.3](https://github.com/chef/cheffish/tree/v0.8.3) (2014-09-26)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.8.2...v0.8.3)
 
-- make sure private keys have the right mode (not group or world-readable)
+**Closed issues:**
 
-## 0.2.1 (4/11/2014)
+- Multiple cookbook\_path: broken with recent cheffish \(~\> 0.8\)  [\#22](https://github.com/chef/cheffish/issues/22)
 
-- fix missing require
+**Merged pull requests:**
 
-<!--- The following link definition list is generated by PimpMyChangelog --->
-[#21]: https://github.com/chef/cheffish/issues/21
-[#57]: https://github.com/chef/cheffish/issues/57
-[@causton81]: https://github.com/causton81
-[@charlesjohnson]: https://github.com/charlesjohnson
-[@doubt72]: https://github.com/doubt72
-[@elliott-davis]: https://github.com/elliott-davis
-[@jkeiser]: https://github.com/jkeiser
-[@johnbellone]: https://github.com/johnbellone
-[@lamont-granquist]: https://github.com/lamont-granquist
-[@lcg]: https://github.com/lcg
-[@mwrock]: https://github.com/mwrock
-[@randomcamel]: https://github.com/randomcamel
-[@sersut]: https://github.com/sersut
-[@tyler-ball]: https://github.com/tyler-ball
+- Honor settings in recipes [\#25](https://github.com/chef/cheffish/pull/25) ([johnewart](https://github.com/johnewart))
+
+## [v0.8.2](https://github.com/chef/cheffish/tree/v0.8.2) (2014-09-08)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.8.1...v0.8.2)
+
+## [v0.8.1](https://github.com/chef/cheffish/tree/v0.8.1) (2014-09-08)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.8...v0.8.1)
+
+**Merged pull requests:**
+
+- perform a deep merge of the current resource and new resource in new\_json [\#20](https://github.com/chef/cheffish/pull/20) ([mwrock](https://github.com/mwrock))
+
+## [v0.8](https://github.com/chef/cheffish/tree/v0.8) (2014-09-05)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.7.1...v0.8)
+
+**Fixed bugs:**
+
+- Docs and/or gemspec should specify required Chef version [\#7](https://github.com/chef/cheffish/issues/7)
+
+**Closed issues:**
+
+- Support policies [\#14](https://github.com/chef/cheffish/issues/14)
+- Support groups and acls in all objects that support them [\#12](https://github.com/chef/cheffish/issues/12)
+- Support acls, groups, containers, org membership and invites [\#11](https://github.com/chef/cheffish/issues/11)
+
+**Merged pull requests:**
+
+- Enterprise resources [\#17](https://github.com/chef/cheffish/pull/17) ([jkeiser](https://github.com/jkeiser))
+- chef\_acl resource [\#16](https://github.com/chef/cheffish/pull/16) ([jkeiser](https://github.com/jkeiser))
+- Fix problem when setting public key from String. [\#15](https://github.com/chef/cheffish/pull/15) ([johnbellone](https://github.com/johnbellone))
+- improve debug experience for MergedConfig [\#8](https://github.com/chef/cheffish/pull/8) ([mwrock](https://github.com/mwrock))
+
+## [v0.7.1](https://github.com/chef/cheffish/tree/v0.7.1) (2014-08-19)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.7...v0.7.1)
+
+## [v0.7](https://github.com/chef/cheffish/tree/v0.7) (2014-07-15)
+[Full Changelog](https://github.com/chef/cheffish/compare/blah...v0.7)
+
+## [blah](https://github.com/chef/cheffish/tree/blah) (2014-06-20)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.6.2...blah)
+
+**Merged pull requests:**
+
+- fix get\_private\_keys for edge cases [\#6](https://github.com/chef/cheffish/pull/6) ([lamont-granquist](https://github.com/lamont-granquist))
+
+## [v0.6.2](https://github.com/chef/cheffish/tree/v0.6.2) (2014-06-18)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.6.1...v0.6.2)
+
+## [v0.6.1](https://github.com/chef/cheffish/tree/v0.6.1) (2014-06-18)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.6...v0.6.1)
+
+## [v0.6](https://github.com/chef/cheffish/tree/v0.6) (2014-06-18)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.5...v0.6)
+
+## [v0.5](https://github.com/chef/cheffish/tree/v0.5) (2014-06-04)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.5.beta.4...v0.5)
+
+## [v0.5.beta.4](https://github.com/chef/cheffish/tree/v0.5.beta.4) (2014-05-31)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.5.beta.3...v0.5.beta.4)
+
+## [v0.5.beta.3](https://github.com/chef/cheffish/tree/v0.5.beta.3) (2014-05-28)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.5.beta.2...v0.5.beta.3)
+
+## [v0.5.beta.2](https://github.com/chef/cheffish/tree/v0.5.beta.2) (2014-05-28)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.5.beta...v0.5.beta.2)
+
+## [v0.5.beta](https://github.com/chef/cheffish/tree/v0.5.beta) (2014-05-23)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.4.1...v0.5.beta)
+
+## [v0.4.1](https://github.com/chef/cheffish/tree/v0.4.1) (2014-05-07)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.4...v0.4.1)
+
+## [v0.4](https://github.com/chef/cheffish/tree/v0.4) (2014-05-01)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.3...v0.4)
+
+**Merged pull requests:**
+
+- Skip 1.8.7 Travis builds since cheffish doesn’t support them. [\#5](https://github.com/chef/cheffish/pull/5) ([andrewdotn](https://github.com/andrewdotn))
+- Support PKCS\#8 SHA1 fingerprints used by AWS for generated keys. [\#4](https://github.com/chef/cheffish/pull/4) ([andrewdotn](https://github.com/andrewdotn))
+
+## [v0.3](https://github.com/chef/cheffish/tree/v0.3) (2014-04-24)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.2.2...v0.3)
+
+**Merged pull requests:**
+
+- Dt/local server stop [\#3](https://github.com/chef/cheffish/pull/3) ([doubt72](https://github.com/doubt72))
+
+## [v0.2.2](https://github.com/chef/cheffish/tree/v0.2.2) (2014-04-13)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.2.1...v0.2.2)
+
+## [v0.2.1](https://github.com/chef/cheffish/tree/v0.2.1) (2014-04-11)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.2...v0.2.1)
+
+## [v0.2](https://github.com/chef/cheffish/tree/v0.2) (2014-03-04)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.1...v0.2)
+
+## [v0.1](https://github.com/chef/cheffish/tree/v0.1) (2013-12-12)
+
+
+\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
