@@ -1,7 +1,9 @@
 require 'cheffish/chef_provider_base'
 require 'chef/resource/chef_data_bag'
 
-class Chef::Provider::ChefDataBag < Cheffish::ChefProviderBase
+class Chef
+class Provider
+class ChefDataBag < Cheffish::ChefProviderBase
   provides :chef_data_bag
 
   def whyrun_supported?
@@ -48,4 +50,6 @@ class Chef::Provider::ChefDataBag < Cheffish::ChefProviderBase
   def json_to_resource(json)
     Chef::Resource::ChefDataBag.new(json['name'], run_context)
   end
+end
+end
 end

@@ -1,7 +1,9 @@
 require 'cheffish'
 require 'chef/resource/lwrp_base'
 
-class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
+class Chef
+class Resource
+class ChefAcl < Chef::Resource::LWRPBase
   self.resource_name = 'chef_acl'
 
   actions :create, :nothing
@@ -62,4 +64,6 @@ class Chef::Resource::ChefAcl < Chef::Resource::LWRPBase
       @remove_rights << args
     end
   end
+end
+end
 end

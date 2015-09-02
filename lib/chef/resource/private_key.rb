@@ -1,7 +1,9 @@
 require 'openssl/cipher'
 require 'chef/resource/lwrp_base'
 
-class Chef::Resource::PrivateKey < Chef::Resource::LWRPBase
+class Chef
+class Resource
+class PrivateKey < Chef::Resource::LWRPBase
   self.resource_name = 'private_key'
 
   actions :create, :delete, :regenerate, :nothing
@@ -41,4 +43,6 @@ class Chef::Resource::PrivateKey < Chef::Resource::LWRPBase
   def load_prior_resource(*args)
     Chef::Log.debug("Overloading #{resource_name}.load_prior_resource with NOOP")
   end
+end
+end
 end

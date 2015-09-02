@@ -2,7 +2,9 @@ require 'cheffish'
 require 'chef/config'
 require 'chef/resource/lwrp_base'
 
-class Chef::Resource::ChefDataBagItem < Chef::Resource::LWRPBase
+class Chef
+class Resource
+class ChefDataBagItem < Chef::Resource::LWRPBase
   self.resource_name = 'chef_data_bag_item'
 
   actions :create, :delete, :nothing
@@ -42,7 +44,8 @@ class Chef::Resource::ChefDataBagItem < Chef::Resource::LWRPBase
     result
   end
 
-  NOT_PASSED = Object.new
+  NOT_PASSED = Object.new unless defined?(NOT_PASSED)
+
   def id(value = NOT_PASSED)
     if value == NOT_PASSED
       @id
@@ -111,4 +114,6 @@ class Chef::Resource::ChefDataBagItem < Chef::Resource::LWRPBase
       raise "value requires either a value or a block"
     end
   end
+end
+end
 end

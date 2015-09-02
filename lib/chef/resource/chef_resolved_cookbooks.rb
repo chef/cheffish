@@ -1,6 +1,8 @@
 require 'chef/resource/lwrp_base'
 
-class Chef::Resource::ChefResolvedCookbooks < Chef::Resource::LWRPBase
+class Chef
+class Resource
+class ChefResolvedCookbooks < Chef::Resource::LWRPBase
   self.resource_name = 'chef_resolved_cookbooks'
 
   actions :resolve, :nothing
@@ -28,4 +30,6 @@ class Chef::Resource::ChefResolvedCookbooks < Chef::Resource::LWRPBase
 
   attribute :berksfile
   attribute :chef_server
+end
+end
 end

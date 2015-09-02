@@ -2,7 +2,9 @@ require 'cheffish/chef_provider_base'
 require 'chef/resource/chef_organization'
 require 'chef/chef_fs/data_handler/data_handler_base'
 
-class Chef::Provider::ChefOrganization < Cheffish::ChefProviderBase
+class Chef
+class Provider
+class ChefOrganization < Cheffish::ChefProviderBase
   provides :chef_organization
 
   def whyrun_supported?
@@ -148,4 +150,6 @@ class Chef::Provider::ChefOrganization < Cheffish::ChefProviderBase
       })
     end
   end
+end
+end
 end

@@ -2,7 +2,9 @@ require 'cheffish'
 require 'chef/resource/lwrp_base'
 require 'chef/environment'
 
-class Chef::Resource::ChefEnvironment < Chef::Resource::LWRPBase
+class Chef
+class Resource
+class ChefEnvironment < Chef::Resource::LWRPBase
   self.resource_name = 'chef_environment'
 
   actions :create, :delete, :nothing
@@ -28,7 +30,7 @@ class Chef::Resource::ChefEnvironment < Chef::Resource::LWRPBase
   attribute :raw_json, :kind_of => Hash
   attribute :chef_server, :kind_of => Hash
 
-  NOT_PASSED=Object.new
+  NOT_PASSED=Object.new unless defined?(NOT_PASSED)
 
   # default 'ip_address', '127.0.0.1'
   # default [ 'pushy', 'port' ], '9000'
@@ -68,4 +70,6 @@ class Chef::Resource::ChefEnvironment < Chef::Resource::LWRPBase
 
   alias :attributes :default_attributes
   alias :attribute :default
+end
+end
 end

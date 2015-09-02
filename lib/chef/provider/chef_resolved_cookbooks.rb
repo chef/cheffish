@@ -1,7 +1,9 @@
 require 'chef/provider/lwrp_base'
 require 'chef_zero'
 
-class Chef::Provider::ChefResolvedCookbooks < Chef::Provider::LWRPBase
+class Chef
+class Provider
+class ChefResolvedCookbooks < Chef::Provider::LWRPBase
   provides :chef_resolved_cookbooks
 
   action :resolve do
@@ -39,4 +41,6 @@ class Chef::Provider::ChefResolvedCookbooks < Chef::Provider::LWRPBase
     end
   end
 
+end
+end
 end

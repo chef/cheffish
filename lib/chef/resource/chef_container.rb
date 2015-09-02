@@ -1,7 +1,9 @@
 require 'cheffish'
 require 'chef/resource/lwrp_base'
 
-class Chef::Resource::ChefContainer < Chef::Resource::LWRPBase
+class Chef
+class Resource
+class ChefContainer < Chef::Resource::LWRPBase
   self.resource_name = 'chef_container'
 
   actions :create, :delete, :nothing
@@ -15,4 +17,6 @@ class Chef::Resource::ChefContainer < Chef::Resource::LWRPBase
 
   attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
   attribute :chef_server, :kind_of => Hash
+end
+end
 end

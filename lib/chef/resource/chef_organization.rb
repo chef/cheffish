@@ -2,7 +2,9 @@ require 'cheffish'
 require 'chef/resource/lwrp_base'
 require 'chef/run_list/run_list_item'
 
-class Chef::Resource::ChefOrganization < Chef::Resource::LWRPBase
+class Chef
+class Resource
+class ChefOrganization < Chef::Resource::LWRPBase
   self.resource_name = 'chef_organization'
 
   actions :create, :delete, :nothing
@@ -62,4 +64,6 @@ class Chef::Resource::ChefOrganization < Chef::Resource::LWRPBase
   attribute :complete, :kind_of => [ TrueClass, FalseClass ]
   attribute :raw_json, :kind_of => Hash
   attribute :chef_server, :kind_of => Hash
+end
+end
 end

@@ -5,7 +5,9 @@ require 'chef/chef_fs/parallelizer'
 require 'chef/chef_fs/file_system/chef_server_root_dir'
 require 'chef/chef_fs/file_system/chef_repository_file_system_root_dir'
 
-class Chef::Provider::ChefMirror < Chef::Provider::LWRPBase
+class Chef
+class Provider
+class ChefMirror < Chef::Provider::LWRPBase
   provides :chef_mirror
 
   def whyrun_supported?
@@ -162,4 +164,6 @@ class Chef::Provider::ChefMirror < Chef::Provider::LWRPBase
       @errors << str
     end
   end
+end
+end
 end

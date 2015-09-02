@@ -1,7 +1,9 @@
 require 'cheffish'
 require 'chef/resource/lwrp_base'
 
-class Chef::Resource::ChefMirror < Chef::Resource::LWRPBase
+class Chef
+class Resource
+class ChefMirror < Chef::Resource::LWRPBase
   self.resource_name = 'chef_mirror'
 
   actions :upload, :download, :nothing
@@ -45,4 +47,6 @@ class Chef::Resource::ChefMirror < Chef::Resource::LWRPBase
 
   # Number of parallel threads to list/upload/download with.  Defaults to 10.
   attribute :concurrency, :kind_of => Integer
+end
+end
 end

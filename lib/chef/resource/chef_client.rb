@@ -1,7 +1,9 @@
 require 'cheffish'
 require 'chef/resource/lwrp_base'
 
-class Chef::Resource::ChefClient < Chef::Resource::LWRPBase
+class Chef
+class Resource
+class ChefClient < Chef::Resource::LWRPBase
   self.resource_name = 'chef_client'
 
   actions :create, :delete, :regenerate_keys, :nothing
@@ -41,4 +43,6 @@ class Chef::Resource::ChefClient < Chef::Resource::LWRPBase
   def after(&block)
     block ? @after = block : @after
   end
+end
+end
 end

@@ -1,7 +1,9 @@
 require 'cheffish'
 require 'chef/resource/lwrp_base'
 
-class Chef::Resource::ChefNode < Chef::Resource::LWRPBase
+class Chef
+class Resource
+class ChefNode < Chef::Resource::LWRPBase
   self.resource_name = 'chef_node'
 
   actions :create, :delete, :nothing
@@ -15,4 +17,6 @@ class Chef::Resource::ChefNode < Chef::Resource::LWRPBase
   end
 
   Cheffish.node_attributes(self)
+end
+end
 end

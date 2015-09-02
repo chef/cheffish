@@ -2,7 +2,9 @@ require 'cheffish/chef_provider_base'
 require 'chef/resource/chef_container'
 require 'chef/chef_fs/data_handler/container_data_handler'
 
-class Chef::Provider::ChefContainer < Cheffish::ChefProviderBase
+class Chef
+class Provider
+class ChefContainer < Cheffish::ChefProviderBase
   provides :chef_container
 
   def whyrun_supported?
@@ -48,4 +50,6 @@ class Chef::Provider::ChefContainer < Cheffish::ChefProviderBase
   def keys
     { 'containername' => :name, 'containerpath' => :name }
   end
+end
+end
 end

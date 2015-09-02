@@ -2,7 +2,9 @@ require 'chef/provider/lwrp_base'
 require 'openssl'
 require 'cheffish/key_formatter'
 
-class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
+class Chef
+class Provider
+class PrivateKey < Chef::Provider::LWRPBase
   provides :private_key
 
   action :create do
@@ -218,4 +220,6 @@ class Chef::Provider::PrivateKey < Chef::Provider::LWRPBase
 
     @current_resource = resource
   end
+end
+end
 end

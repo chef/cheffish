@@ -2,7 +2,9 @@ require 'cheffish/chef_provider_base'
 require 'chef/resource/chef_group'
 require 'chef/chef_fs/data_handler/group_data_handler'
 
-class Chef::Provider::ChefGroup < Cheffish::ChefProviderBase
+class Chef
+class Provider
+class ChefGroup < Cheffish::ChefProviderBase
   provides :chef_group
 
   def whyrun_supported?
@@ -76,4 +78,6 @@ class Chef::Provider::ChefGroup < Cheffish::ChefProviderBase
       'groupname' => :name
     }
   end
+end
+end
 end

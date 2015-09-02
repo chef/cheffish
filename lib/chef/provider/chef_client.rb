@@ -2,7 +2,9 @@ require 'cheffish/actor_provider_base'
 require 'chef/resource/chef_client'
 require 'chef/chef_fs/data_handler/client_data_handler'
 
-class Chef::Provider::ChefClient < Cheffish::ActorProviderBase
+class Chef
+class Provider
+class ChefClient < Cheffish::ActorProviderBase
   provides :chef_client
 
   def whyrun_supported?
@@ -46,4 +48,6 @@ class Chef::Provider::ChefClient < Cheffish::ActorProviderBase
     }
   end
 
+end
+end
 end
