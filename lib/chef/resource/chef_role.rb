@@ -30,6 +30,8 @@ class ChefRole < Chef::Resource::LWRPBase
   attribute :raw_json, :kind_of => Hash
   attribute :chef_server, :kind_of => Hash
 
+  # `NOT_PASSED` is defined in chef-12.5.0, this guard will ensure we
+  # don't redefine it if it's already there
   NOT_PASSED=Object.new unless defined?(NOT_PASSED)
 
   # default_attribute 'ip_address', '127.0.0.1'
