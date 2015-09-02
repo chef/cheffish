@@ -1,8 +1,13 @@
 # Change Log
 
-## [Unreleased](https://github.com/chef/cheffish/tree/HEAD)
+## [v1.4.0](https://github.com/chef/cheffish/tree/HEAD)
 
-[Full Changelog](https://github.com/chef/cheffish/compare/v1.3.1...HEAD)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.3.1...v1.4.0)
+
+**Implemented enhancements:**
+
+- cdoherty's travis matrix with 12.3.0 fixes [\#64](https://github.com/chef/cheffish/pull/64) ([jkeiser](https://github.com/jkeiser))
+- Add provides statements to avoid chef-client warnings [\#60](https://github.com/chef/cheffish/pull/60) ([stevendanna](https://github.com/stevendanna))
 
 **Fixed bugs:**
 
@@ -15,11 +20,6 @@
 **Closed issues:**
 
 - ffi-yajl version incompatibility with Chef 12.1.2 [\#67](https://github.com/chef/cheffish/issues/67)
-
-**Merged pull requests:**
-
-- cdoherty's travis matrix with 12.3.0 fixes [\#64](https://github.com/chef/cheffish/pull/64) ([jkeiser](https://github.com/jkeiser))
-- Add provides statements to avoid chef-client warnings [\#60](https://github.com/chef/cheffish/pull/60) ([stevendanna](https://github.com/stevendanna))
 
 ## [v1.3.1](https://github.com/chef/cheffish/tree/v1.3.1) (2015-08-05)
 [Full Changelog](https://github.com/chef/cheffish/compare/v1.3.0...v1.3.1)
@@ -148,6 +148,10 @@
 ## [v0.8](https://github.com/chef/cheffish/tree/v0.8) (2014-09-05)
 [Full Changelog](https://github.com/chef/cheffish/compare/v0.7.1...v0.8)
 
+**Implemented enhancements:**
+
+- Support groups and acls in all objects that support them [\#12](https://github.com/chef/cheffish/issues/12)
+
 **Fixed bugs:**
 
 - Docs and/or gemspec should specify required Chef version [\#7](https://github.com/chef/cheffish/issues/7)
@@ -155,7 +159,6 @@
 **Closed issues:**
 
 - Support policies [\#14](https://github.com/chef/cheffish/issues/14)
-- Support groups and acls in all objects that support them [\#12](https://github.com/chef/cheffish/issues/12)
 - Support acls, groups, containers, org membership and invites [\#11](https://github.com/chef/cheffish/issues/11)
 
 **Merged pull requests:**
