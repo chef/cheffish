@@ -27,8 +27,8 @@ class Chef::Resource::ChefRole < Chef::Resource::LWRPBase
 
   attribute :raw_json, :kind_of => Hash
   attribute :chef_server, :kind_of => Hash
-
-  NOT_PASSED=Object.new
+  
+  NOT_PASSED=Object.new unless defined?(NOT_PASSED)
 
   # default_attribute 'ip_address', '127.0.0.1'
   # default_attribute [ 'pushy', 'port' ], '9000'
