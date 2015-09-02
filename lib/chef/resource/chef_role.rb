@@ -28,8 +28,6 @@ class Chef::Resource::ChefRole < Chef::Resource::LWRPBase
   attribute :raw_json, :kind_of => Hash
   attribute :chef_server, :kind_of => Hash
 
-  NOT_PASSED=Object.new
-
   # default_attribute 'ip_address', '127.0.0.1'
   # default_attribute [ 'pushy', 'port' ], '9000'
   # default_attribute 'ip_addresses' do |existing_value|
@@ -37,9 +35,9 @@ class Chef::Resource::ChefRole < Chef::Resource::LWRPBase
   # end
   # default_attribute 'ip_address', :delete
   attr_reader :default_attribute_modifiers
-  def default_attribute(attribute_path, value=NOT_PASSED, &block)
+  def default_attribute(attribute_path, value=nil, &block)
     @default_attribute_modifiers ||= []
-    if value != NOT_PASSED
+    if value
       @default_attribute_modifiers << [ attribute_path, value ]
     elsif block
       @default_attribute_modifiers << [ attribute_path, block ]
@@ -55,9 +53,9 @@ class Chef::Resource::ChefRole < Chef::Resource::LWRPBase
   # end
   # override_attribute 'ip_address', :delete
   attr_reader :override_attribute_modifiers
-  def override_attribute(attribute_path, value=NOT_PASSED, &block)
+  def override_attribute(attribute_path, value=nil, &block)
     @override_attribute_modifiers ||= []
-    if value != NOT_PASSED
+    if value
       @override_attribute_modifiers << [ attribute_path, value ]
     elsif block
       @override_attribute_modifiers << [ attribute_path, block ]
