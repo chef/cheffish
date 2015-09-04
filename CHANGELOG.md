@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.4.2](https://github.com/chef/cheffish/tree/v1.4.2) (2015-09-04)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.4.1...v1.4.2)
+
+**Merged pull requests:**
+
+- Raise an error if we can't find \*either\* let variable \*or\* resource m… [\#73](https://github.com/chef/cheffish/pull/73) ([jkeiser](https://github.com/jkeiser))
+
 ## [v1.4.1](https://github.com/chef/cheffish/tree/v1.4.1) (2015-09-04)
 [Full Changelog](https://github.com/chef/cheffish/compare/v1.4.0...v1.4.1)
 
@@ -10,6 +17,11 @@
 
 ## [v1.4.0](https://github.com/chef/cheffish/tree/v1.4.0) (2015-09-02)
 [Full Changelog](https://github.com/chef/cheffish/compare/v1.3.1...v1.4.0)
+
+**Implemented enhancements:**
+
+- cdoherty's travis matrix with 12.3.0 fixes [\#64](https://github.com/chef/cheffish/pull/64) ([jkeiser](https://github.com/jkeiser))
+- Add provides statements to avoid chef-client warnings [\#60](https://github.com/chef/cheffish/pull/60) ([stevendanna](https://github.com/stevendanna))
 
 **Fixed bugs:**
 
@@ -22,11 +34,6 @@
 **Closed issues:**
 
 - ffi-yajl version incompatibility with Chef 12.1.2 [\#67](https://github.com/chef/cheffish/issues/67)
-
-**Merged pull requests:**
-
-- cdoherty's travis matrix with 12.3.0 fixes [\#64](https://github.com/chef/cheffish/pull/64) ([jkeiser](https://github.com/jkeiser))
-- Add provides statements to avoid chef-client warnings [\#60](https://github.com/chef/cheffish/pull/60) ([stevendanna](https://github.com/stevendanna))
 
 ## [v1.3.1](https://github.com/chef/cheffish/tree/v1.3.1) (2015-08-05)
 [Full Changelog](https://github.com/chef/cheffish/compare/v1.3.0...v1.3.1)
@@ -155,6 +162,10 @@
 ## [v0.8](https://github.com/chef/cheffish/tree/v0.8) (2014-09-05)
 [Full Changelog](https://github.com/chef/cheffish/compare/v0.7.1...v0.8)
 
+**Implemented enhancements:**
+
+- Support groups and acls in all objects that support them [\#12](https://github.com/chef/cheffish/issues/12)
+
 **Fixed bugs:**
 
 - Docs and/or gemspec should specify required Chef version [\#7](https://github.com/chef/cheffish/issues/7)
@@ -162,7 +173,6 @@
 **Closed issues:**
 
 - Support policies [\#14](https://github.com/chef/cheffish/issues/14)
-- Support groups and acls in all objects that support them [\#12](https://github.com/chef/cheffish/issues/12)
 - Support acls, groups, containers, org membership and invites [\#11](https://github.com/chef/cheffish/issues/11)
 
 **Merged pull requests:**
@@ -176,7 +186,10 @@
 [Full Changelog](https://github.com/chef/cheffish/compare/v0.7...v0.7.1)
 
 ## [v0.7](https://github.com/chef/cheffish/tree/v0.7) (2014-07-15)
-[Full Changelog](https://github.com/chef/cheffish/compare/v0.6.2...v0.7)
+[Full Changelog](https://github.com/chef/cheffish/compare/blah...v0.7)
+
+## [blah](https://github.com/chef/cheffish/tree/blah) (2014-06-20)
+[Full Changelog](https://github.com/chef/cheffish/compare/v0.6.2...blah)
 
 **Merged pull requests:**
 
