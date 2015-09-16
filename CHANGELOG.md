@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.5.0](https://github.com/chef/cheffish/tree/1.5.0) (2015-09-16)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.4.2...1.5.0)
+
+**Merged pull requests:**
+
+- Make cheffish not depend on the chef gem. [\#74](https://github.com/chef/cheffish/pull/74) ([ksubrama](https://github.com/ksubrama))
+
 ## [v1.4.2](https://github.com/chef/cheffish/tree/v1.4.2) (2015-09-04)
 [Full Changelog](https://github.com/chef/cheffish/compare/v1.4.1...v1.4.2)
 
@@ -18,16 +25,13 @@
 ## [v1.4.0](https://github.com/chef/cheffish/tree/v1.4.0) (2015-09-02)
 [Full Changelog](https://github.com/chef/cheffish/compare/v1.3.1...v1.4.0)
 
-**Implemented enhancements:**
-
-- cdoherty's travis matrix with 12.3.0 fixes [\#64](https://github.com/chef/cheffish/pull/64) ([jkeiser](https://github.com/jkeiser))
-- Add provides statements to avoid chef-client warnings [\#60](https://github.com/chef/cheffish/pull/60) ([stevendanna](https://github.com/stevendanna))
-
 **Fixed bugs:**
 
 - chef\_server\_api does not correctly handle MergedConfig [\#65](https://github.com/chef/cheffish/issues/65)
 - Modified Resources and Providers creation [\#70](https://github.com/chef/cheffish/pull/70) ([afiune](https://github.com/afiune))
 - A handful of fixes to make the Cheffish matrix pass on all the relevant Chef versions. [\#68](https://github.com/chef/cheffish/pull/68) ([randomcamel](https://github.com/randomcamel))
+- cdoherty's travis matrix with 12.3.0 fixes [\#64](https://github.com/chef/cheffish/pull/64) ([jkeiser](https://github.com/jkeiser))
+- Add provides statements to avoid chef-client warnings [\#60](https://github.com/chef/cheffish/pull/60) ([stevendanna](https://github.com/stevendanna))
 - Fix sense typos in test names. [\#59](https://github.com/chef/cheffish/pull/59) ([randomcamel](https://github.com/randomcamel))
 - Use correct user-association endpoint for Chef 12 [\#50](https://github.com/chef/cheffish/pull/50) ([stevendanna](https://github.com/stevendanna))
 
@@ -162,12 +166,9 @@
 ## [v0.8](https://github.com/chef/cheffish/tree/v0.8) (2014-09-05)
 [Full Changelog](https://github.com/chef/cheffish/compare/v0.7.1...v0.8)
 
-**Implemented enhancements:**
-
-- Support groups and acls in all objects that support them [\#12](https://github.com/chef/cheffish/issues/12)
-
 **Fixed bugs:**
 
+- Support groups and acls in all objects that support them [\#12](https://github.com/chef/cheffish/issues/12)
 - Docs and/or gemspec should specify required Chef version [\#7](https://github.com/chef/cheffish/issues/7)
 
 **Closed issues:**
