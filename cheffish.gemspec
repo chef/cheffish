@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.email = 'jkeiser@chef.io'
   s.homepage = 'http://github.com/chef/cheffish'
 
-  s.add_dependency 'chef-zero', '~> 4.2'
+  s.add_dependency 'chef-zero', '~> 4.3'
 
   s.add_development_dependency 'chef', '~> 12.2'
   s.add_development_dependency 'rake'
