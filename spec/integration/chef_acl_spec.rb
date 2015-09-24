@@ -120,6 +120,19 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
           group 'g2', {}
           group 'g3', {}
 
+          it 'Converging chef_acls should ignore order of the values in the acls' do
+            expect_recipe {
+              chef_acl 'nodes/x' do
+                rights :create, users:  [ 'u1', 'u2', 'u3' ], clients:  [ 'c1', 'c2', 'c3' ], groups:  [ 'g1', 'g2', 'g3' ]
+              end
+            }.to be_updated
+            expect_recipe {
+              chef_acl 'nodes/x' do
+                rights :create, users:  [ 'u2', 'u3', 'u1' ], clients:  [ 'c3', 'c2', 'c1' ], groups:  [ 'g1', 'g2', 'g3' ]
+              end
+            }.to be_up_to_date
+          end
+
           it 'Converging chef_acl "nodes/x" with multiple groups, users and clients in an acl makes the appropriate changes' do
             expect_recipe {
               chef_acl 'nodes/x' do

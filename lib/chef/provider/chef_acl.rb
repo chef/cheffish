@@ -50,7 +50,7 @@ class Chef
             # Compare the desired and current json for the ACL, and update if different.
             modify = {}
             desired_acl(acl).each do |permission, desired_json|
-              differences = json_differences(current_json[permission], desired_json)
+              differences = json_differences(sort_values(current_json[permission]), sort_values(desired_json))
 
               if differences.size > 0
                 # Verify we aren't trying to destroy grant permissions
@@ -142,6 +142,13 @@ class Chef
           remove_rights(result)
         end
         result
+      end
+
+      def sort_values(json)
+        json.each do |key, value|
+          json[key] = value.sort if value.is_a?(Array)
+        end
+        json
       end
 
       def add_rights(acl_path, json)
