@@ -11,6 +11,8 @@ script:
   - bundle exec rake build
   - bundle exec rake spec
 
+env: "GEMFILE_MOD=\"gem 'chef', '>= 12.4.1'\""
+
 # The set of Rubies Chef works with
 rvm:
   - 2.0
