@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'chef-zero', '~> 4.3'
 
-  s.add_development_dependency 'chef', '~> 12.2'
+  s.add_development_dependency 'chef', '~> 12.2', '!= 12.4.0'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', '~> 3.0'
   s.bindir       = "bin"
