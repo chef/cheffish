@@ -1,13 +1,13 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 require 'chef/run_list/run_list_item'
 
 class Chef
   class Resource
-    class ChefGroup < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_group'
+    class ChefGroup < ChefCompat::Resource
+      resource_name :chef_group
 
-      actions :create, :delete, :nothing
+      allowed_actions :create, :delete, :nothing
       default_action :create
 
       # Grab environment from with_environment
@@ -22,7 +22,7 @@ class Chef
         @remove_groups = []
       end
 
-      attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
+      property :name, Cheffish::NAME_REGEX, name_property: true
       def users(*users)
         users.size == 0 ? @users : (@users |= users.flatten)
       end
@@ -44,10 +44,10 @@ class Chef
 
       # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
       # reset to their defaults)
-      attribute :complete, :kind_of => [TrueClass, FalseClass]
+      property :complete, [true, false]
 
-      attribute :raw_json, :kind_of => Hash
-      attribute :chef_server, :kind_of => Hash
+      property :raw_json, Hash
+      property :chef_server, Hash
     end
   end
 end

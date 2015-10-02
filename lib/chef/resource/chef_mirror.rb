@@ -1,12 +1,12 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 
 class Chef
   class Resource
-    class ChefMirror < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_mirror'
+    class ChefMirror < ChefCompat::Resource
+      resource_name :chef_mirror
 
-      actions :upload, :download, :nothing
+      allowed_actions :upload, :download, :nothing
       default_action :nothing
 
       def initialize(*args)
@@ -16,37 +16,37 @@ class Chef
 
       # Path of the data to mirror, e.g. nodes, nodes/*, nodes/mynode,
       # */*, **, roles/base, data/secrets, cookbooks/apache2, etc.
-      attribute :path, :kind_of => String, :name_attribute => true
+      property :path, String, name_property: true
 
       # Local path.  Can be a string (top level of repository) or hash
       # (:chef_repo_path, :node_path, etc.)
       # If neither chef_repo_path nor versioned_cookbooks are set, they default to their
       # Chef::Config values.  If chef_repo_path is set but versioned_cookbooks is not,
       # versioned_cookbooks defaults to true.
-      attribute :chef_repo_path, :kind_of => [ String, Hash ]
+      property :chef_repo_path, [ String, Hash ]
 
       # Whether the repo path should contain cookbooks with versioned names,
       # i.e. cookbooks/mysql-1.0.0, cookbooks/mysql-1.2.0, etc.
       # Defaults to true if chef_repo_path is specified, or to Chef::Config.versioned_cookbooks otherwise.
-      attribute :versioned_cookbooks, :kind_of => [ TrueClass, FalseClass ]
+      property :versioned_cookbooks, [ true, false ]
 
       # Chef server
-      attribute :chef_server, :kind_of => Hash
+      property :chef_server, Hash
 
       # Whether to purge deleted things: if we do not have cookbooks/x locally and we
       # *do* have cookbooks/x remotely, then :upload with purge will delete it.
       # Defaults to false.
-      attribute :purge, :kind_of => [ TrueClass, FalseClass ]
+      property :purge, [ true, false ]
 
       # Whether to freeze cookbooks on upload
-      attribute :freeze, :kind_of => [ TrueClass, FalseClass ]
+      property :freeze, [ true, false ]
 
       # If this is true, only new files will be copied.  File contents will not be
       # diffed, so changed files will never be uploaded.
-      attribute :no_diff, :kind_of => [ TrueClass, FalseClass ]
+      property :no_diff, [ true, false ]
 
       # Number of parallel threads to list/upload/download with.  Defaults to 10.
-      attribute :concurrency, :kind_of => Integer
+      property :concurrency, Integer
     end
   end
 end

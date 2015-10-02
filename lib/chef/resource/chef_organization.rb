@@ -1,13 +1,13 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 require 'chef/run_list/run_list_item'
 
 class Chef
   class Resource
-    class ChefOrganization < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_organization'
+    class ChefOrganization < ChefCompat::Resource
+      resource_name :chef_organization
 
-      actions :create, :delete, :nothing
+      allowed_actions :create, :delete, :nothing
       default_action :create
 
       # Grab environment from with_environment
@@ -19,8 +19,8 @@ class Chef
         @remove_members = []
       end
 
-      attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      attribute :full_name, :kind_of => String
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :full_name, String
 
       # A list of users who must at least be invited to the org (but may already be
       # members).  Invites will be sent to users who are not already invited/in the org.
@@ -61,9 +61,9 @@ class Chef
         users.size == 0 ? @remove_members : (@remove_members |= users.flatten)
       end
 
-      attribute :complete, :kind_of => [ TrueClass, FalseClass ]
-      attribute :raw_json, :kind_of => Hash
-      attribute :chef_server, :kind_of => Hash
+      property :complete, [ true, false ]
+      property :raw_json, Hash
+      property :chef_server, Hash
     end
   end
 end

@@ -1,13 +1,13 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 require 'chef/environment'
 
 class Chef
   class Resource
-    class ChefEnvironment < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_environment'
+    class ChefEnvironment < ChefCompat::Resource
+      resource_name :chef_environment
 
-      actions :create, :delete, :nothing
+      allowed_actions :create, :delete, :nothing
       default_action :create
 
       def initialize(*args)
@@ -15,20 +15,20 @@ class Chef
         chef_server run_context.cheffish.current_chef_server
       end
 
-      attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      attribute :description, :kind_of => String
-      attribute :cookbook_versions, :kind_of => Hash, :callbacks => {
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :description, String
+      property :cookbook_versions, Hash, callbacks: {
         "should have valid cookbook versions" => lambda { |value| Chef::Environment.validate_cookbook_versions(value) }
       }
-      attribute :default_attributes, :kind_of => Hash
-      attribute :override_attributes, :kind_of => Hash
+      property :default_attributes, Hash
+      property :override_attributes, Hash
 
       # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
       # reset to their defaults)
-      attribute :complete, :kind_of => [TrueClass, FalseClass]
+      property :complete, [true, false]
 
-      attribute :raw_json, :kind_of => Hash
-      attribute :chef_server, :kind_of => Hash
+      property :raw_json, Hash
+      property :chef_server, Hash
 
       # `NOT_PASSED` is defined in chef-12.5.0, this guard will ensure we
       # don't redefine it if it's already there
@@ -71,7 +71,7 @@ class Chef
       end
 
       alias :attributes :default_attributes
-      alias :attribute :default
+      alias :property :default
     end
   end
 end

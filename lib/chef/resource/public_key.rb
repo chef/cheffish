@@ -1,20 +1,20 @@
 require 'openssl/cipher'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 
 class Chef
   class Resource
-    class PublicKey < Chef::Resource::LWRPBase
-      self.resource_name = 'public_key'
+    class PublicKey < ChefCompat::Resource
+      resource_name :public_key
 
-      actions :create, :delete, :nothing
+      allowed_actions :create, :delete, :nothing
       default_action :create
 
-      attribute :path, :kind_of => String, :name_attribute => true
-      attribute :format, :kind_of => Symbol, :default => :openssh, :equal_to => [ :pem, :der, :openssh ]
+      property :path, String, name_property: true
+      property :format, [ :pem, :der, :openssh ], default: :openssh
 
-      attribute :source_key
-      attribute :source_key_path, :kind_of => String
-      attribute :source_key_pass_phrase
+      property :source_key
+      property :source_key_path, String
+      property :source_key_pass_phrase
 
       # We are not interested in Chef's cloning behavior here.
       def load_prior_resource(*args)

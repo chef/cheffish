@@ -1,12 +1,12 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 
 class Chef
   class Resource
-    class ChefUser < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_user'
+    class ChefUser < ChefCompat::Resource
+      resource_name :chef_user
 
-      actions :create, :delete, :nothing
+      allowed_actions :create, :delete, :nothing
       default_action :create
 
       # Grab environment from with_environment
@@ -16,31 +16,31 @@ class Chef
       end
 
       # Client attributes
-      attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      attribute :display_name, :kind_of => String
-      attribute :admin, :kind_of => [TrueClass, FalseClass]
-      attribute :email, :kind_of => String
-      attribute :external_authentication_uid
-      attribute :recovery_authentication_enabled, :kind_of => [TrueClass, FalseClass]
-      attribute :password, :kind_of => String # Hmm.  There is no way to idempotentize this.
-      #attribute :salt  # TODO server doesn't support sending or receiving these, but it's the only way to backup / restore a user
-      #attribute :hashed_password
-      #attribute :hash_type
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :display_name, String
+      property :admin, [true, false]
+      property :email, String
+      property :external_authentication_uid
+      property :recovery_authentication_enabled, [true, false]
+      property :password, String # Hmm.  There is no way to idempotentize this.
+      #property :salt  # TODO server doesn't support sending or receiving these, but it's the only way to backup / restore a user
+      #property :hashed_password
+      #property :hash_type
 
       # Input key
-      attribute :source_key # String or OpenSSL::PKey::*
-      attribute :source_key_path, :kind_of => String
-      attribute :source_key_pass_phrase
+      property :source_key # String or OpenSSL::PKey::*
+      property :source_key_path, String
+      property :source_key_pass_phrase
 
       # Output public key (if so desired)
-      attribute :output_key_path, :kind_of => String
-      attribute :output_key_format, :kind_of => Symbol, :default => :openssh, :equal_to => [ :pem, :der, :openssh ]
+      property :output_key_path, String
+      property :output_key_format, [ :pem, :der, :openssh ], default: :openssh
 
       # If this is set, client is not patchy
-      attribute :complete, :kind_of => [TrueClass, FalseClass]
+      property :complete, [true, false]
 
-      attribute :raw_json, :kind_of => Hash
-      attribute :chef_server, :kind_of => Hash
+      property :raw_json, Hash
+      property :chef_server, Hash
 
       # Proc that runs just before the resource executes.  Called with (resource)
       def before(&block)

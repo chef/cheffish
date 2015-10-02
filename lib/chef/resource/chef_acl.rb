@@ -1,12 +1,12 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 
 class Chef
   class Resource
-    class ChefAcl < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_acl'
+    class ChefAcl < ChefCompat::Resource
+      resource_name :chef_acl
 
-      actions :create, :nothing
+      allowed_actions :create, :nothing
       default_action :create
 
       def initialize(*args)
@@ -17,19 +17,19 @@ class Chef
       # Path of the thing being secured, e.g. nodes, nodes/*, nodes/mynode,
       # */*, **, roles/base, data/secrets, cookbooks/apache2, /users/*,
       # /organizations/foo/nodes/x
-      attribute :path, :kind_of => String, :name_attribute => true
+      property :path, String, name_property: true
 
       # Whether to change things recursively.  true means it will descend all children
       # and make the same modifications to them.  :on_change will only descend if
       # the parent has changed.  :on_change is the default.
-      attribute :recursive, :equal_to => [ true, false, :on_change ], :default => :on_change
+      property :recursive, [ true, false, :on_change ], default: :on_change
 
       # Specifies that this is a complete specification for the acl (i.e. rights
       # you don't specify will be reset to their defaults)
-      attribute :complete, :kind_of => [TrueClass, FalseClass]
+      property :complete, [true, false]
 
-      attribute :raw_json, :kind_of => Hash
-      attribute :chef_server, :kind_of => Hash
+      property :raw_json, Hash
+      property :chef_server, Hash
 
       # rights :read, :users => 'jkeiser', :groups => [ 'admins', 'users' ]
       # rights [ :create, :read ], :users => [ 'jkeiser', 'adam' ]

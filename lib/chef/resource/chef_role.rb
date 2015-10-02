@@ -1,13 +1,13 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 require 'chef/run_list/run_list_item'
 
 class Chef
   class Resource
-    class ChefRole < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_role'
+    class ChefRole < ChefCompat::Resource
+      resource_name :chef_role
 
-      actions :create, :delete, :nothing
+      allowed_actions :create, :delete, :nothing
       default_action :create
 
       # Grab environment from with_environment
@@ -16,19 +16,19 @@ class Chef
         chef_server run_context.cheffish.current_chef_server
       end
 
-      attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      attribute :description, :kind_of => String
-      attribute :run_list, :kind_of => Array # We should let them specify it as a series of parameters too
-      attribute :env_run_lists, :kind_of => Hash
-      attribute :default_attributes, :kind_of => Hash
-      attribute :override_attributes, :kind_of => Hash
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :description, String
+      property :run_list, Array # We should let them specify it as a series of parameters too
+      property :env_run_lists, Hash
+      property :default_attributes, Hash
+      property :override_attributes, Hash
 
       # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
       # reset to their defaults)
-      attribute :complete, :kind_of => [TrueClass, FalseClass]
+      property :complete, [true, false]
 
-      attribute :raw_json, :kind_of => Hash
-      attribute :chef_server, :kind_of => Hash
+      property :raw_json, Hash
+      property :chef_server, Hash
 
       # `NOT_PASSED` is defined in chef-12.5.0, this guard will ensure we
       # don't redefine it if it's already there

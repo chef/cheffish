@@ -1,12 +1,12 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 
 class Chef
   class Resource
-    class ChefContainer < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_container'
+    class ChefContainer < ChefCompat::Resource
+      resource_name :chef_container
 
-      actions :create, :delete, :nothing
+      allowed_actions :create, :delete, :nothing
       default_action :create
 
       # Grab environment from with_environment
@@ -15,8 +15,8 @@ class Chef
         chef_server run_context.cheffish.current_chef_server
       end
 
-      attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      attribute :chef_server, :kind_of => Hash
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :chef_server, Hash
     end
   end
 end

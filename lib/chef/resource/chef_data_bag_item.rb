@@ -1,13 +1,13 @@
 require 'cheffish'
 require 'chef/config'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 
 class Chef
   class Resource
-    class ChefDataBagItem < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_data_bag_item'
+    class ChefDataBagItem < ChefCompat::Resource
+      resource_name :chef_data_bag_item
 
-      actions :create, :delete, :nothing
+      allowed_actions :create, :delete, :nothing
       default_action :create
 
       def initialize(*args)
@@ -64,11 +64,11 @@ class Chef
           name data_bag ? "#{data_bag}/#{id}" : id
         end
       end
-      attribute :raw_data, :kind_of => Hash
+      property :raw_data, Hash
 
       # If secret or secret_path are set, encrypt is assumed true.  encrypt exists mainly for with_secret and with_secret_path
-      attribute :encrypt, :kind_of => [TrueClass, FalseClass]
-      #attribute :secret, :kind_of => String
+      property :encrypt, [true, false]
+      #property :secret, String
       def secret(new_secret = nil)
         if !new_secret
           @secret
@@ -77,7 +77,7 @@ class Chef
           @encrypt = true if @encrypt.nil?
         end
       end
-      #attribute :secret_path, :kind_of => String
+      #property :secret_path, String
       def secret_path(new_secret_path = nil)
         if !new_secret_path
           @secret_path
@@ -86,18 +86,18 @@ class Chef
           @encrypt = true if @encrypt.nil?
         end
       end
-      attribute :encryption_version, :kind_of => Integer
+      property :encryption_version, Integer
 
       # Old secret (or secrets) to read the old data bag when we are changing keys and re-encrypting data
-      attribute :old_secret, :kind_of => [String, Array]
-      attribute :old_secret_path, :kind_of => [String, Array]
+      property :old_secret, [String, Array]
+      property :old_secret_path, [String, Array]
 
       # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
       # reset to their defaults)
-      attribute :complete, :kind_of => [TrueClass, FalseClass]
+      property :complete, [true, false]
 
-      attribute :raw_json, :kind_of => Hash
-      attribute :chef_server, :kind_of => Hash
+      property :raw_json, Hash
+      property :chef_server, Hash
 
       # value 'ip_address', '127.0.0.1'
       # value [ 'pushy', 'port' ], '9000'
