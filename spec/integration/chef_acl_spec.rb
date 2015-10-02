@@ -1,7 +1,6 @@
 require 'support/spec_support'
 require 'cheffish/rspec/chef_run_support'
 require 'chef/resource/chef_acl'
-require 'chef/provider/chef_acl'
 require 'chef_zero/version'
 require 'uri'
 

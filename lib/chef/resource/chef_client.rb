@@ -4,7 +4,7 @@ require 'chef_compat/resource'
 class Chef
   class Resource
     class ChefClient < ChefCompat::Resource
-      resource_name :chef_client
+      use_automatic_resource_name
 
       allowed_actions :create, :delete, :regenerate_keys, :nothing
       default_action :create

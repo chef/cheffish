@@ -5,7 +5,7 @@ require 'chef/run_list/run_list_item'
 class Chef
   class Resource
     class ChefGroup < ChefCompat::Resource
-      resource_name :chef_group
+      use_automatic_resource_name
 
       allowed_actions :create, :delete, :nothing
       default_action :create

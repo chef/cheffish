@@ -4,7 +4,7 @@ require 'chef_compat/resource'
 class Chef
   class Resource
     class ChefMirror < ChefCompat::Resource
-      resource_name :chef_mirror
+      use_automatic_resource_name
 
       allowed_actions :upload, :download, :nothing
       default_action :nothing

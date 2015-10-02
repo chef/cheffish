@@ -4,7 +4,7 @@ require 'chef_compat/resource'
 class Chef
   class Resource
     class ChefUser < ChefCompat::Resource
-      resource_name :chef_user
+      use_automatic_resource_name
 
       allowed_actions :create, :delete, :nothing
       default_action :create

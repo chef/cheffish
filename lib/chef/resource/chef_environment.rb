@@ -5,7 +5,7 @@ require 'chef/environment'
 class Chef
   class Resource
     class ChefEnvironment < ChefCompat::Resource
-      resource_name :chef_environment
+      use_automatic_resource_name
 
       allowed_actions :create, :delete, :nothing
       default_action :create

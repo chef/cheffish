@@ -4,7 +4,7 @@ require 'chef_compat/resource'
 class Chef
   class Resource
     class PublicKey < ChefCompat::Resource
-      resource_name :public_key
+      use_automatic_resource_name
 
       allowed_actions :create, :delete, :nothing
       default_action :create

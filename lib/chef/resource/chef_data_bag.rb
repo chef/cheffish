@@ -4,7 +4,7 @@ require 'chef_compat/resource'
 class Chef
   class Resource
     class ChefDataBag < ChefCompat::Resource
-      resource_name :chef_data_bag
+      use_automatic_resource_name
 
       allowed_actions :create, :delete, :nothing
       default_action :create

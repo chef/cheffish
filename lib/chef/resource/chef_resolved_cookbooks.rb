@@ -3,7 +3,7 @@ require 'chef_compat/resource'
 class Chef
   class Resource
     class ChefResolvedCookbooks < ChefCompat::Resource
-      resource_name :chef_resolved_cookbooks
+      use_automatic_resource_name
 
       allowed_actions :resolve, :nothing
       default_action :resolve
