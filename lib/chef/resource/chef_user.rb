@@ -1,19 +1,12 @@
 require 'cheffish'
-require 'chef_compat/resource'
+require 'cheffish/chef_actor_resource_base'
+require 'chef/resource/chef_user'
+require 'chef/chef_fs/data_handler/user_data_handler'
 
 class Chef
   class Resource
-    class ChefUser < ChefCompat::Resource
+    class ChefUser < Cheffish::ChefActorResourceBase
       use_automatic_resource_name
-
-      allowed_actions :create, :delete, :nothing
-      default_action :create
-
-      # Grab environment from with_environment
-      def initialize(*args)
-        super
-        chef_server run_context.cheffish.current_chef_server
-      end
 
       # Client attributes
       property :name, Cheffish::NAME_REGEX, name_property: true
@@ -40,7 +33,6 @@ class Chef
       property :complete, [true, false]
 
       property :raw_json, Hash
-      property :chef_server, Hash
 
       # Proc that runs just before the resource executes.  Called with (resource)
       def before(&block)
@@ -50,6 +42,53 @@ class Chef
       # Proc that runs after the resource completes.  Called with (resource, json, private_key, public_key)
       def after(&block)
         block ? @after = block : @after
+      end
+
+
+      action :create do
+        create_actor
+      end
+
+      action :delete do
+        delete_actor
+      end
+
+      # Action helpers
+      action_class.class_eval do
+        #
+        # Helpers
+        #
+        # Gives us new_json, current_json, not_found_json, etc.
+
+        def actor_type
+          'user'
+        end
+
+        def actor_path
+          "#{rest.root_url}/users"
+        end
+
+        def resource_class
+          Chef::Resource::ChefUser
+        end
+
+        def data_handler
+          Chef::ChefFS::DataHandler::UserDataHandler.new
+        end
+
+        def keys
+          {
+            'name' => :name,
+            'username' => :name,
+            'display_name' => :display_name,
+            'admin' => :admin,
+            'email' => :email,
+            'password' => :password,
+            'external_authentication_uid' => :external_authentication_uid,
+            'recovery_authentication_enabled' => :recovery_authentication_enabled,
+            'public_key' => :source_key
+          }
+        end
       end
     end
   end

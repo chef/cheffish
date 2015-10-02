@@ -1,7 +1,6 @@
 require 'support/spec_support'
 require 'cheffish/rspec/chef_run_support'
 require 'chef/resource/chef_role'
-require 'chef/provider/chef_role'
 
 describe Chef::Resource::ChefRole do
   extend Cheffish::RSpec::ChefRunSupport
