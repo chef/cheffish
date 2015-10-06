@@ -1,6 +1,6 @@
 require 'support/spec_support'
 require 'cheffish/rspec/chef_run_support'
-require 'chef/resource/chef_node'
+require 'cheffish/resource/chef_node'
 
 describe Chef::Resource::ChefNode do
   extend Cheffish::RSpec::ChefRunSupport

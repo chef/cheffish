@@ -1,7 +1,7 @@
 require 'support/spec_support'
 require 'cheffish/rspec/chef_run_support'
-require 'chef/resource/private_key'
-require 'chef/resource/public_key'
+require 'cheffish/resource/private_key'
+require 'cheffish/resource/public_key'
 require 'support/key_support'
 
 repo_path = Dir.mktmpdir('chef_repo')
