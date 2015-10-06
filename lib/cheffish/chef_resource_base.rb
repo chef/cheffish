@@ -4,11 +4,11 @@ require 'chef/run_list'
 
 module Cheffish
   class ChefResourceBase < ChefCompat::Resource
-    Boolean = property_type(is: [true, false])
+    Boolean = property_type(is: [true, false], default: true)
 
     def initialize(*args, &block)
       super
-      chef_server run_context.cheffish.current_chef_server
+      chef_server run_context.cheffish.current_chef_server if run_context.cheffish.current_chef_server
     end
 
     property :chef_server, Hash

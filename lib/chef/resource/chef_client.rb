@@ -9,8 +9,8 @@ class Chef
 
       # Client attributes
       property :name, Cheffish::NAME_REGEX, name_property: true
-      property :admin, [true, false]
-      property :validator, [true, false]
+      property :admin, Boolean
+      property :validator, Boolean
 
       # Input key
       property :source_key # String or OpenSSL::PKey::*
@@ -22,7 +22,7 @@ class Chef
       property :output_key_format, [ :pem, :der, :openssh ], default: :openssh
 
       # If this is set, client is not patchy
-      property :complete, [true, false]
+      property :complete, Boolean
 
       property :raw_json, Hash
 

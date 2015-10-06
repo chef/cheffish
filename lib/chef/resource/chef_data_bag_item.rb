@@ -91,7 +91,7 @@ class Chef
 
       # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
       # reset to their defaults)
-      property :complete, [true, false]
+      property :complete, Boolean
 
       property :raw_json, Hash
 

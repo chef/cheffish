@@ -11,10 +11,10 @@ class Chef
       # Client attributes
       property :name, Cheffish::NAME_REGEX, name_property: true
       property :display_name, String
-      property :admin, [true, false]
+      property :admin, Boolean
       property :email, String
       property :external_authentication_uid
-      property :recovery_authentication_enabled, [true, false]
+      property :recovery_authentication_enabled, Boolean
       property :password, String # Hmm.  There is no way to idempotentize this.
       #property :salt  # TODO server doesn't support sending or receiving these, but it's the only way to backup / restore a user
       #property :hashed_password
@@ -30,7 +30,7 @@ class Chef
       property :output_key_format, [ :pem, :der, :openssh ], default: :openssh
 
       # If this is set, client is not patchy
-      property :complete, [true, false]
+      property :complete, Boolean
 
       property :raw_json, Hash
 
