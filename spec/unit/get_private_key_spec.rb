@@ -26,6 +26,14 @@ describe Cheffish do
     key_file
   end
 
+  def setup_arbitrarily_named_key
+    key_file = File.expand_path("ned_stark.xxx", directory_that_exists)
+    File.open(key_file, "w+") do |f|
+      f.write private_key_contents
+    end
+    key_file
+  end
+
   def setup_pem_key
     key_file = File.expand_path("ned_stark.pem", directory_that_exists)
     File.open(key_file, "w+") do |f|
@@ -55,6 +63,11 @@ describe Cheffish do
     it "returns the contents of the key if it has an extension" do
       setup_pem_key
       expect(Cheffish.get_private_key("ned_stark", config)).to eq(private_key_pem_contents)
+    end
+
+    it "returns the contents of arbitrarily named keys" do
+      setup_arbitrarily_named_key
+      expect(Cheffish.get_private_key("ned_stark.xxx", config)).to eq(private_key_contents)
     end
 
     # we arbitrarily prefer "ned_stark" over "ned_stark.pem" for deterministic behavior
