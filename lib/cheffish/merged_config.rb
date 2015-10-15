@@ -87,6 +87,10 @@ module Cheffish
       result
     end
 
+    def to_h
+      to_hash
+    end
+
     def to_s
       to_hash.to_s
     end
