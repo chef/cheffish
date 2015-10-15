@@ -1,7 +1,26 @@
 # Change Log
 
-## [1.5.0](https://github.com/chef/cheffish/tree/1.5.0) (2015-09-16)
-[Full Changelog](https://github.com/chef/cheffish/compare/v1.4.2...1.5.0)
+## [1.6.0](https://github.com/chef/cheffish/tree/1.6.0) (2015-10-15)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.5.0...1.6.0)
+
+**Fixed bugs:**
+
+- chef\_acl provider updates the acls unnecessarily [\#75](https://github.com/chef/cheffish/issues/75)
+- proxying to\_h to to\_hash [\#88](https://github.com/chef/cheffish/pull/88) ([tyler-ball](https://github.com/tyler-ball))
+- Fixing the issue of updataing acls unnecessarily [\#76](https://github.com/chef/cheffish/pull/76) ([ckaushik](https://github.com/ckaushik))
+
+**Closed issues:**
+
+- Confused about implications of using groups attribute in chef\_group resource [\#78](https://github.com/chef/cheffish/issues/78)
+
+**Merged pull requests:**
+
+- Add gemspec files to allow bundler to run from the gem [\#86](https://github.com/chef/cheffish/pull/86) ([ksubrama](https://github.com/ksubrama))
+- Pull in a non-12.4.0 version of Chef in travis [\#81](https://github.com/chef/cheffish/pull/81) ([jkeiser](https://github.com/jkeiser))
+- Ship the Gemfile so people can run our tests [\#80](https://github.com/chef/cheffish/pull/80) ([jkeiser](https://github.com/jkeiser))
+
+## [v1.5.0](https://github.com/chef/cheffish/tree/v1.5.0) (2015-09-16)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.4.2...v1.5.0)
 
 **Merged pull requests:**
 
