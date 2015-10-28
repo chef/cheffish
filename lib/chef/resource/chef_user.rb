@@ -1,9 +1,9 @@
 require 'cheffish'
-require 'cheffish/base_resource'
+require 'cheffish/chef_actor_base'
 
 class Chef
   class Resource
-    class ChefUser < Cheffish::BaseResource
+    class ChefUser < Cheffish::ChefActorBase
       resource_name :chef_user
 
       # Grab environment from with_environment
