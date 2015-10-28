@@ -129,7 +129,6 @@ module Cheffish
       property :complete, :kind_of => [TrueClass, FalseClass]
 
       property :raw_json, :kind_of => Hash
-      property :chef_server, :kind_of => Hash
 
       # attribute 'ip_address', '127.0.0.1'
       # attribute [ 'pushy', 'port' ], '9000'

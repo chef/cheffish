@@ -9,11 +9,6 @@ class Chef
     class ChefAcl < Cheffish::BaseResource
       resource_name :chef_acl
 
-      def initialize(*args)
-        super
-        chef_server run_context.cheffish.current_chef_server
-      end
-
       # Path of the thing being secured, e.g. nodes, nodes/*, nodes/mynode,
       # */*, **, roles/base, data/secrets, cookbooks/apache2, /users/*,
       # /organizations/foo/nodes/x
@@ -29,7 +24,6 @@ class Chef
       property :complete, :kind_of => [TrueClass, FalseClass]
 
       property :raw_json, :kind_of => Hash
-      property :chef_server, :kind_of => Hash
 
       # rights :read, :users => 'jkeiser', :groups => [ 'admins', 'users' ]
       # rights [ :create, :read ], :users => [ 'jkeiser', 'adam' ]

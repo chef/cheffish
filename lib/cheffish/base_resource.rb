@@ -2,6 +2,13 @@ require 'chef_compat/resource'
 
 module Cheffish
   class BaseResource < ChefCompat::Resource
+    def initialize(*args)
+      super
+      chef_server run_context.cheffish.current_chef_server
+    end
+
+    property :chef_server, kind_of: Hash
+
     declare_action_class.class_eval do
       def rest
         @rest ||= Cheffish.chef_server_api(new_resource.chef_server)

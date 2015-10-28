@@ -11,11 +11,6 @@ class Chef
     class ChefMirror < Cheffish::BaseResource
       resource_name :chef_mirror
 
-      def initialize(*args)
-        super
-        chef_server run_context.cheffish.current_chef_server
-      end
-
       # Path of the data to mirror, e.g. nodes, nodes/*, nodes/mynode,
       # */*, **, roles/base, data/secrets, cookbooks/apache2, etc.
       property :path, :kind_of => String, :name_attribute => true
@@ -31,9 +26,6 @@ class Chef
       # i.e. cookbooks/mysql-1.0.0, cookbooks/mysql-1.2.0, etc.
       # Defaults to true if chef_repo_path is specified, or to Chef::Config.versioned_cookbooks otherwise.
       property :versioned_cookbooks, :kind_of => [ TrueClass, FalseClass ]
-
-      # Chef server
-      property :chef_server, :kind_of => Hash
 
       # Whether to purge deleted things: if we do not have cookbooks/x locally and we
       # *do* have cookbooks/x remotely, then :upload with purge will delete it.

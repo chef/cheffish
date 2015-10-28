@@ -11,7 +11,6 @@ class Chef
       def initialize(*args)
         super
         chef_environment run_context.cheffish.current_environment
-        chef_server run_context.cheffish.current_chef_server
       end
 
       Cheffish.node_attributes(self)

@@ -11,7 +11,6 @@ class Chef
       # Grab environment from with_environment
       def initialize(*args)
         super
-        chef_server run_context.cheffish.current_chef_server
         @users = []
         @clients = []
         @groups = []
@@ -45,7 +44,6 @@ class Chef
       property :complete, :kind_of => [TrueClass, FalseClass]
 
       property :raw_json, :kind_of => Hash
-      property :chef_server, :kind_of => Hash
 
 
       action :create do

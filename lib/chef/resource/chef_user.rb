@@ -6,12 +6,6 @@ class Chef
     class ChefUser < Cheffish::ChefActorBase
       resource_name :chef_user
 
-      # Grab environment from with_environment
-      def initialize(*args)
-        super
-        chef_server run_context.cheffish.current_chef_server
-      end
-
       # Client attributes
       property :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
       property :display_name, :kind_of => String
@@ -37,7 +31,6 @@ class Chef
       property :complete, :kind_of => [TrueClass, FalseClass]
 
       property :raw_json, :kind_of => Hash
-      property :chef_server, :kind_of => Hash
 
       # Proc that runs just before the resource executes.  Called with (resource)
       def before(&block)

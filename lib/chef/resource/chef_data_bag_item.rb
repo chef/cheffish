@@ -24,7 +24,6 @@ class Chef
           @old_secret = run_context.cheffish.current_data_bag_item_encryption[:old_secret]
           @old_secret_path = run_context.cheffish.current_data_bag_item_encryption[:old_secret_path]
         end
-        chef_server run_context.cheffish.current_chef_server
       end
 
       def name(*args)
@@ -96,7 +95,6 @@ class Chef
       property :complete, :kind_of => [TrueClass, FalseClass]
 
       property :raw_json, :kind_of => Hash
-      property :chef_server, :kind_of => Hash
 
       # value 'ip_address', '127.0.0.1'
       # value [ 'pushy', 'port' ], '9000'

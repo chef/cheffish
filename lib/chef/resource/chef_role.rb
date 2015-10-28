@@ -8,12 +8,6 @@ class Chef
     class ChefRole < Cheffish::BaseResource
       resource_name :chef_role
 
-      # Grab environment from with_environment
-      def initialize(*args)
-        super
-        chef_server run_context.cheffish.current_chef_server
-      end
-
       property :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
       property :description, :kind_of => String
       property :run_list, :kind_of => Array # We should let them specify it as a series of parameters too
@@ -26,7 +20,6 @@ class Chef
       property :complete, :kind_of => [TrueClass, FalseClass]
 
       property :raw_json, :kind_of => Hash
-      property :chef_server, :kind_of => Hash
 
       # `NOT_PASSED` is defined in chef-12.5.0, this guard will ensure we
       # don't redefine it if it's already there
