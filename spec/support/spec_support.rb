@@ -1,7 +1,6 @@
 require 'cheffish/rspec'
 
 require 'cheffish'
-require 'chef/provider/chef_acl'
 
 RSpec.configure do |config|
   config.filter_run :focus => true

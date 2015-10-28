@@ -1,13 +1,10 @@
 require 'cheffish'
-require 'chef_compat/resource'
+require 'cheffish/chef_actor_base'
 
 class Chef
   class Resource
-    class ChefClient < ChefCompat::Resource
+    class ChefClient < Cheffish::ChefActorBase
       resource_name :chef_client
-
-      allowed_actions :create, :delete, :regenerate_keys, :nothing
-      default_action :create
 
       def initialize(*args)
         super
@@ -42,6 +39,45 @@ class Chef
       # Proc that runs after the resource completes.  Called with (resource, json, private_key, public_key)
       def after(&block)
         block ? @after = block : @after
+      end
+
+      action :create do
+        create_actor
+      end
+
+      action :delete do
+        delete_actor
+      end
+
+      action_class.class_eval do
+        def actor_type
+          'client'
+        end
+
+        def actor_path
+          'clients'
+        end
+
+        #
+        # Helpers
+        #
+
+        def resource_class
+          Chef::Resource::ChefClient
+        end
+
+        def data_handler
+          Chef::ChefFS::DataHandler::ClientDataHandler.new
+        end
+
+        def keys
+          {
+            'name' => :name,
+            'admin' => :admin,
+            'validator' => :validator,
+            'public_key' => :source_key
+          }
+        end
       end
     end
   end
