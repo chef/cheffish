@@ -7,7 +7,7 @@ class Chef
     class ChefContainer < Cheffish::BaseResource
       resource_name :chef_container
 
-      property :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
+      property :name, kind_of: String, regex: Cheffish::NAME_REGEX, name_property: true
 
       action :create do
         if !@current_exists

@@ -12,12 +12,12 @@ class Chef
       # Path of the thing being secured, e.g. nodes, nodes/*, nodes/mynode,
       # */*, **, roles/base, data/secrets, cookbooks/apache2, /users/*,
       # /organizations/foo/nodes/x
-      property :path, :kind_of => String, :name_attribute => true
+      property :path, kind_of: String, name_property: true
 
       # Whether to change things recursively.  true means it will descend all children
       # and make the same modifications to them.  :on_change will only descend if
       # the parent has changed.  :on_change is the default.
-      property :recursive, :equal_to => [ true, false, :on_change ], :default => :on_change
+      property :recursive, equal_to: [ true, false, :on_change ], default: :on_change
 
       # rights :read, :users => 'jkeiser', :groups => [ 'admins', 'users' ]
       # rights [ :create, :read ], :users => [ 'jkeiser', 'adam' ]

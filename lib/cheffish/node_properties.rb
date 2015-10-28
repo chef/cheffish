@@ -10,10 +10,10 @@ module Cheffish
       chef_environment run_context.cheffish.current_environment
     end
 
-    property :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-    property :chef_environment, :kind_of => String, :regex => Cheffish::NAME_REGEX
-    property :run_list, :kind_of => Array # We should let them specify it as a series of parameters too
-    property :attributes, :kind_of => Hash
+    property :name, kind_of: String, regex: Cheffish::NAME_REGEX, name_property: true
+    property :chef_environment, kind_of: String, regex: Cheffish::NAME_REGEX
+    property :run_list, kind_of: Array # We should let them specify it as a series of parameters too
+    property :attributes, kind_of: Hash
 
     # attribute 'ip_address', '127.0.0.1'
     # attribute [ 'pushy', 'port' ], '9000'

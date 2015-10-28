@@ -8,13 +8,13 @@ class Chef
     class ChefEnvironment < Cheffish::BaseResource
       resource_name :chef_environment
 
-      property :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      property :description, :kind_of => String
-      property :cookbook_versions, :kind_of => Hash, :callbacks => {
+      property :name, kind_of: String, regex: Cheffish::NAME_REGEX, name_property: true
+      property :description, kind_of: String
+      property :cookbook_versions, kind_of: Hash, callbacks: {
         "should have valid cookbook versions" => lambda { |value| Chef::Environment.validate_cookbook_versions(value) }
       }
-      property :default_attributes, :kind_of => Hash
-      property :override_attributes, :kind_of => Hash
+      property :default_attributes, kind_of: Hash
+      property :override_attributes, kind_of: Hash
 
       # default 'ip_address', '127.0.0.1'
       # default [ 'pushy', 'port' ], '9000'
