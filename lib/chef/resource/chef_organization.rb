@@ -114,41 +114,43 @@ class Chef
         end
       end
 
-      def existing_members
-        @existing_members ||= rest.get("#{rest.root_url}/organizations/#{new_resource.name}/users").map { |u| u['user']['username'] }
-      end
-
-      def outstanding_invites
-        @outstanding_invites ||= begin
-          invites = {}
-          rest.get("#{rest.root_url}/organizations/#{new_resource.name}/association_requests").each do |r|
-            invites[r['username']] = r['id']
-          end
-          invites
+      action_class.class_eval do
+        def existing_members
+          @existing_members ||= rest.get("#{rest.root_url}/organizations/#{new_resource.name}/users").map { |u| u['user']['username'] }
         end
-      end
 
-      def invites_to_remove
-        if new_resource.complete
-          if new_resource.invites_specified? || new_resource.members_specified?
-            outstanding_invites.keys - (new_resource.invites | new_resource.members)
-          else
-            []
+        def outstanding_invites
+          @outstanding_invites ||= begin
+            invites = {}
+            rest.get("#{rest.root_url}/organizations/#{new_resource.name}/association_requests").each do |r|
+              invites[r['username']] = r['id']
+            end
+            invites
           end
-        else
-          new_resource.remove_members
         end
-      end
 
-      def members_to_remove
-        if new_resource.complete
-          if new_resource.members_specified?
-            existing_members - (new_resource.invites | new_resource.members)
+        def invites_to_remove
+          if new_resource.complete
+            if new_resource.invites_specified? || new_resource.members_specified?
+              outstanding_invites.keys - (new_resource.invites | new_resource.members)
+            else
+              []
+            end
           else
-            []
+            new_resource.remove_members
           end
-        else
-          new_resource.remove_members
+        end
+
+        def members_to_remove
+          if new_resource.complete
+            if new_resource.members_specified?
+              existing_members - (new_resource.invites | new_resource.members)
+            else
+              []
+            end
+          else
+            new_resource.remove_members
+          end
         end
       end
 
