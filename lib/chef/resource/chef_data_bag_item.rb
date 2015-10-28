@@ -90,12 +90,6 @@ class Chef
       property :old_secret, :kind_of => [String, Array]
       property :old_secret_path, :kind_of => [String, Array]
 
-      # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
-      # reset to their defaults)
-      property :complete, :kind_of => [TrueClass, FalseClass]
-
-      property :raw_json, :kind_of => Hash
-
       # value 'ip_address', '127.0.0.1'
       # value [ 'pushy', 'port' ], '9000'
       # value 'ip_addresses' do |existing_value|

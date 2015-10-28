@@ -8,6 +8,8 @@ module Cheffish
     end
 
     property :chef_server, kind_of: Hash
+    property :raw_json, :kind_of => Hash
+    property :complete, :kind_of => [ TrueClass, FalseClass ]
 
     declare_action_class.class_eval do
       def rest

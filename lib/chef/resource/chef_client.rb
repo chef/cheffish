@@ -20,11 +20,6 @@ class Chef
       property :output_key_path, :kind_of => String
       property :output_key_format, :kind_of => Symbol, :default => :openssh, :equal_to => [ :pem, :der, :openssh ]
 
-      # If this is set, client is not patchy
-      property :complete, :kind_of => [TrueClass, FalseClass]
-
-      property :raw_json, :kind_of => Hash
-
       # Proc that runs just before the resource executes.  Called with (resource)
       def before(&block)
         block ? @before = block : @before

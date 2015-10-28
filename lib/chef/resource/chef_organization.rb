@@ -58,9 +58,6 @@ class Chef
         users.size == 0 ? @remove_members : (@remove_members |= users.flatten)
       end
 
-      property :complete, :kind_of => [ TrueClass, FalseClass ]
-      property :raw_json, :kind_of => Hash
-
 
       action :create do
         differences = json_differences(current_json, new_json)

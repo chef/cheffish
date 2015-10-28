@@ -19,12 +19,6 @@ class Chef
       # the parent has changed.  :on_change is the default.
       property :recursive, :equal_to => [ true, false, :on_change ], :default => :on_change
 
-      # Specifies that this is a complete specification for the acl (i.e. rights
-      # you don't specify will be reset to their defaults)
-      property :complete, :kind_of => [TrueClass, FalseClass]
-
-      property :raw_json, :kind_of => Hash
-
       # rights :read, :users => 'jkeiser', :groups => [ 'admins', 'users' ]
       # rights [ :create, :read ], :users => [ 'jkeiser', 'adam' ]
       # rights :all, :users => 'jkeiser'

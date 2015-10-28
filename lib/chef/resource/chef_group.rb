@@ -39,12 +39,6 @@ class Chef
         remove_groups.size == 0 ? @remove_groups : (@remove_groups |= remove_groups.flatten)
       end
 
-      # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
-      # reset to their defaults)
-      property :complete, :kind_of => [TrueClass, FalseClass]
-
-      property :raw_json, :kind_of => Hash
-
 
       action :create do
         differences = json_differences(current_json, new_json)

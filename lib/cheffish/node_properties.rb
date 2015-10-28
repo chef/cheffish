@@ -15,12 +15,6 @@ module Cheffish
     property :run_list, :kind_of => Array # We should let them specify it as a series of parameters too
     property :attributes, :kind_of => Hash
 
-    # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
-    # reset to their defaults)
-    property :complete, :kind_of => [TrueClass, FalseClass]
-
-    property :raw_json, :kind_of => Hash
-
     # attribute 'ip_address', '127.0.0.1'
     # attribute [ 'pushy', 'port' ], '9000'
     # attribute 'ip_addresses' do |existing_value|
