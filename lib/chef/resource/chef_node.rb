@@ -1,19 +1,14 @@
 require 'cheffish'
 require 'cheffish/base_resource'
 require 'chef/chef_fs/data_handler/node_data_handler'
+require 'cheffish/node_properties'
 
 class Chef
   class Resource
     class ChefNode < Cheffish::BaseResource
       resource_name :chef_node
 
-      # Grab environment from with_environment
-      def initialize(*args)
-        super
-        chef_environment run_context.cheffish.current_environment
-      end
-
-      Cheffish.node_attributes(self)
+      include Cheffish::NodeProperties
 
       action :create do
         differences = json_differences(current_json, new_json)
