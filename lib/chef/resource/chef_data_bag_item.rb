@@ -42,10 +42,6 @@ class Chef
         result
       end
 
-      # `NOT_PASSED` is defined in chef-12.5.0, this guard will ensure we
-      # don't redefine it if it's already there
-      NOT_PASSED = Object.new unless defined?(NOT_PASSED)
-
       def id(value = NOT_PASSED)
         if value == NOT_PASSED
           @id

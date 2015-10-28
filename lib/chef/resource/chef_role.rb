@@ -15,10 +15,6 @@ class Chef
       property :default_attributes, :kind_of => Hash
       property :override_attributes, :kind_of => Hash
 
-      # `NOT_PASSED` is defined in chef-12.5.0, this guard will ensure we
-      # don't redefine it if it's already there
-      NOT_PASSED=Object.new unless defined?(NOT_PASSED)
-
       # default_attribute 'ip_address', '127.0.0.1'
       # default_attribute [ 'pushy', 'port' ], '9000'
       # default_attribute 'ip_addresses' do |existing_value|

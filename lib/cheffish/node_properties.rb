@@ -22,9 +22,9 @@ module Cheffish
     # end
     # attribute 'ip_address', :delete
     attr_accessor :attribute_modifiers
-    def attribute(attribute_path, value=NOT_PASSED, &block)
+    def attribute(attribute_path, value=Chef::NOT_PASSED, &block)
       @attribute_modifiers ||= []
-      if value != NOT_PASSED
+      if value != Chef::NOT_PASSED
         @attribute_modifiers << [ attribute_path, value ]
       elsif block
         @attribute_modifiers << [ attribute_path, block ]
