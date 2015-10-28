@@ -1,11 +1,11 @@
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 
 class Chef
   class Resource
-    class ChefResolvedCookbooks < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_resolved_cookbooks'
+    class ChefResolvedCookbooks < ChefCompat::Resource
+      resource_name :chef_resolved_cookbooks
 
-      actions :resolve, :nothing
+      allowed_actions :resolve, :nothing
       default_action :resolve
 
       def initialize(*args)
@@ -28,8 +28,8 @@ class Chef
         end
       end
 
-      attribute :berksfile
-      attribute :chef_server
+      property :berksfile
+      property :chef_server
     end
   end
 end

@@ -1,12 +1,12 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 
 class Chef
   class Resource
-    class ChefClient < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_client'
+    class ChefClient < ChefCompat::Resource
+      resource_name :chef_client
 
-      actions :create, :delete, :regenerate_keys, :nothing
+      allowed_actions :create, :delete, :regenerate_keys, :nothing
       default_action :create
 
       def initialize(*args)
@@ -15,24 +15,24 @@ class Chef
       end
 
       # Client attributes
-      attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      attribute :admin, :kind_of => [TrueClass, FalseClass]
-      attribute :validator, :kind_of => [TrueClass, FalseClass]
+      property :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
+      property :admin, :kind_of => [TrueClass, FalseClass]
+      property :validator, :kind_of => [TrueClass, FalseClass]
 
       # Input key
-      attribute :source_key # String or OpenSSL::PKey::*
-      attribute :source_key_path, :kind_of => String
-      attribute :source_key_pass_phrase
+      property :source_key # String or OpenSSL::PKey::*
+      property :source_key_path, :kind_of => String
+      property :source_key_pass_phrase
 
       # Output public key (if so desired)
-      attribute :output_key_path, :kind_of => String
-      attribute :output_key_format, :kind_of => Symbol, :default => :openssh, :equal_to => [ :pem, :der, :openssh ]
+      property :output_key_path, :kind_of => String
+      property :output_key_format, :kind_of => Symbol, :default => :openssh, :equal_to => [ :pem, :der, :openssh ]
 
       # If this is set, client is not patchy
-      attribute :complete, :kind_of => [TrueClass, FalseClass]
+      property :complete, :kind_of => [TrueClass, FalseClass]
 
-      attribute :raw_json, :kind_of => Hash
-      attribute :chef_server, :kind_of => Hash
+      property :raw_json, :kind_of => Hash
+      property :chef_server, :kind_of => Hash
 
       # Proc that runs just before the resource executes.  Called with (resource)
       def before(&block)

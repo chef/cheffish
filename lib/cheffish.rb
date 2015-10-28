@@ -119,17 +119,17 @@ module Cheffish
 
   def self.node_attributes(klass)
     klass.class_eval do
-      attribute :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      attribute :chef_environment, :kind_of => String, :regex => Cheffish::NAME_REGEX
-      attribute :run_list, :kind_of => Array # We should let them specify it as a series of parameters too
-      attribute :attributes, :kind_of => Hash
+      property :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
+      property :chef_environment, :kind_of => String, :regex => Cheffish::NAME_REGEX
+      property :run_list, :kind_of => Array # We should let them specify it as a series of parameters too
+      property :attributes, :kind_of => Hash
 
       # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
       # reset to their defaults)
-      attribute :complete, :kind_of => [TrueClass, FalseClass]
+      property :complete, :kind_of => [TrueClass, FalseClass]
 
-      attribute :raw_json, :kind_of => Hash
-      attribute :chef_server, :kind_of => Hash
+      property :raw_json, :kind_of => Hash
+      property :chef_server, :kind_of => Hash
 
       # attribute 'ip_address', '127.0.0.1'
       # attribute [ 'pushy', 'port' ], '9000'
