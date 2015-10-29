@@ -1,12 +1,12 @@
 require 'cheffish'
-require 'chef/resource/lwrp_base'
+require 'chef_compat/resource'
 
 class Chef
   class Resource
-    class ChefNode < Chef::Resource::LWRPBase
-      self.resource_name = 'chef_node'
+    class ChefNode < ChefCompat::Resource
+      resource_name :chef_node
 
-      actions :create, :delete, :nothing
+      allowed_actions :create, :delete, :nothing
       default_action :create
 
       # Grab environment from with_environment
