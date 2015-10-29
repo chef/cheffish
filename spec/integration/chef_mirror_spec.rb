@@ -1,7 +1,5 @@
 require 'support/spec_support'
 require 'cheffish/rspec/chef_run_support'
-require 'chef/resource/chef_mirror'
-require 'chef/provider/chef_mirror'
 
 describe Chef::Resource::ChefMirror do
   extend Cheffish::RSpec::ChefRunSupport

@@ -1,7 +1,5 @@
 require 'support/spec_support'
 require 'cheffish/rspec/chef_run_support'
-require 'chef/resource/chef_group'
-require 'chef/provider/chef_group'
 
 describe Chef::Resource::ChefGroup do
   extend Cheffish::RSpec::ChefRunSupport
