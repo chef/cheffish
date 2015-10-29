@@ -193,7 +193,7 @@ describe Chef::Resource::ChefOrganization do
             expect(get('/organizations/x/users').map { |u| u['user']['username'] }).to eq([])
           end
 
-          it 'chef_organization "x" with members [] and "complete true" removes invites but not members' do
+          it 'chef_organization "x" with invites [] and "complete true" removes invites but not members' do
             expect_recipe {
               chef_organization 'x' do
                 invites []

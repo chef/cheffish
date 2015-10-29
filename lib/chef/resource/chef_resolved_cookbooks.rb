@@ -10,7 +10,6 @@ class Chef
         super
         require 'berkshelf'
         berksfile Berkshelf::Berksfile.new('/tmp/Berksfile')
-        chef_server run_context.cheffish.current_chef_server
         @cookbooks_from = []
       end
 
@@ -27,8 +26,6 @@ class Chef
       end
 
       property :berksfile
-      property :chef_server
-
 
       action :resolve do
         new_resource.cookbooks_from.each do |path|

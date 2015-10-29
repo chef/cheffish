@@ -6,30 +6,19 @@ class Chef
     class ChefClient < Cheffish::ChefActorBase
       resource_name :chef_client
 
-      def initialize(*args)
-        super
-        chef_server run_context.cheffish.current_chef_server
-      end
-
       # Client attributes
-      property :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      property :admin, :kind_of => [TrueClass, FalseClass]
-      property :validator, :kind_of => [TrueClass, FalseClass]
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :admin, Boolean
+      property :validator, Boolean
 
       # Input key
       property :source_key # String or OpenSSL::PKey::*
-      property :source_key_path, :kind_of => String
+      property :source_key_path, String
       property :source_key_pass_phrase
 
       # Output public key (if so desired)
-      property :output_key_path, :kind_of => String
-      property :output_key_format, :kind_of => Symbol, :default => :openssh, :equal_to => [ :pem, :der, :openssh ]
-
-      # If this is set, client is not patchy
-      property :complete, :kind_of => [TrueClass, FalseClass]
-
-      property :raw_json, :kind_of => Hash
-      property :chef_server, :kind_of => Hash
+      property :output_key_path, String
+      property :output_key_format, Symbol, default: :openssh, equal_to: [ :pem, :der, :openssh ]
 
       # Proc that runs just before the resource executes.  Called with (resource)
       def before(&block)

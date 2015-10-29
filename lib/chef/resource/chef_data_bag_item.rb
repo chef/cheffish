@@ -11,92 +11,40 @@ class Chef
 
       def initialize(*args)
         super
-        name @name
-        if !data_bag
+        if !property_is_set?(:data_bag) && run_context.cheffish.current_data_bag
           data_bag run_context.cheffish.current_data_bag
         end
-        if run_context.cheffish.current_data_bag_item_encryption
-          @encrypt = true if run_context.cheffish.current_data_bag_item_encryption[:encrypt_all]
-          @secret = run_context.cheffish.current_data_bag_item_encryption[:secret]
-          @secret_path = run_context.cheffish.current_data_bag_item_encryption[:secret_path] || run_context.config[:encrypted_data_bag_secret]
-          @encryption_cipher = run_context.cheffish.current_data_bag_item_encryption[:encryption_cipher]
-          @encryption_version = run_context.cheffish.current_data_bag_item_encryption[:encryption_version] || run_context.config[:data_bag_encrypt_version]
-          @old_secret = run_context.cheffish.current_data_bag_item_encryption[:old_secret]
-          @old_secret_path = run_context.cheffish.current_data_bag_item_encryption[:old_secret_path]
+        encryption = run_context.cheffish.current_data_bag_item_encryption
+        if encryption
+          encrypt true if encryption[:encrypt_all]
+          secret encryption[:secret] if encryption[:secret]
+          secret_path encryption[:secret_path] || run_context.config[:encrypted_data_bag_secret] if encryption[:secret_path] || run_context.config[:encrypted_data_bag_secret]
+          encryption_cipher encryption[:encryption_cipher] if encryption[:encryption_cipher]
+          encryption_version encryption[:encryption_version] || run_context.config[:data_bag_encrypt_version] if encryption[:encryption_version] || run_context.config[:data_bag_encrypt_version]
+          old_secret encryption[:old_secret] if encryption[:old_secret]
+          old_secret_path encryption[:old_secret_path] if encryption[:old_secret_path]
         end
-        chef_server run_context.cheffish.current_chef_server
       end
 
-      def name(*args)
-        result = super(*args)
-        if args.size == 1
-          parts = name.split('/')
-          if parts.size == 1
-            @id = parts[0]
-          elsif parts.size == 2
-            @data_bag = parts[0]
-            @id = parts[1]
-          else
-            raise "Name #{args[0].inspect} must be a string with 1 or 2 parts, either 'id' or 'data_bag/id"
-          end
-        end
-        result
-      end
+      # If data_bag and id are not specified, take them from name.
+      # name can either be id, or data_bag/id
+      property :id, String, default: lazy { name.split('/', 2)[-1] }
+      property :data_bag, String, default: lazy {
+        split = name.split('/', 2)[0]
+        split.size >= 2 ? split[0] : nil
+      }
 
-      # `NOT_PASSED` is defined in chef-12.5.0, this guard will ensure we
-      # don't redefine it if it's already there
-      NOT_PASSED = Object.new unless defined?(NOT_PASSED)
-
-      def id(value = NOT_PASSED)
-        if value == NOT_PASSED
-          @id
-        else
-          @id = value
-          name data_bag ? "#{data_bag}/#{id}" : id
-        end
-      end
-      def data_bag(value = NOT_PASSED)
-        if value == NOT_PASSED
-          @data_bag
-        else
-          @data_bag = value
-          name data_bag ? "#{data_bag}/#{id}" : id
-        end
-      end
-      property :raw_data, :kind_of => Hash
+      property :raw_data, Hash
 
       # If secret or secret_path are set, encrypt is assumed true.  encrypt exists mainly for with_secret and with_secret_path
-      property :encrypt, :kind_of => [TrueClass, FalseClass]
-      #property :secret, :kind_of => String
-      def secret(new_secret = nil)
-        if !new_secret
-          @secret
-        else
-          @secret = new_secret
-          @encrypt = true if @encrypt.nil?
-        end
-      end
-      #property :secret_path, :kind_of => String
-      def secret_path(new_secret_path = nil)
-        if !new_secret_path
-          @secret_path
-        else
-          @secret_path = new_secret_path
-          @encrypt = true if @encrypt.nil?
-        end
-      end
-      property :encryption_version, :kind_of => Integer
+      property :encrypt, Boolean, default: lazy { secret || secret_path }
+      property :secret, String
+      property :secret_path, String
+      property :encryption_version, Integer
 
       # Old secret (or secrets) to read the old data bag when we are changing keys and re-encrypting data
-      property :old_secret, :kind_of => [String, Array]
-      property :old_secret_path, :kind_of => [String, Array]
-
-      # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
-      # reset to their defaults)
-      property :complete, :kind_of => [TrueClass, FalseClass]
-
-      property :raw_json, :kind_of => Hash
-      property :chef_server, :kind_of => Hash
+      property :old_secret, [String, Array]
+      property :old_secret_path, [String, Array]
 
       # value 'ip_address', '127.0.0.1'
       # value [ 'pushy', 'port' ], '9000'

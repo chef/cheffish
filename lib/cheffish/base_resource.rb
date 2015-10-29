@@ -1,7 +1,20 @@
 require 'chef_compat/resource'
+require 'cheffish/array_property'
 
 module Cheffish
   class BaseResource < ChefCompat::Resource
+    def initialize(*args)
+      super
+      chef_server run_context.cheffish.current_chef_server
+    end
+
+    Boolean = property_type(is: [ true, false ])
+    ArrayType = ArrayProperty.new
+
+    property :chef_server, Hash
+    property :raw_json, Hash
+    property :complete, Boolean
+
     declare_action_class.class_eval do
       def rest
         @rest ||= Cheffish.chef_server_api(new_resource.chef_server)
