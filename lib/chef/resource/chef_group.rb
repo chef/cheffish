@@ -19,7 +19,7 @@ class Chef
         @remove_groups = []
       end
 
-      property :name, kind_of: String, regex: Cheffish::NAME_REGEX, name_property: true
+      property :name, Cheffish::NAME_REGEX, name_property: true
       def users(*users)
         users.size == 0 ? @users : (@users |= users.flatten)
       end

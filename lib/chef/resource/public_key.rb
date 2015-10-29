@@ -11,11 +11,11 @@ class Chef
       allowed_actions :create, :delete, :nothing
       default_action :create
 
-      property :path, kind_of: String, name_property: true
-      property :format, kind_of: Symbol, default: :openssh, equal_to: [ :pem, :der, :openssh ]
+      property :path, String, name_property: true
+      property :format, Symbol, default: :openssh, equal_to: [ :pem, :der, :openssh ]
 
       property :source_key
-      property :source_key_path, kind_of: String
+      property :source_key_path, String
       property :source_key_pass_phrase
 
       # We are not interested in Chef's cloning behavior here.

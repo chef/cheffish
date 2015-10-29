@@ -58,11 +58,11 @@ class Chef
           name data_bag ? "#{data_bag}/#{id}" : id
         end
       end
-      property :raw_data, kind_of: Hash
+      property :raw_data, Hash
 
       # If secret or secret_path are set, encrypt is assumed true.  encrypt exists mainly for with_secret and with_secret_path
-      property :encrypt, kind_of: [TrueClass, FalseClass]
-      #property :secret, kind_of: String
+      property :encrypt, [true, false]
+      #property :secret, String
       def secret(new_secret = nil)
         if !new_secret
           @secret
@@ -71,7 +71,7 @@ class Chef
           @encrypt = true if @encrypt.nil?
         end
       end
-      #property :secret_path, kind_of: String
+      #property :secret_path, String
       def secret_path(new_secret_path = nil)
         if !new_secret_path
           @secret_path
@@ -80,11 +80,11 @@ class Chef
           @encrypt = true if @encrypt.nil?
         end
       end
-      property :encryption_version, kind_of: Integer
+      property :encryption_version, Integer
 
       # Old secret (or secrets) to read the old data bag when we are changing keys and re-encrypting data
-      property :old_secret, kind_of: [String, Array]
-      property :old_secret_path, kind_of: [String, Array]
+      property :old_secret, [String, Array]
+      property :old_secret_path, [String, Array]
 
       # value 'ip_address', '127.0.0.1'
       # value [ 'pushy', 'port' ], '9000'

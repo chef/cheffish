@@ -7,9 +7,9 @@ module Cheffish
       chef_server run_context.cheffish.current_chef_server
     end
 
-    property :chef_server, kind_of: Hash
-    property :raw_json, kind_of: Hash
-    property :complete, kind_of: [ TrueClass, FalseClass ]
+    property :chef_server, Hash
+    property :raw_json, Hash
+    property :complete, [ true, false ]
 
     declare_action_class.class_eval do
       def rest

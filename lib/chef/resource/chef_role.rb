@@ -8,12 +8,12 @@ class Chef
     class ChefRole < Cheffish::BaseResource
       resource_name :chef_role
 
-      property :name, kind_of: String, regex: Cheffish::NAME_REGEX, name_property: true
-      property :description, kind_of: String
-      property :run_list, kind_of: Array # We should let them specify it as a series of parameters too
-      property :env_run_lists, kind_of: Hash
-      property :default_attributes, kind_of: Hash
-      property :override_attributes, kind_of: Hash
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :description, String
+      property :run_list, Array # We should let them specify it as a series of parameters too
+      property :env_run_lists, Hash
+      property :default_attributes, Hash
+      property :override_attributes, Hash
 
       # default_attribute 'ip_address', '127.0.0.1'
       # default_attribute [ 'pushy', 'port' ], '9000'

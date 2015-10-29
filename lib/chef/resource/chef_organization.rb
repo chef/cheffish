@@ -16,8 +16,8 @@ class Chef
         @remove_members = []
       end
 
-      property :name, kind_of: String, regex: Cheffish::NAME_REGEX, name_property: true
-      property :full_name, kind_of: String
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :full_name, String
 
       # A list of users who must at least be invited to the org (but may already be
       # members).  Invites will be sent to users who are not already invited/in the org.

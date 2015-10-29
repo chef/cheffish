@@ -7,25 +7,25 @@ class Chef
       resource_name :chef_user
 
       # Client attributes
-      property :name, kind_of: String, regex: Cheffish::NAME_REGEX, name_property: true
-      property :display_name, kind_of: String
-      property :admin, kind_of: [TrueClass, FalseClass]
-      property :email, kind_of: String
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :display_name, String
+      property :admin, [true, false]
+      property :email, String
       property :external_authentication_uid
-      property :recovery_authentication_enabled, kind_of: [TrueClass, FalseClass]
-      property :password, kind_of: String # Hmm.  There is no way to idempotentize this.
+      property :recovery_authentication_enabled, [true, false]
+      property :password, String # Hmm.  There is no way to idempotentize this.
       #property :salt  # TODO server doesn't support sending or receiving these, but it's the only way to backup / restore a user
       #property :hashed_password
       #property :hash_type
 
       # Input key
       property :source_key # String or OpenSSL::PKey::*
-      property :source_key_path, kind_of: String
+      property :source_key_path, String
       property :source_key_pass_phrase
 
       # Output public key (if so desired)
-      property :output_key_path, kind_of: String
-      property :output_key_format, kind_of: Symbol, default: :openssh, equal_to: [ :pem, :der, :openssh ]
+      property :output_key_path, String
+      property :output_key_format, Symbol, default: :openssh, equal_to: [ :pem, :der, :openssh ]
 
       # Proc that runs just before the resource executes.  Called with (resource)
       def before(&block)
