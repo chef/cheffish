@@ -25,7 +25,7 @@ class Chef
 
       # Output public key (if so desired)
       property :output_key_path, String
-      property :output_key_format, Symbol, default: :openssh, equal_to: [ :pem, :der, :openssh ]
+      property :output_key_format, [ :pem, :der, :openssh ], default: :openssh
 
       # Proc that runs just before the resource executes.  Called with (resource)
       def before(&block)

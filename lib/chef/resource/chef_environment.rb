@@ -53,7 +53,7 @@ class Chef
       end
 
       alias :attributes :default_attributes
-      alias :property :default
+      alias :attribute :default
 
 
       action :create do

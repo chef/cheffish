@@ -1,4 +1,5 @@
 require 'chef_compat/resource'
+require 'cheffish/array_property'
 
 module Cheffish
   class BaseResource < ChefCompat::Resource
@@ -7,7 +8,8 @@ module Cheffish
       chef_server run_context.cheffish.current_chef_server
     end
 
-    Boolean = property_type([ true, false ])
+    Boolean = property_type(is: [ true, false ])
+    ArrayType = ArrayProperty.new
 
     property :chef_server, Hash
     property :raw_json, Hash

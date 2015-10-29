@@ -12,12 +12,12 @@ class Chef
       default_action :create
 
       # Path to private key.  Set to :none to create the key in memory and not on disk.
-      property :path, [ String, Symbol ], name_property: true
-      property :format, Symbol, default: :pem, equal_to: [ :pem, :der ]
-      property :type, Symbol, default: :rsa, equal_to: [ :rsa, :dsa ] # TODO support :ec
+      property :path, [ String, :none ], name_property: true
+      property :format, [ :pem, :der ], default: :pem
+      property :type, [ :rsa, :dsa ], default: :rsa # TODO support :ec
       # These specify an optional public_key you can spit out if you want.
       property :public_key_path, String
-      property :public_key_format, Symbol, default: :openssh, equal_to: [ :openssh, :pem, :der ]
+      property :public_key_format, [ :openssh, :pem, :der ], default: :openssh
       # Specify this if you want to copy another private key but give it a different format / password
       property :source_key
       property :source_key_path, String
@@ -31,7 +31,7 @@ class Chef
 
       # PEM-only
       property :pass_phrase, String
-      property :cipher, String, default: 'DES-EDE3-CBC', equal_to: OpenSSL::Cipher.ciphers
+      property :cipher, OpenSSL::Cipher.ciphers, default: 'DES-EDE3-CBC'
 
       # Set this to regenerate the key if it does not have the desired characteristics (like size, type, etc.)
       property :regenerate_if_different, Boolean

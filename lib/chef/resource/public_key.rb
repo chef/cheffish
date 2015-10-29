@@ -12,7 +12,7 @@ class Chef
       default_action :create
 
       property :path, String, name_property: true
-      property :format, Symbol, default: :openssh, equal_to: [ :pem, :der, :openssh ]
+      property :format, [ :pem, :der, :openssh ], default: :openssh
 
       property :source_key
       property :source_key_path, String

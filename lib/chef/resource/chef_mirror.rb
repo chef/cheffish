@@ -40,7 +40,7 @@ class Chef
       property :no_diff, Boolean
 
       # Number of parallel threads to list/upload/download with.  Defaults to 10.
-      property :concurrency, Integer
+      property :concurrency, Integer, default: 10, desired_state: false
 
 
       action :upload do
@@ -79,11 +79,11 @@ class Chef
         end
 
         def copy_to(src_root, dest_root)
-          if new_resource.concurrency && new_resource.concurrency <= 0
+          if new_resource.concurrency <= 0
             raise "chef_mirror.concurrency must be above 0!  Was set to #{new_resource.concurrency}"
           end
           # Honor concurrency
-          Chef::ChefFS::Parallelizer.threads = (new_resource.concurrency || 10) - 1
+          Chef::ChefFS::Parallelizer.threads = new_resource.concurrency - 1
 
           # We don't let the user pass absolute paths; we want to reserve those for
           # multi-org support (/organizations/foo).

@@ -8,37 +8,13 @@ class Chef
     class ChefGroup < Cheffish::BaseResource
       resource_name :chef_group
 
-      # Grab environment from with_environment
-      def initialize(*args)
-        super
-        @users = []
-        @clients = []
-        @groups = []
-        @remove_users = []
-        @remove_clients = []
-        @remove_groups = []
-      end
-
       property :name, Cheffish::NAME_REGEX, name_property: true
-      def users(*users)
-        users.size == 0 ? @users : (@users |= users.flatten)
-      end
-      def clients(*clients)
-        clients.size == 0 ? @clients : (@clients |= clients.flatten)
-      end
-      def groups(*groups)
-        groups.size == 0 ? @groups : (@groups |= groups.flatten)
-      end
-      def remove_users(*remove_users)
-        remove_users.size == 0 ? @remove_users : (@remove_users |= remove_users.flatten)
-      end
-      def remove_clients(*remove_clients)
-        remove_clients.size == 0 ? @remove_clients : (@remove_clients |= remove_clients.flatten)
-      end
-      def remove_groups(*remove_groups)
-        remove_groups.size == 0 ? @remove_groups : (@remove_groups |= remove_groups.flatten)
-      end
-
+      property :users, ArrayType
+      property :clients, ArrayType
+      property :groups, ArrayType
+      property :remove_users, ArrayType
+      property :remove_clients, ArrayType
+      property :remove_groups, ArrayType
 
       action :create do
         differences = json_differences(current_json, new_json)
