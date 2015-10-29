@@ -8,29 +8,13 @@ class Chef
     class ChefEnvironment < Cheffish::BaseResource
       resource_name :chef_environment
 
-      def initialize(*args)
-        super
-        chef_server run_context.cheffish.current_chef_server
-      end
-
-      property :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      property :description, :kind_of => String
-      property :cookbook_versions, :kind_of => Hash, :callbacks => {
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :description, String
+      property :cookbook_versions, Hash, callbacks: {
         "should have valid cookbook versions" => lambda { |value| Chef::Environment.validate_cookbook_versions(value) }
       }
-      property :default_attributes, :kind_of => Hash
-      property :override_attributes, :kind_of => Hash
-
-      # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
-      # reset to their defaults)
-      property :complete, :kind_of => [TrueClass, FalseClass]
-
-      property :raw_json, :kind_of => Hash
-      property :chef_server, :kind_of => Hash
-
-      # `NOT_PASSED` is defined in chef-12.5.0, this guard will ensure we
-      # don't redefine it if it's already there
-      NOT_PASSED=Object.new unless defined?(NOT_PASSED)
+      property :default_attributes, Hash
+      property :override_attributes, Hash
 
       # default 'ip_address', '127.0.0.1'
       # default [ 'pushy', 'port' ], '9000'
@@ -69,7 +53,7 @@ class Chef
       end
 
       alias :attributes :default_attributes
-      alias :property :default
+      alias :attribute :default
 
 
       action :create do

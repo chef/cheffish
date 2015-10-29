@@ -8,60 +8,23 @@ class Chef
     class ChefOrganization < Cheffish::BaseResource
       resource_name :chef_organization
 
-      # Grab environment from with_environment
-      def initialize(*args)
-        super
-        chef_server run_context.cheffish.current_chef_server
-        @invites = nil
-        @members = nil
-        @remove_members = []
-      end
-
-      property :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      property :full_name, :kind_of => String
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :full_name, String
 
       # A list of users who must at least be invited to the org (but may already be
       # members).  Invites will be sent to users who are not already invited/in the org.
-      def invites(*users)
-        if users.size == 0
-          @invites || []
-        else
-          @invites ||= []
-          @invites |= users.flatten
-        end
-      end
-
-      def invites_specified?
-        !!@invites
-      end
+      property :invites, ArrayType
 
       # A list of users who must be members of the org.  This will use the
       # new Chef 12 POST /organizations/ORG/users endpoint to add them
       # directly to the org.  If you do not have permission to perform
       # this operation, and the users are not a part of the org, the
       # resource update will fail.
-      def members(*users)
-        if users.size == 0
-          @members || []
-        else
-          @members ||= []
-          @members |= users.flatten
-        end
-      end
-
-      def members_specified?
-        !!@members
-      end
+      property :members, ArrayType
 
       # A list of users who must not be members of the org.  These users will be removed
       # from the org and invites will be revoked (if any).
-      def remove_members(*users)
-        users.size == 0 ? @remove_members : (@remove_members |= users.flatten)
-      end
-
-      property :complete, :kind_of => [ TrueClass, FalseClass ]
-      property :raw_json, :kind_of => Hash
-      property :chef_server, :kind_of => Hash
+      property :remove_members, ArrayType
 
 
       action :create do
@@ -131,8 +94,11 @@ class Chef
 
         def invites_to_remove
           if new_resource.complete
-            if new_resource.invites_specified? || new_resource.members_specified?
-              outstanding_invites.keys - (new_resource.invites | new_resource.members)
+            if new_resource.property_is_set?(:invites) || new_resource.property_is_set?(:members)
+              result = outstanding_invites.keys
+              result -= new_resource.invites if new_resource.property_is_set?(:invites)
+              result -= new_resource.members if new_resource.property_is_set?(:members)
+              result
             else
               []
             end
@@ -143,7 +109,7 @@ class Chef
 
         def members_to_remove
           if new_resource.complete
-            if new_resource.members_specified?
+            if new_resource.property_is_set?(:members)
               existing_members - (new_resource.invites | new_resource.members)
             else
               []

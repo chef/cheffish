@@ -11,44 +11,36 @@ class Chef
     class ChefMirror < Cheffish::BaseResource
       resource_name :chef_mirror
 
-      def initialize(*args)
-        super
-        chef_server run_context.cheffish.current_chef_server
-      end
-
       # Path of the data to mirror, e.g. nodes, nodes/*, nodes/mynode,
       # */*, **, roles/base, data/secrets, cookbooks/apache2, etc.
-      property :path, :kind_of => String, :name_attribute => true
+      property :path, String, name_property: true
 
       # Local path.  Can be a string (top level of repository) or hash
       # (:chef_repo_path, :node_path, etc.)
       # If neither chef_repo_path nor versioned_cookbooks are set, they default to their
       # Chef::Config values.  If chef_repo_path is set but versioned_cookbooks is not,
       # versioned_cookbooks defaults to true.
-      property :chef_repo_path, :kind_of => [ String, Hash ]
+      property :chef_repo_path, [ String, Hash ]
 
       # Whether the repo path should contain cookbooks with versioned names,
       # i.e. cookbooks/mysql-1.0.0, cookbooks/mysql-1.2.0, etc.
       # Defaults to true if chef_repo_path is specified, or to Chef::Config.versioned_cookbooks otherwise.
-      property :versioned_cookbooks, :kind_of => [ TrueClass, FalseClass ]
-
-      # Chef server
-      property :chef_server, :kind_of => Hash
+      property :versioned_cookbooks, Boolean
 
       # Whether to purge deleted things: if we do not have cookbooks/x locally and we
       # *do* have cookbooks/x remotely, then :upload with purge will delete it.
       # Defaults to false.
-      property :purge, :kind_of => [ TrueClass, FalseClass ]
+      property :purge, Boolean
 
       # Whether to freeze cookbooks on upload
-      property :freeze, :kind_of => [ TrueClass, FalseClass ]
+      property :freeze, Boolean
 
       # If this is true, only new files will be copied.  File contents will not be
       # diffed, so changed files will never be uploaded.
-      property :no_diff, :kind_of => [ TrueClass, FalseClass ]
+      property :no_diff, Boolean
 
       # Number of parallel threads to list/upload/download with.  Defaults to 10.
-      property :concurrency, :kind_of => Integer
+      property :concurrency, Integer, default: 10, desired_state: false
 
 
       action :upload do
@@ -87,11 +79,11 @@ class Chef
         end
 
         def copy_to(src_root, dest_root)
-          if new_resource.concurrency && new_resource.concurrency <= 0
+          if new_resource.concurrency <= 0
             raise "chef_mirror.concurrency must be above 0!  Was set to #{new_resource.concurrency}"
           end
           # Honor concurrency
-          Chef::ChefFS::Parallelizer.threads = (new_resource.concurrency || 10) - 1
+          Chef::ChefFS::Parallelizer.threads = new_resource.concurrency - 1
 
           # We don't let the user pass absolute paths; we want to reserve those for
           # multi-org support (/organizations/foo).

@@ -8,29 +8,12 @@ class Chef
     class ChefRole < Cheffish::BaseResource
       resource_name :chef_role
 
-      # Grab environment from with_environment
-      def initialize(*args)
-        super
-        chef_server run_context.cheffish.current_chef_server
-      end
-
-      property :name, :kind_of => String, :regex => Cheffish::NAME_REGEX, :name_attribute => true
-      property :description, :kind_of => String
-      property :run_list, :kind_of => Array # We should let them specify it as a series of parameters too
-      property :env_run_lists, :kind_of => Hash
-      property :default_attributes, :kind_of => Hash
-      property :override_attributes, :kind_of => Hash
-
-      # Specifies that this is a complete specification for the environment (i.e. attributes you don't specify will be
-      # reset to their defaults)
-      property :complete, :kind_of => [TrueClass, FalseClass]
-
-      property :raw_json, :kind_of => Hash
-      property :chef_server, :kind_of => Hash
-
-      # `NOT_PASSED` is defined in chef-12.5.0, this guard will ensure we
-      # don't redefine it if it's already there
-      NOT_PASSED=Object.new unless defined?(NOT_PASSED)
+      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :description, String
+      property :run_list, Array # We should let them specify it as a series of parameters too
+      property :env_run_lists, Hash
+      property :default_attributes, Hash
+      property :override_attributes, Hash
 
       # default_attribute 'ip_address', '127.0.0.1'
       # default_attribute [ 'pushy', 'port' ], '9000'
