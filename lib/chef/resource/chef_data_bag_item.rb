@@ -61,7 +61,7 @@ class Chef
       property :raw_data, Hash
 
       # If secret or secret_path are set, encrypt is assumed true.  encrypt exists mainly for with_secret and with_secret_path
-      property :encrypt, [true, false]
+      property :encrypt, Boolean
       #property :secret, String
       def secret(new_secret = nil)
         if !new_secret

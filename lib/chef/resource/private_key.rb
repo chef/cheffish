@@ -34,7 +34,7 @@ class Chef
       property :cipher, String, default: 'DES-EDE3-CBC', equal_to: OpenSSL::Cipher.ciphers
 
       # Set this to regenerate the key if it does not have the desired characteristics (like size, type, etc.)
-      property :regenerate_if_different, [true, false]
+      property :regenerate_if_different, Boolean
 
       # Proc that runs after the resource completes.  Called with (resource, private_key)
       def after(&block)

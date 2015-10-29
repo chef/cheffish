@@ -8,8 +8,8 @@ class Chef
 
       # Client attributes
       property :name, Cheffish::NAME_REGEX, name_property: true
-      property :admin, [true, false]
-      property :validator, [true, false]
+      property :admin, Boolean
+      property :validator, Boolean
 
       # Input key
       property :source_key # String or OpenSSL::PKey::*

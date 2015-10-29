@@ -7,9 +7,11 @@ module Cheffish
       chef_server run_context.cheffish.current_chef_server
     end
 
+    Boolean = property_type([ true, false ])
+
     property :chef_server, Hash
     property :raw_json, Hash
-    property :complete, [ true, false ]
+    property :complete, Boolean
 
     declare_action_class.class_eval do
       def rest
