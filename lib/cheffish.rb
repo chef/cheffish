@@ -100,9 +100,9 @@ module Cheffish
         next unless File.exist?(private_key_path)
         Dir.entries(private_key_path).sort.each do |key|
           ext = File.extname(key)
-          if ext == '' || ext == '.pem'
+          if key == name || ext == '' || ext == '.pem'
             key_name = key[0..-(ext.length+1)]
-            if key_name == name
+            if key_name == name || key == name
               Chef::Log.info("Reading key #{name} from file #{private_key_path}/#{key}")
               return [ IO.read("#{private_key_path}/#{key}"), "#{private_key_path}/#{key}" ]
             end
