@@ -66,7 +66,7 @@ module Cheffish
 
     def converge
       with_chef_config do
-        Chef::Runner.new(self).converge
+        Chef::Runner.new(run_context).converge
       end
     end
 
