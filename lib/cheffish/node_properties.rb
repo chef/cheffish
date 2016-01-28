@@ -1,8 +1,8 @@
-require 'chef_compat/mixin/properties'
+require 'cheffish/base_properties'
 
 module Cheffish
   module NodeProperties
-    include ChefCompat::Mixin::Properties
+    include Cheffish::BaseProperties
 
     # Grab environment from with_environment
     def initialize(*args)

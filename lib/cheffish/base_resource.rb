@@ -1,19 +1,9 @@
 require 'chef_compat/resource'
-require 'cheffish/array_property'
+require 'cheffish/base_properties'
 
 module Cheffish
   class BaseResource < ChefCompat::Resource
-    def initialize(*args)
-      super
-      chef_server run_context.cheffish.current_chef_server
-    end
-
-    Boolean = property_type(is: [ true, false ])
-    ArrayType = ArrayProperty.new
-
-    property :chef_server, Hash
-    property :raw_json, Hash
-    property :complete, Boolean
+    include Cheffish::BaseProperties
 
     declare_action_class.class_eval do
       def rest
