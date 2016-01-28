@@ -1,7 +1,24 @@
 # Change Log
 
-## [1.6.0](https://github.com/chef/cheffish/tree/1.6.0) (2015-10-15)
-[Full Changelog](https://github.com/chef/cheffish/compare/v1.5.0...1.6.0)
+## [2.0.0](https://github.com/chef/cheffish/tree/2.0.0) (2016-01-28)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.6.0...2.0.0)
+
+**Fixed bugs:**
+
+- `get\_private\_key\_with\_path` doesn't work well with all possible key names [\#62](https://github.com/chef/cheffish/issues/62)
+
+**Closed issues:**
+
+- No way to install new cheffish version in single chef-client run once it got activated [\#89](https://github.com/chef/cheffish/issues/89)
+
+**Merged pull requests:**
+
+- Move provider code into resources [\#93](https://github.com/chef/cheffish/pull/93) ([jkeiser](https://github.com/jkeiser))
+- Support arbitrarily named private keys [\#87](https://github.com/chef/cheffish/pull/87) ([hfinucane](https://github.com/hfinucane))
+- Convert to basic 12.5 resources [\#82](https://github.com/chef/cheffish/pull/82) ([jkeiser](https://github.com/jkeiser))
+
+## [v1.6.0](https://github.com/chef/cheffish/tree/v1.6.0) (2015-10-15)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.5.0...v1.6.0)
 
 **Fixed bugs:**
 
