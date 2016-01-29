@@ -1,7 +1,15 @@
 # Change Log
 
-## [2.0.0](https://github.com/chef/cheffish/tree/2.0.0) (2016-01-28)
-[Full Changelog](https://github.com/chef/cheffish/compare/v1.6.0...2.0.0)
+## [Unreleased](https://github.com/chef/cheffish/tree/HEAD)
+
+[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.0...HEAD)
+
+**Merged pull requests:**
+
+- Make NodeProperties work with chef-provisioning [\#97](https://github.com/chef/cheffish/pull/97) ([jkeiser](https://github.com/jkeiser))
+
+## [v2.0.0](https://github.com/chef/cheffish/tree/v2.0.0) (2016-01-28)
+[Full Changelog](https://github.com/chef/cheffish/compare/v1.6.0...v2.0.0)
 
 **Fixed bugs:**
 
@@ -13,6 +21,7 @@
 
 **Merged pull requests:**
 
+- Prep for release 2.0.0 [\#96](https://github.com/chef/cheffish/pull/96) ([chefsalim](https://github.com/chefsalim))
 - Move provider code into resources [\#93](https://github.com/chef/cheffish/pull/93) ([jkeiser](https://github.com/jkeiser))
 - Support arbitrarily named private keys [\#87](https://github.com/chef/cheffish/pull/87) ([hfinucane](https://github.com/hfinucane))
 - Convert to basic 12.5 resources [\#82](https://github.com/chef/cheffish/pull/82) ([jkeiser](https://github.com/jkeiser))
