@@ -30,7 +30,7 @@ class Chef
       # name can either be id, or data_bag/id
       property :id, String, default: lazy { name.split('/', 2)[-1] }
       property :data_bag, String, default: lazy {
-        split = name.split('/', 2)[0]
+        split = name.split('/', 2)
         split.size >= 2 ? split[0] : nil
       }
 
