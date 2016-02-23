@@ -2,7 +2,18 @@
 
 ## [Unreleased](https://github.com/chef/cheffish/tree/HEAD)
 
-[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.0...HEAD)
+[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.1...HEAD)
+
+**Fixed bugs:**
+
+- Newest version 2.0.1 do not parse the data\_bag name correctly [\#98](https://github.com/chef/cheffish/issues/98)
+
+**Merged pull requests:**
+
+- Fix the data\_bag property extraction [\#99](https://github.com/chef/cheffish/pull/99) ([afiune](https://github.com/afiune))
+
+## [v2.0.1](https://github.com/chef/cheffish/tree/v2.0.1) (2016-01-29)
+[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.0...v2.0.1)
 
 **Merged pull requests:**
 
