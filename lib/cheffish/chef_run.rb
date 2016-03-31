@@ -73,7 +73,7 @@ module Cheffish
     end
 
     def resources
-      client.resource_collection
+      client.run_context.resource_collection
     end
 
     def compile_recipe(&recipe)
