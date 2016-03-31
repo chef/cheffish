@@ -22,11 +22,14 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-require 'github_changelog_generator/task'
+begin
+  require 'github_changelog_generator/task'
 
-GitHubChangelogGenerator::RakeTask.new :changelog do |config|
-  # config.future_release = ChefZero::VERSION
-  config.enhancement_labels = "enhancement,Enhancement,New Feature".split(',')
-  config.bug_labels = "bug,Bug,Improvement,Upstream Bug".split(',')
-  config.exclude_labels = "duplicate,question,invalid,wontfix,no_changelog".split(',')
+  GitHubChangelogGenerator::RakeTask.new :changelog do |config|
+    # config.future_release = ChefZero::VERSION
+    config.enhancement_labels = "enhancement,Enhancement,New Feature".split(',')
+    config.bug_labels = "bug,Bug,Improvement,Upstream Bug".split(',')
+    config.exclude_labels = "duplicate,question,invalid,wontfix,no_changelog".split(',')
+  end
+rescue LoadError
 end
