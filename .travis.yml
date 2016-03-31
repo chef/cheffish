@@ -2,12 +2,19 @@ sudo: false
 language: ruby
 cache: bundler
 
+branches:
+  only:
+  - master
+
 before_install:
+  - gem update --system
+  - gem install bundler
   - bundle --version
   - gem --version
 
+bundler_args: --jobs=3 --retry=3 --without changelog
+
 script:
-  - bundle install --jobs=3 --retry=3
   - bundle exec rake build
   - bundle exec rake spec
 
@@ -15,9 +22,9 @@ env: "GEMFILE_MOD=\"gem 'chef', '>= 12.4.1'\""
 
 # The set of Rubies Chef works with
 rvm:
-  - 2.0
   - 2.1
   - 2.2
+  - 2.3.0
 
 # Add builds that work with specific chefs
 # 12.4 is not specifically included because the *default* version is "latest release"
