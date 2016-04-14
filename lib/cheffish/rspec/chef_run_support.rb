@@ -33,7 +33,7 @@ module Cheffish
 
       module ChefRunSupportInstanceMethods
         def rest
-          ::Chef::ServerAPI.new
+          ::Chef::ServerAPI.new(Chef::Config.chef_server_url, api_version: "0")
         end
 
         def get(path, *args)
