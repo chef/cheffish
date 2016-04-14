@@ -1,3 +1,4 @@
 Gemfile.lock
 pkg
+binstubs/
 chef-client-version.gemfile.lock

@@ -1,8 +1,22 @@
 # Change Log
 
-## [Unreleased](https://github.com/chef/cheffish/tree/HEAD)
+## [2.0.4](https://github.com/chef/cheffish/tree/2.0.4) (2016-04-14)
+[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.3...2.0.4)
 
-[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.1...HEAD)
+**Fixed bugs:**
+
+- Use server\_api: 0 for cheffish spec requests \(since the software does… [\#104](https://github.com/chef/cheffish/pull/104) ([jkeiser](https://github.com/jkeiser))
+
+## [v2.0.3](https://github.com/chef/cheffish/tree/v2.0.3) (2016-03-31)
+[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.2...v2.0.3)
+
+**Merged pull requests:**
+
+- travis fixes, no github-changelog-generator [\#102](https://github.com/chef/cheffish/pull/102) ([lamont-granquist](https://github.com/lamont-granquist))
+- fix object model insanity [\#101](https://github.com/chef/cheffish/pull/101) ([lamont-granquist](https://github.com/lamont-granquist))
+
+## [v2.0.2](https://github.com/chef/cheffish/tree/v2.0.2) (2016-02-23)
+[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.1...v2.0.2)
 
 **Fixed bugs:**
 
