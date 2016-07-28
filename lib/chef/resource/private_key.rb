@@ -239,11 +239,11 @@ class Chef
               if key
                 @current_private_key = key
                 resource.format key_format[:format]
-                resource.type key_format[:type]
-                resource.size key_format[:size]
-                resource.exponent key_format[:exponent]
-                resource.pass_phrase key_format[:pass_phrase]
-                resource.cipher key_format[:cipher]
+                resource.type(key_format[:type]) if key_format[:type]
+                resource.size(key_format[:size]) if key_format[:size]
+                resource.exponent(key_format[:exponent]) if key_format[:exponent]
+                resource.pass_phrase(key_format[:pass_phrase]) if key_format[:pass_phrase]
+                resource.cipher(key_format[:cipher]) if key_format[:cipher]
               end
             rescue
               # If there's an error reading, we assume format and type are wrong and don't futz with them

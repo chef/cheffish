@@ -23,7 +23,7 @@ module Cheffish
         end
       end
 
-      key_format[:type] = type_of(key)
+      key_format[:type] = type_of(key) if type_of(key)
       key_format[:size] = size_of(key) if size_of(key)
       key_format[:pass_phrase] = pass_phrase if pass_phrase
       # TODO cipher, exponent
@@ -94,19 +94,21 @@ module Cheffish
 
     def self.type_of(key)
       case key.class
-      when OpenSSL::PKey::RSA
-        :rsa
-      when OpenSSL::PKey::DSA
-        :dsa
+        when OpenSSL::PKey::RSA
+          :rsa
+        when OpenSSL::PKey::DSA
+          :dsa
+        else
+          nil
       end
     end
 
     def self.size_of(key)
       case key.class
-      when OpenSSL::PKey::RSA
-        key.n.num_bytes * 8
-      else
-        nil
+        when OpenSSL::PKey::RSA
+          key.n.num_bytes * 8
+        else
+          nil
       end
     end
   end
