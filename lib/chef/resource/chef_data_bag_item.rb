@@ -37,7 +37,13 @@ class Chef
       property :raw_data, Hash
 
       # If secret or secret_path are set, encrypt is assumed true.  encrypt exists mainly for with_secret and with_secret_path
-      property :encrypt, Boolean, default: lazy { secret || secret_path }
+      property :encrypt, Boolean, default: lazy {
+        if secret.nil? && secret_path.nil?
+          false
+        else
+          true
+        end
+      }
       property :secret, String
       property :secret_path, String
       property :encryption_version, Integer
@@ -165,8 +171,8 @@ class Chef
 
             # There are no encryptable values, so pretend encryption is the same as desired
 
-            current_resource.encrypt new_resource.encrypt
-            current_resource.encryption_version new_resource.encryption_version
+            current_resource.encrypt(new_resource.encrypt) unless new_resource.encrypt.nil?
+            current_resource.encryption_version(new_resource.encryption_version) if new_resource.encryption_version
             if new_resource.secret || new_resource.secret_path
               current_resource.secret new_secret
             end
