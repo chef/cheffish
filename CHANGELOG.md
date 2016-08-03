@@ -1,7 +1,14 @@
 # Change Log
 
-## [2.0.4](https://github.com/chef/cheffish/tree/2.0.4) (2016-04-14)
-[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.3...2.0.4)
+## [2.0.5](https://github.com/chef/cheffish/tree/2.0.5) (2016-08-03)
+[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.4...2.0.5)
+
+**Merged pull requests:**
+
+- Cleaning up some provisioning warnings [\#107](https://github.com/chef/cheffish/pull/107) ([tyler-ball](https://github.com/tyler-ball))
+
+## [v2.0.4](https://github.com/chef/cheffish/tree/v2.0.4) (2016-04-14)
+[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.3...v2.0.4)
 
 **Fixed bugs:**
 
