@@ -1,8 +1,8 @@
-require 'chef_compat/property'
+require 'chef/property'
 
 module Cheffish
   # A typical array property. Defaults to [], accepts multiple args to setter, accumulates values.
-  class ArrayProperty < ChefCompat::Property
+  class ArrayProperty < Chef::Property
     def initialize(**options)
       options[:is] ||= Array
       options[:default] ||= []

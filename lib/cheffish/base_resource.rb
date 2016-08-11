@@ -1,8 +1,8 @@
-require 'chef_compat/resource'
+require 'chef/resource'
 require 'cheffish/base_properties'
 
 module Cheffish
-  class BaseResource < ChefCompat::Resource
+  class BaseResource < Chef::Resource
     include Cheffish::BaseProperties
 
     declare_action_class.class_eval do

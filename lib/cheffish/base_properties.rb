@@ -1,10 +1,10 @@
-require 'chef_compat/mixin/properties'
+require 'chef/mixin/properties'
 require 'cheffish/array_property'
 require 'cheffish'
 
 module Cheffish
   module BaseProperties
-    include ChefCompat::Mixin::Properties
+    include Chef::Mixin::Properties
 
     def initialize(*args)
       super
