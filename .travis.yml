@@ -18,18 +18,16 @@ script:
   - bundle exec rake build
   - bundle exec rake spec
 
-env: "GEMFILE_MOD=\"gem 'chef', github: 'chef/chef'\""
-
-# The set of Rubies Chef works with
-rvm:
-  - 2.2.5
-  - 2.3.1
-  - ruby-head
-
 # Add builds that work with specific chefs
 # 12.4 is not specifically included because the *default* version is "latest release"
 matrix:
   include:
+    - env: "GEMFILE_MOD=\"gem 'chef', github: 'chef/chef'\""
+      rvm: 2.2.5
+    - env: "GEMFILE_MOD=\"gem 'chef', github: 'chef/chef'\""
+      rvm: 2.3.1
+    - env: "GEMFILE_MOD=\"gem 'chef', github: 'chef/chef'\""
+      rvm: ruby-head
     - env: "GEMFILE_MOD=\"gem 'chef', '~> 12.13.0'\""
       rvm: 2.1.10
     - env: "GEMFILE_MOD=\"gem 'chef', '~> 12.12.0'\""
@@ -46,6 +44,9 @@ matrix:
       rvm: 2.1.10
     - env: "GEMFILE_MOD=\"gem 'chef', '~> 12.6.0'\""
       rvm: 2.1.10
+  allow_failures:
+    - env: "GEMFILE_MOD=\"gem 'chef', github: 'chef/chef'\""
+      rvm: ruby-head
 
 notifications:
   slack:
