@@ -13,9 +13,8 @@ Gem::Specification.new do |s|
   s.homepage = 'http://github.com/chef/cheffish'
 
   s.add_dependency 'chef-zero', '~> 4.3'
-  s.add_dependency 'compat_resource'
+  s.add_dependency 'net-ssh'
 
-  s.add_development_dependency 'chef', '~> 12.2'
   s.bindir       = "bin"
   s.executables  = %w( )
 
