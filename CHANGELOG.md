@@ -1,7 +1,18 @@
 # Change Log
 
-## [2.0.5](https://github.com/chef/cheffish/tree/2.0.5) (2016-08-03)
-[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.4...2.0.5)
+## [v3.0.0](https://github.com/chef/cheffish/tree/v3.0.0) (2016-08-11)
+[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.5...v3.0.0)
+
+**Merged pull requests:**
+
+- Drop support for Chef \< 12.6; remove compat\_resource dependency [\#100](https://github.com/chef/cheffish/pull/100) ([lamont-granquist](https://github.com/lamont-granquist))
+
+## [v2.0.5](https://github.com/chef/cheffish/tree/v2.0.5) (2016-08-03)
+[Full Changelog](https://github.com/chef/cheffish/compare/v2.0.4...v2.0.5)
+
+**Closed issues:**
+
+- Chef acl updates permissions when it doesn't need to [\#92](https://github.com/chef/cheffish/issues/92)
 
 **Merged pull requests:**
 
