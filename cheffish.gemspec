@@ -12,7 +12,9 @@ Gem::Specification.new do |s|
   s.email = 'jkeiser@chef.io'
   s.homepage = 'http://github.com/chef/cheffish'
 
-  s.add_dependency 'chef-zero', '~> 4.3'
+  s.required_ruby_version = '>= 2.2.2'
+
+  s.add_dependency 'chef-zero', '~> 5.0'
   s.add_dependency 'net-ssh'
 
   s.bindir       = "bin"
