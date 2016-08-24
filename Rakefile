@@ -28,9 +28,9 @@ begin
   GitHubChangelogGenerator::RakeTask.new :changelog do |config|
     require "cheffish/version"
     config.future_release = Cheffish::VERSION
-    config.enhancement_labels = "enhancement,Enhancement,New Feature".split(',')
-    config.bug_labels = "bug,Bug,Improvement,Upstream Bug".split(',')
-    config.exclude_labels = "duplicate,question,invalid,wontfix,no_changelog".split(',')
+    config.enhancement_labels = "enhancement,Enhancement,New Feature,Feature".split(",")
+    config.bug_labels = "bug,Bug,Improvement,Upstream Bug".split(",")
+    config.exclude_labels = "duplicate,question,invalid,wontfix,no_changelog,Exclude From Changelog,Question,Discussion".split(",")
   end
 rescue LoadError
 end

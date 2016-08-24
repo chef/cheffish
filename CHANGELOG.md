@@ -1,5 +1,12 @@
 # Change Log
 
+## [3.0.1](https://github.com/chef/cheffish/tree/3.0.1) (2016-08-24)
+[Full Changelog](https://github.com/chef/cheffish/compare/v3.0.0...3.0.1)
+
+**Fixed bugs:**
+
+- Fix JSON rendering for arrays [\#110](https://github.com/chef/cheffish/pull/110) ([jkeiser](https://github.com/jkeiser))
+
 ## [v3.0.0](https://github.com/chef/cheffish/tree/v3.0.0) (2016-08-11)
 [Full Changelog](https://github.com/chef/cheffish/compare/v2.0.5...v3.0.0)
 
@@ -9,10 +16,6 @@
 
 ## [v2.0.5](https://github.com/chef/cheffish/tree/v2.0.5) (2016-08-03)
 [Full Changelog](https://github.com/chef/cheffish/compare/v2.0.4...v2.0.5)
-
-**Closed issues:**
-
-- Chef acl updates permissions when it doesn't need to [\#92](https://github.com/chef/cheffish/issues/92)
 
 **Merged pull requests:**
 
