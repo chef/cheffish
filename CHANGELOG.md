@@ -1,7 +1,14 @@
 # Change Log
 
-## [3.0.1](https://github.com/chef/cheffish/tree/3.0.1) (2016-08-24)
-[Full Changelog](https://github.com/chef/cheffish/compare/v3.0.0...3.0.1)
+## [4.0.0](https://github.com/chef/cheffish/tree/4.0.0) (2016-08-24)
+[Full Changelog](https://github.com/chef/cheffish/compare/v3.0.1...4.0.0)
+
+**Implemented enhancements:**
+
+- Restrict to Ruby 2.1 and bring in chef-zero 5.0 [\#112](https://github.com/chef/cheffish/pull/112) ([jkeiser](https://github.com/jkeiser))
+
+## [v3.0.1](https://github.com/chef/cheffish/tree/v3.0.1) (2016-08-24)
+[Full Changelog](https://github.com/chef/cheffish/compare/v3.0.0...v3.0.1)
 
 **Fixed bugs:**
 
