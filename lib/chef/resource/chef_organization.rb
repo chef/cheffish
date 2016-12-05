@@ -8,7 +8,7 @@ class Chef
     class ChefOrganization < Cheffish::BaseResource
       resource_name :chef_organization
 
-      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :organization_name, Cheffish::NAME_REGEX, name_property: true
       property :full_name, String
 
       # A list of users who must at least be invited to the org (but may already be
@@ -32,13 +32,13 @@ class Chef
 
         if current_resource_exists?
           if differences.size > 0
-            description = [ "update organization #{new_resource.name} at #{rest.url}" ] + differences
+            description = [ "update organization #{new_resource.organization_name} at #{rest.url}" ] + differences
             converge_by description do
-              rest.put("#{rest.root_url}/organizations/#{new_resource.name}", normalize_for_put(new_json))
+              rest.put("#{rest.root_url}/organizations/#{new_resource.organization_name}", normalize_for_put(new_json))
             end
           end
         else
-          description = [ "create organization #{new_resource.name} at #{rest.url}" ] + differences
+          description = [ "create organization #{new_resource.organization_name} at #{rest.url}" ] + differences
           converge_by description do
             rest.post("#{rest.root_url}/organizations", normalize_for_post(new_json))
           end
@@ -47,15 +47,15 @@ class Chef
         # Revoke invites and memberships when asked
         invites_to_remove.each do |user|
           if outstanding_invites.has_key?(user)
-            converge_by "revoke #{user}'s invitation to organization #{new_resource.name}" do
-              rest.delete("#{rest.root_url}/organizations/#{new_resource.name}/association_requests/#{outstanding_invites[user]}")
+            converge_by "revoke #{user}'s invitation to organization #{new_resource.organization_name}" do
+              rest.delete("#{rest.root_url}/organizations/#{new_resource.organization_name}/association_requests/#{outstanding_invites[user]}")
             end
           end
         end
         members_to_remove.each do |user|
           if existing_members.include?(user)
-            converge_by "remove #{user} from organization #{new_resource.name}" do
-              rest.delete("#{rest.root_url}/organizations/#{new_resource.name}/users/#{user}")
+            converge_by "remove #{user} from organization #{new_resource.organization_name}" do
+              rest.delete("#{rest.root_url}/organizations/#{new_resource.organization_name}/users/#{user}")
             end
           end
         end
@@ -63,15 +63,15 @@ class Chef
         # Invite and add members when asked
         new_resource.invites.each do |user|
           if !existing_members.include?(user) && !outstanding_invites.has_key?(user)
-            converge_by "invite #{user} to organization #{new_resource.name}" do
-              rest.post("#{rest.root_url}/organizations/#{new_resource.name}/association_requests", { 'user' => user })
+            converge_by "invite #{user} to organization #{new_resource.organization_name}" do
+              rest.post("#{rest.root_url}/organizations/#{new_resource.organization_name}/association_requests", { 'user' => user })
             end
           end
         end
         new_resource.members.each do |user|
           if !existing_members.include?(user)
-            converge_by "Add #{user} to organization #{new_resource.name}" do
-              rest.post("#{rest.root_url}/organizations/#{new_resource.name}/users/", { 'username' => user })
+            converge_by "Add #{user} to organization #{new_resource.organization_name}" do
+              rest.post("#{rest.root_url}/organizations/#{new_resource.organization_name}/users/", { 'username' => user })
             end
           end
         end
@@ -79,13 +79,13 @@ class Chef
 
       action_class.class_eval do
         def existing_members
-          @existing_members ||= rest.get("#{rest.root_url}/organizations/#{new_resource.name}/users").map { |u| u['user']['username'] }
+          @existing_members ||= rest.get("#{rest.root_url}/organizations/#{new_resource.organization_name}/users").map { |u| u['user']['username'] }
         end
 
         def outstanding_invites
           @outstanding_invites ||= begin
             invites = {}
-            rest.get("#{rest.root_url}/organizations/#{new_resource.name}/association_requests").each do |r|
+            rest.get("#{rest.root_url}/organizations/#{new_resource.organization_name}/association_requests").each do |r|
               invites[r['username']] = r['id']
             end
             invites
@@ -122,8 +122,8 @@ class Chef
 
       action :delete do
         if current_resource_exists?
-          converge_by "delete organization #{new_resource.name} at #{rest.url}" do
-            rest.delete("#{rest.root_url}/organizations/#{new_resource.name}")
+          converge_by "delete organization #{new_resource.organization_name} at #{rest.url}" do
+            rest.delete("#{rest.root_url}/organizations/#{new_resource.organization_name}")
           end
         end
       end
@@ -131,7 +131,7 @@ class Chef
       action_class.class_eval do
         def load_current_resource
           begin
-            @current_resource = json_to_resource(rest.get("#{rest.root_url}/organizations/#{new_resource.name}"))
+            @current_resource = json_to_resource(rest.get("#{rest.root_url}/organizations/#{new_resource.organization_name}"))
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
               @current_resource = not_found_resource
@@ -155,7 +155,7 @@ class Chef
 
         def keys
           {
-            'name' => :name,
+            'name' => :organization_name,
             'full_name' => :full_name
           }
         end

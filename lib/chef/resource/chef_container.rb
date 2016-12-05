@@ -7,11 +7,11 @@ class Chef
     class ChefContainer < Cheffish::BaseResource
       resource_name :chef_container
 
-      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :chef_container_name, Cheffish::NAME_REGEX, name_property: true
 
       action :create do
         if !@current_exists
-          converge_by "create container #{new_resource.name} at #{rest.url}" do
+          converge_by "create container #{new_resource.chef_container_name} at #{rest.url}" do
             rest.post("containers", normalize_for_post(new_json))
           end
         end
@@ -19,8 +19,8 @@ class Chef
 
       action :delete do
         if @current_exists
-          converge_by "delete container #{new_resource.name} at #{rest.url}" do
-            rest.delete("containers/#{new_resource.name}")
+          converge_by "delete container #{new_resource.chef_container_name} at #{rest.url}" do
+            rest.delete("containers/#{new_resource.chef_container_name}")
           end
         end
       end
@@ -28,7 +28,7 @@ class Chef
       action_class.class_eval do
         def load_current_resource
           begin
-            @current_exists = rest.get("containers/#{new_resource.name}")
+            @current_exists = rest.get("containers/#{new_resource.chef_container_name}")
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
               @current_exists = false
@@ -47,7 +47,7 @@ class Chef
         end
 
         def keys
-          { 'containername' => :name, 'containerpath' => :name }
+          { 'containername' => :chef_container_name, 'containerpath' => :chef_container_name }
         end
       end
     end

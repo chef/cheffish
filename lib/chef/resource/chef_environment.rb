@@ -8,7 +8,7 @@ class Chef
     class ChefEnvironment < Cheffish::BaseResource
       resource_name :chef_environment
 
-      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :environment_name, Cheffish::NAME_REGEX, name_property: true
       property :description, String
       property :cookbook_versions, Hash, callbacks: {
         "should have valid cookbook versions" => lambda { |value| Chef::Environment.validate_cookbook_versions(value) }
@@ -61,13 +61,13 @@ class Chef
 
         if current_resource_exists?
           if differences.size > 0
-            description = [ "update environment #{new_resource.name} at #{rest.url}" ] + differences
+            description = [ "update environment #{new_resource.environment_name} at #{rest.url}" ] + differences
             converge_by description do
-              rest.put("environments/#{new_resource.name}", normalize_for_put(new_json))
+              rest.put("environments/#{new_resource.environment_name}", normalize_for_put(new_json))
             end
           end
         else
-          description = [ "create environment #{new_resource.name} at #{rest.url}" ] + differences
+          description = [ "create environment #{new_resource.environment_name} at #{rest.url}" ] + differences
           converge_by description do
             rest.post("environments", normalize_for_post(new_json))
           end
@@ -76,8 +76,8 @@ class Chef
 
       action :delete do
         if current_resource_exists?
-          converge_by "delete environment #{new_resource.name} at #{rest.url}" do
-            rest.delete("environments/#{new_resource.name}")
+          converge_by "delete environment #{new_resource.environment_name} at #{rest.url}" do
+            rest.delete("environments/#{new_resource.environment_name}")
           end
         end
       end
@@ -85,7 +85,7 @@ class Chef
       action_class.class_eval do
         def load_current_resource
           begin
-            @current_resource = json_to_resource(rest.get("environments/#{new_resource.name}"))
+            @current_resource = json_to_resource(rest.get("environments/#{new_resource.environment_name}"))
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
               @current_resource = not_found_resource
@@ -116,7 +116,7 @@ class Chef
 
         def keys
           {
-            'name' => :name,
+            'name' => :environment_name,
             'description' => :description,
             'cookbook_versions' => :cookbook_versions,
             'default_attributes' => :default_attributes,

@@ -8,7 +8,7 @@ class Chef
     class ChefGroup < Cheffish::BaseResource
       resource_name :chef_group
 
-      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :group_name, Cheffish::NAME_REGEX, name_property: true
       property :users, ArrayType
       property :clients, ArrayType
       property :groups, ArrayType
@@ -21,13 +21,13 @@ class Chef
 
         if current_resource_exists?
           if differences.size > 0
-            description = [ "update group #{new_resource.name} at #{rest.url}" ] + differences
+            description = [ "update group #{new_resource.group_name} at #{rest.url}" ] + differences
             converge_by description do
-              rest.put("groups/#{new_resource.name}", normalize_for_put(new_json))
+              rest.put("groups/#{new_resource.group_name}", normalize_for_put(new_json))
             end
           end
         else
-          description = [ "create group #{new_resource.name} at #{rest.url}" ] + differences
+          description = [ "create group #{new_resource.group_name} at #{rest.url}" ] + differences
           converge_by description do
             rest.post("groups", normalize_for_post(new_json))
           end
@@ -36,8 +36,8 @@ class Chef
 
       action :delete do
         if current_resource_exists?
-          converge_by "delete group #{new_resource.name} at #{rest.url}" do
-            rest.delete("groups/#{new_resource.name}")
+          converge_by "delete group #{new_resource.group_name} at #{rest.url}" do
+            rest.delete("groups/#{new_resource.group_name}")
           end
         end
       end
@@ -45,7 +45,7 @@ class Chef
       action_class.class_eval do
         def load_current_resource
           begin
-            @current_resource = json_to_resource(rest.get("groups/#{new_resource.name}"))
+            @current_resource = json_to_resource(rest.get("groups/#{new_resource.group_name}"))
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
               @current_resource = not_found_resource
@@ -80,8 +80,8 @@ class Chef
 
         def keys
           {
-            'name' => :name,
-            'groupname' => :name
+            'name' => :group_name,
+            'groupname' => :group_name
           }
         end
       end

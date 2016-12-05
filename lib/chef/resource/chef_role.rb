@@ -8,7 +8,7 @@ class Chef
     class ChefRole < Cheffish::BaseResource
       resource_name :chef_role
 
-      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :role_name, Cheffish::NAME_REGEX, name_property: true
       property :description, String
       property :run_list, Array # We should let them specify it as a series of parameters too
       property :env_run_lists, Hash
@@ -92,13 +92,13 @@ class Chef
 
         if current_resource_exists?
           if differences.size > 0
-            description = [ "update role #{new_resource.name} at #{rest.url}" ] + differences
+            description = [ "update role #{new_resource.role_name} at #{rest.url}" ] + differences
             converge_by description do
-              rest.put("roles/#{new_resource.name}", normalize_for_put(new_json))
+              rest.put("roles/#{new_resource.role_name}", normalize_for_put(new_json))
             end
           end
         else
-          description = [ "create role #{new_resource.name} at #{rest.url}" ] + differences
+          description = [ "create role #{new_resource.role_name} at #{rest.url}" ] + differences
           converge_by description do
             rest.post("roles", normalize_for_post(new_json))
           end
@@ -107,8 +107,8 @@ class Chef
 
       action :delete do
         if current_resource_exists?
-          converge_by "delete role #{new_resource.name} at #{rest.url}" do
-            rest.delete("roles/#{new_resource.name}")
+          converge_by "delete role #{new_resource.role_name} at #{rest.url}" do
+            rest.delete("roles/#{new_resource.role_name}")
           end
         end
       end
@@ -116,7 +116,7 @@ class Chef
       action_class.class_eval do
         def load_current_resource
           begin
-            @current_resource = json_to_resource(rest.get("roles/#{new_resource.name}"))
+            @current_resource = json_to_resource(rest.get("roles/#{new_resource.role_name}"))
           rescue Net::HTTPServerException => e
             if e.response.code == "404"
               @current_resource = not_found_resource
@@ -148,7 +148,7 @@ class Chef
 
         def keys
           {
-            'name' => :name,
+            'name' => :role_name,
             'description' => :description,
             'run_list' => :run_list,
             'env_run_lists' => :env_run_lists,

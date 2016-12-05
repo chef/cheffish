@@ -10,7 +10,7 @@ module Cheffish
       chef_environment run_context.cheffish.current_environment
     end
 
-    property :name, Cheffish::NAME_REGEX, name_property: true
+    property :node_properties_name, Cheffish::NAME_REGEX, name_property: true
     property :chef_environment, Cheffish::NAME_REGEX
     property :run_list, Array # We should let them specify it as a series of parameters too
     property :attributes, Hash
