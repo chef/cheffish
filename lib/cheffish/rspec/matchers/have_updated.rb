@@ -1,4 +1,4 @@
-require 'rspec/matchers'
+require "rspec/matchers"
 
 RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
   match do |recipe|
@@ -14,7 +14,7 @@ RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
     updates = actual.select { |event, resource, action| event == :resource_updated }.to_a
     result = "expected that the chef_run would #{expected_actions.join(',')} #{resource_name}."
     if updates.size > 0
-      result << " Actual updates were #{updates.map { |event, resource, action| "#{resource.to_s} => #{action.inspect}" }.join(', ')}"
+      result << " Actual updates were #{updates.map { |event, resource, action| "#{resource} => #{action.inspect}" }.join(', ')}"
     else
       result << " Nothing was updated."
     end
@@ -26,7 +26,7 @@ RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
     updates = actual.select { |event, resource, action| event == :resource_updated }.to_a
     result = "expected that the chef_run would not #{expected_actions.join(',')} #{resource_name}."
     if updates.size > 0
-      result << " Actual updates were #{updates.map { |event, resource, action| "#{resource.to_s} => #{action.inspect}" }.join(', ')}"
+      result << " Actual updates were #{updates.map { |event, resource, action| "#{resource} => #{action.inspect}" }.join(', ')}"
     else
       result << " Nothing was updated."
     end

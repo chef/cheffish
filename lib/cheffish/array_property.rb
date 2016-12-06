@@ -1,4 +1,4 @@
-require 'chef/property'
+require "chef/property"
 
 module Cheffish
   # A typical array property. Defaults to [], accepts multiple args to setter, accumulates values.
@@ -12,7 +12,7 @@ module Cheffish
 
     # Support my_property 'a', 'b', 'c'; my_property 'a'; and my_property ['a', 'b']
     def emit_dsl
-      declared_in.class_eval(<<-EOM, __FILE__, __LINE__+1)
+      declared_in.class_eval(<<-EOM, __FILE__, __LINE__ + 1)
         def #{name}(*values)
           property = self.class.properties[#{name.inspect}]
           if values.empty?

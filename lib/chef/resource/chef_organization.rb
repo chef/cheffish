@@ -1,7 +1,7 @@
-require 'cheffish'
-require 'cheffish/base_resource'
-require 'chef/run_list/run_list_item'
-require 'chef/chef_fs/data_handler/data_handler_base'
+require "cheffish"
+require "cheffish/base_resource"
+require "chef/run_list/run_list_item"
+require "chef/chef_fs/data_handler/data_handler_base"
 
 class Chef
   class Resource
@@ -25,7 +25,6 @@ class Chef
       # A list of users who must not be members of the org.  These users will be removed
       # from the org and invites will be revoked (if any).
       property :remove_members, ArrayType
-
 
       action :create do
         differences = json_differences(current_json, new_json)
@@ -64,14 +63,14 @@ class Chef
         new_resource.invites.each do |user|
           if !existing_members.include?(user) && !outstanding_invites.has_key?(user)
             converge_by "invite #{user} to organization #{new_resource.organization_name}" do
-              rest.post("#{rest.root_url}/organizations/#{new_resource.organization_name}/association_requests", { 'user' => user })
+              rest.post("#{rest.root_url}/organizations/#{new_resource.organization_name}/association_requests", { "user" => user })
             end
           end
         end
         new_resource.members.each do |user|
           if !existing_members.include?(user)
             converge_by "Add #{user} to organization #{new_resource.organization_name}" do
-              rest.post("#{rest.root_url}/organizations/#{new_resource.organization_name}/users/", { 'username' => user })
+              rest.post("#{rest.root_url}/organizations/#{new_resource.organization_name}/users/", { "username" => user })
             end
           end
         end
@@ -79,14 +78,14 @@ class Chef
 
       action_class.class_eval do
         def existing_members
-          @existing_members ||= rest.get("#{rest.root_url}/organizations/#{new_resource.organization_name}/users").map { |u| u['user']['username'] }
+          @existing_members ||= rest.get("#{rest.root_url}/organizations/#{new_resource.organization_name}/users").map { |u| u["user"]["username"] }
         end
 
         def outstanding_invites
           @outstanding_invites ||= begin
             invites = {}
             rest.get("#{rest.root_url}/organizations/#{new_resource.organization_name}/association_requests").each do |r|
-              invites[r['username']] = r['id']
+              invites[r["username"]] = r["id"]
             end
             invites
           end
@@ -155,8 +154,8 @@ class Chef
 
         def keys
           {
-            'name' => :organization_name,
-            'full_name' => :full_name
+            "name" => :organization_name,
+            "full_name" => :full_name,
           }
         end
 
@@ -164,11 +163,11 @@ class Chef
           def normalize(organization, entry)
             # Normalize the order of the keys for easier reading
             normalize_hash(organization, {
-              'name' => remove_dot_json(entry.name),
-              'full_name' => remove_dot_json(entry.name),
-              'org_type' => 'Business',
-              'clientname' => "#{remove_dot_json(entry.name)}-validator",
-              'billing_plan' => 'platform-free'
+              "name" => remove_dot_json(entry.name),
+              "full_name" => remove_dot_json(entry.name),
+              "org_type" => "Business",
+              "clientname" => "#{remove_dot_json(entry.name)}-validator",
+              "billing_plan" => "platform-free",
             })
           end
         end

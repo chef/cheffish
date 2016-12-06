@@ -1,5 +1,5 @@
-require 'chef/resource'
-require 'cheffish/base_properties'
+require "chef/resource"
+require "cheffish/base_properties"
 
 module Cheffish
   class BaseResource < Chef::Resource
@@ -84,7 +84,7 @@ module Cheffish
         data_handler.normalize(json, fake_entry)
       end
 
-      def json_differences(old_json, new_json, print_values=true, name = '', result = nil)
+      def json_differences(old_json, new_json, print_values = true, name = "", result = nil)
         result ||= []
         json_differences_internal(old_json, new_json, print_values, name, result)
         result
@@ -97,7 +97,7 @@ module Cheffish
             if old_json.has_key?(new_key)
               removed_keys.delete(new_key)
               if new_value != old_json[new_key]
-                json_differences_internal(old_json[new_key], new_value, print_values, name == '' ? new_key : "#{name}.#{new_key}", result)
+                json_differences_internal(old_json[new_key], new_value, print_values, name == "" ? new_key : "#{name}.#{new_key}", result)
               end
             else
               if print_values
@@ -136,11 +136,11 @@ module Cheffish
         modifiers.each do |path, value|
           path = [path] if !path.kind_of?(Array)
           path = path.map { |path_part| path_part.to_s }
-          parent = 0.upto(path.size-2).inject(json) do |hash, index|
+          parent = 0.upto(path.size - 2).inject(json) do |hash, index|
             if hash.nil?
               nil
             elsif !hash.is_a?(Hash)
-              raise "Attempt to set #{path} to #{value} when #{path[0..index-1]} is not a hash"
+              raise "Attempt to set #{path} to #{value} when #{path[0..index - 1]} is not a hash"
             else
               hash[path[index]]
             end
@@ -181,7 +181,7 @@ module Cheffish
         result = []
         add_to_run_list_index = 0
         run_list_index = 0
-        while run_list_index < run_list.run_list_items.size do
+        while run_list_index < run_list.run_list_items.size
           # See if the desired run list has this item
           found_desired = add_to_run_list.index { |item| same_run_list_item(item, run_list[run_list_index]) }
           if found_desired
@@ -192,7 +192,7 @@ module Cheffish
             # be X, A, B, Y, Z.
             if found_desired >= add_to_run_list_index
               result += add_to_run_list[add_to_run_list_index..found_desired].map { |item| item.to_s }
-              add_to_run_list_index = found_desired+1
+              add_to_run_list_index = found_desired + 1
             end
           else
             # If not, just copy it in

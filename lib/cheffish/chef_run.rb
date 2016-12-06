@@ -1,4 +1,4 @@
-require 'cheffish/basic_chef_client'
+require "cheffish/basic_chef_client"
 
 module Cheffish
   class ChefRun
@@ -11,7 +11,7 @@ module Cheffish
     #        - log_location: <path|IO object> - where to stream logs to
     #        - verbose_logging: true|false - true if you want verbose logging in :debug
     #
-    def initialize(chef_config={})
+    def initialize(chef_config = {})
       @chef_config = chef_config || {}
     end
 
@@ -56,18 +56,23 @@ module Cheffish
     def stdout
       @client ? client.chef_config[:stdout].string : nil
     end
+
     def stderr
       @client ? client.chef_config[:stderr].string : nil
     end
+
     def logs
       @client ? client.chef_config[:log_location].string : nil
     end
+
     def logged_warnings
       logs.lines.select { |l| l =~ /^\[[^\]]*\] WARN:/ }.join("\n")
     end
+
     def logged_errors
       logs.lines.select { |l| l =~ /^\[[^\]]*\] ERROR:/ }.join("\n")
     end
+
     def logged_info
       logs.lines.select { |l| l =~ /^\[[^\]]*\] INFO:/ }.join("\n")
     end

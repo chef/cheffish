@@ -1,5 +1,5 @@
-require 'cheffish/chef_run'
-require 'forwardable'
+require "cheffish/chef_run"
+require "forwardable"
 
 module Cheffish
   module RSpec
@@ -7,7 +7,7 @@ module Cheffish
       def initialize(chef_config, example: nil, &recipe)
         super(chef_config)
         @recipe = recipe
-        @example = example || recipe.binding.eval('self')
+        @example = example || recipe.binding.eval("self")
       end
 
       attr_reader :recipe
@@ -36,7 +36,7 @@ module Cheffish
             # would result in an infinite loop, coming right. Back. Here.
             # A fix to chef is incoming, but we still need this if we want to
             # work with Chef 12.4.
-            if Gem::Version.new(Chef::VERSION) >= Gem::Version.new('12.4')
+            if Gem::Version.new(Chef::VERSION) >= Gem::Version.new("12.4")
               if @rspec_example.respond_to?(name)
                 return @rspec_example.public_send(name, *args, &block)
               end
@@ -55,6 +55,7 @@ module Cheffish
               end
             end
           end
+
           # This is called by respond_to?, and is required to make sure the
           # resource knows that we will in fact call the given method.
           def @client.respond_to_missing?(name, include_private = false)

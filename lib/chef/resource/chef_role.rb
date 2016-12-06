@@ -1,7 +1,7 @@
-require 'cheffish'
-require 'cheffish/base_resource'
-require 'chef/run_list/run_list_item'
-require 'chef/chef_fs/data_handler/role_data_handler'
+require "cheffish"
+require "cheffish/base_resource"
+require "chef/run_list/run_list_item"
+require "chef/chef_fs/data_handler/role_data_handler"
 
 class Chef
   class Resource
@@ -22,7 +22,7 @@ class Chef
       # end
       # default_attribute 'ip_address', :delete
       attr_reader :default_attribute_modifiers
-      def default_attribute(attribute_path, value=NOT_PASSED, &block)
+      def default_attribute(attribute_path, value = NOT_PASSED, &block)
         @default_attribute_modifiers ||= []
         if value != NOT_PASSED
           @default_attribute_modifiers << [ attribute_path, value ]
@@ -40,7 +40,7 @@ class Chef
       # end
       # override_attribute 'ip_address', :delete
       attr_reader :override_attribute_modifiers
-      def override_attribute(attribute_path, value=NOT_PASSED, &block)
+      def override_attribute(attribute_path, value = NOT_PASSED, &block)
         @override_attribute_modifiers ||= []
         if value != NOT_PASSED
           @override_attribute_modifiers << [ attribute_path, value ]
@@ -65,6 +65,7 @@ class Chef
         @run_list_modifiers ||= []
         @run_list_modifiers += recipes.map { |recipe| Chef::RunList::RunListItem.new("recipe[#{recipe}]") }
       end
+
       def role(*roles)
         if roles.size == 0
           raise ArgumentError, "At least one role must be specified"
@@ -72,6 +73,7 @@ class Chef
         @run_list_modifiers ||= []
         @run_list_modifiers += roles.map { |role| Chef::RunList::RunListItem.new("role[#{role}]") }
       end
+
       def remove_recipe(*recipes)
         if recipes.size == 0
           raise ArgumentError, "At least one recipe must be specified"
@@ -79,6 +81,7 @@ class Chef
         @run_list_removers ||= []
         @run_list_removers += recipes.map { |recipe| Chef::RunList::RunListItem.new("recipe[#{recipe}]") }
       end
+
       def remove_role(*roles)
         if roles.size == 0
           raise ArgumentError, "At least one role must be specified"
@@ -128,9 +131,9 @@ class Chef
 
         def augment_new_json(json)
           # Apply modifiers
-          json['run_list'] = apply_run_list_modifiers(new_resource.run_list_modifiers, new_resource.run_list_removers, json['run_list'])
-          json['default_attributes'] = apply_modifiers(new_resource.default_attribute_modifiers, json['default_attributes'])
-          json['override_attributes'] = apply_modifiers(new_resource.override_attribute_modifiers, json['override_attributes'])
+          json["run_list"] = apply_run_list_modifiers(new_resource.run_list_modifiers, new_resource.run_list_removers, json["run_list"])
+          json["default_attributes"] = apply_modifiers(new_resource.default_attribute_modifiers, json["default_attributes"])
+          json["override_attributes"] = apply_modifiers(new_resource.override_attribute_modifiers, json["override_attributes"])
           json
         end
 
@@ -148,12 +151,12 @@ class Chef
 
         def keys
           {
-            'name' => :role_name,
-            'description' => :description,
-            'run_list' => :run_list,
-            'env_run_lists' => :env_run_lists,
-            'default_attributes' => :default_attributes,
-            'override_attributes' => :override_attributes
+            "name" => :role_name,
+            "description" => :description,
+            "run_list" => :run_list,
+            "env_run_lists" => :env_run_lists,
+            "default_attributes" => :default_attributes,
+            "override_attributes" => :override_attributes,
           }
         end
       end

@@ -1,5 +1,5 @@
-require 'cheffish'
-require 'cheffish/chef_actor_base'
+require "cheffish"
+require "cheffish/chef_actor_base"
 
 class Chef
   class Resource
@@ -40,11 +40,11 @@ class Chef
 
       action_class.class_eval do
         def actor_type
-          'client'
+          "client"
         end
 
         def actor_path
-          'clients'
+          "clients"
         end
 
         #
@@ -61,10 +61,10 @@ class Chef
 
         def keys
           {
-            'name' => :chef_client_name,
-            'admin' => :admin,
-            'validator' => :validator,
-            'public_key' => :source_key
+            "name" => :chef_client_name,
+            "admin" => :admin,
+            "validator" => :validator,
+            "public_key" => :source_key,
           }
         end
       end

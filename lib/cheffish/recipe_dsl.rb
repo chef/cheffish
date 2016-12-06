@@ -1,30 +1,29 @@
-require 'cheffish'
+require "cheffish"
 
-require 'chef/version'
-require 'chef_zero/server'
-require 'chef/chef_fs/chef_fs_data_store'
-require 'chef/chef_fs/config'
-require 'cheffish/chef_run_data'
-require 'cheffish/chef_run_listener'
-require 'chef/client'
-require 'chef/config'
-require 'chef_zero/version'
-require 'cheffish/merged_config'
-require 'chef/resource/chef_acl'
-require 'chef/resource/chef_client'
-require 'chef/resource/chef_container'
-require 'chef/resource/chef_data_bag'
-require 'chef/resource/chef_data_bag_item'
-require 'chef/resource/chef_environment'
-require 'chef/resource/chef_group'
-require 'chef/resource/chef_mirror'
-require 'chef/resource/chef_node'
-require 'chef/resource/chef_organization'
-require 'chef/resource/chef_role'
-require 'chef/resource/chef_user'
-require 'chef/resource/private_key'
-require 'chef/resource/public_key'
-
+require "chef/version"
+require "chef_zero/server"
+require "chef/chef_fs/chef_fs_data_store"
+require "chef/chef_fs/config"
+require "cheffish/chef_run_data"
+require "cheffish/chef_run_listener"
+require "chef/client"
+require "chef/config"
+require "chef_zero/version"
+require "cheffish/merged_config"
+require "chef/resource/chef_acl"
+require "chef/resource/chef_client"
+require "chef/resource/chef_container"
+require "chef/resource/chef_data_bag"
+require "chef/resource/chef_data_bag_item"
+require "chef/resource/chef_environment"
+require "chef/resource/chef_group"
+require "chef/resource/chef_mirror"
+require "chef/resource/chef_node"
+require "chef/resource/chef_organization"
+require "chef/resource/chef_role"
+require "chef/resource/chef_user"
+require "chef/resource/private_key"
+require "chef/resource/public_key"
 
 class Chef
   module DSL
@@ -46,7 +45,7 @@ class Chef
       end
 
       def with_chef_local_server(options, &block)
-        options[:host] ||= '127.0.0.1'
+        options[:host] ||= "127.0.0.1"
         options[:log_level] ||= Chef::Log.level
         options[:port] ||= ChefZero::VERSION.to_f >= 2.2 ? 8901.upto(9900) : 8901
 
@@ -57,7 +56,7 @@ class Chef
           end
 
           # Ensure all paths are given
-          %w(acl client cookbook container data_bag environment group node role).each do |type|
+          %w{acl client cookbook container data_bag environment group node role}.each do |type|
             # Set the options as symbol keys and then copy to string keys
             string_key = "#{type}_path"
             symbol_key = "#{type}_path".to_sym
@@ -66,7 +65,7 @@ class Chef
               if options[:chef_repo_path].kind_of?(String)
                 Chef::Util::PathHelper.join(options[:chef_repo_path], "#{type}s")
               else
-                options[:chef_repo_path].map { |path| Chef::Util::PathHelper.join(path, "#{type}s")}
+                options[:chef_repo_path].map { |path| Chef::Util::PathHelper.join(path, "#{type}s") }
               end
             end
 
@@ -97,9 +96,9 @@ class Chef
   end
 
   class Config
-    default(:profile) { ENV['CHEF_PROFILE'] || 'default' }
+    default(:profile) { ENV["CHEF_PROFILE"] || "default" }
     configurable(:private_keys)
-    default(:private_key_paths) { [ Chef::Util::PathHelper.join(config_dir, 'keys'), Chef::Util::PathHelper.join(user_home, '.ssh') ] }
+    default(:private_key_paths) { [ Chef::Util::PathHelper.join(config_dir, "keys"), Chef::Util::PathHelper.join(user_home, ".ssh") ] }
     default(:private_key_write_path) { private_key_paths.first }
   end
 
@@ -128,9 +127,9 @@ end
 
 # Chef 12 moved Chef::Config.path_join to PathHelper.join
 if Chef::VERSION.to_i >= 12
-  require 'chef/util/path_helper'
+  require "chef/util/path_helper"
 else
-  require 'chef/config'
+  require "chef/config"
   class Chef
     class Util
       class PathHelper

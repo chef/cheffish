@@ -1,5 +1,5 @@
-require 'support/spec_support'
-require 'cheffish/rspec/chef_run_support'
+require "support/spec_support"
+require "cheffish/rspec/chef_run_support"
 # require 'cheffish/rspec/recipe_run_wrapper'
 
 module MyModule
@@ -15,11 +15,11 @@ end
 describe Cheffish::RSpec::RecipeRunWrapper do
   extend Cheffish::RSpec::ChefRunSupport
 
-  let(:run_wrapper) {
+  let(:run_wrapper) do
     Cheffish::RSpec::RecipeRunWrapper.new(chef_config) do
       log "test recipe in specs"
     end
-  }
+  end
 
   context "defines #respond_to_missing? on the client" do
     it "calls the new super.respond_to_missing" do
