@@ -10,8 +10,8 @@ module Cheffish
       :chef_server_url => config[:chef_server_url],
       :options => {
         :client_name => config[:node_name],
-        :signing_key_filename => config[:client_key]
-      }
+        :signing_key_filename => config[:client_key],
+      },
     }
   end
 
@@ -19,7 +19,7 @@ module Cheffish
     # Pin the server api version to 0 until https://github.com/chef/cheffish/issues/56
     # gets the correct compatibility fix.
     chef_server[:options] ||= {}
-    chef_server[:options].merge!(api_version: "0")
+    chef_server[:options][:api_version] = "0"
     Cheffish::ServerAPI.new(chef_server[:chef_server_url], chef_server[:options])
   end
 
@@ -32,7 +32,7 @@ module Cheffish
   end
 
   def self.load_chef_config(chef_config = Chef::Config)
-    if ::Gem::Version.new(::Chef::VERSION) >= ::Gem::Version.new('12.0.0')
+    if ::Gem::Version.new(::Chef::VERSION) >= ::Gem::Version.new("12.0.0")
       chef_config.config_file = ::Chef::Knife.chef_config_dir
     else
       chef_config.config_file = ::Chef::Knife.locate_config_file
@@ -50,7 +50,7 @@ module Cheffish
       rescue Exception => error
         Chef::Log.fatal("Configuration error #{error.class}: #{error.message}")
         filtered_trace = error.backtrace.grep(/#{Regexp.escape(config_file_path)}/)
-        filtered_trace.each {|line| Chef::Log.fatal("  " + line )}
+        filtered_trace.each { |line| Chef::Log.fatal("  " + line ) }
         Chef::Application.fatal!("Aborting due to error in '#{config_file_path}'", 2)
       end
     end
@@ -65,7 +65,7 @@ module Cheffish
       Chef::Config.chef_repo_path = Chef::Config.find_chef_repo_path(Dir.pwd)
     end
     begin
-      require 'chef/local_mode'
+      require "chef/local_mode"
       Chef::LocalMode.with_server_connectivity(&block)
 
     rescue LoadError
@@ -100,8 +100,8 @@ module Cheffish
         next unless File.exist?(private_key_path)
         Dir.entries(private_key_path).sort.each do |key|
           ext = File.extname(key)
-          if key == name || ext == '' || ext == '.pem'
-            key_name = key[0..-(ext.length+1)]
+          if key == name || ext == "" || ext == ".pem"
+            key_name = key[0..-(ext.length + 1)]
             if key_name == name || key == name
               Chef::Log.info("Reading key #{name} from file #{private_key_path}/#{key}")
               return [ IO.read("#{private_key_path}/#{key}"), "#{private_key_path}/#{key}" ]
@@ -120,12 +120,12 @@ end
 
 # Include all recipe objects so require 'cheffish' brings in the whole recipe DSL
 
-require 'chef/run_list/run_list_item'
-require 'cheffish/basic_chef_client'
-require 'cheffish/server_api'
-require 'chef/knife'
-require 'chef/config_fetcher'
-require 'chef/log'
-require 'chef/application'
-require 'cheffish/recipe_dsl'
-require 'cheffish/node_properties'
+require "chef/run_list/run_list_item"
+require "cheffish/basic_chef_client"
+require "cheffish/server_api"
+require "chef/knife"
+require "chef/config_fetcher"
+require "chef/log"
+require "chef/application"
+require "cheffish/recipe_dsl"
+require "cheffish/node_properties"

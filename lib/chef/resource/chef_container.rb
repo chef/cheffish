@@ -1,6 +1,6 @@
-require 'cheffish'
-require 'cheffish/base_resource'
-require 'chef/chef_fs/data_handler/container_data_handler'
+require "cheffish"
+require "cheffish/base_resource"
+require "chef/chef_fs/data_handler/container_data_handler"
 
 class Chef
   class Resource
@@ -47,7 +47,7 @@ class Chef
         end
 
         def keys
-          { 'containername' => :chef_container_name, 'containerpath' => :chef_container_name }
+          { "containername" => :chef_container_name, "containerpath" => :chef_container_name }
         end
       end
     end

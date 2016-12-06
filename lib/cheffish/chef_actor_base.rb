@@ -1,5 +1,5 @@
-require 'cheffish/key_formatter'
-require 'cheffish/base_resource'
+require "cheffish/key_formatter"
+require "cheffish/base_resource"
 
 module Cheffish
   class ChefActorBase < Cheffish::BaseResource
@@ -11,7 +11,7 @@ module Cheffish
         end
 
         # Create or update the client/user
-        current_public_key = new_json['public_key']
+        current_public_key = new_json["public_key"]
         differences = json_differences(current_json, new_json)
         if current_resource_exists?
           # Update the actor if it's different
@@ -19,7 +19,7 @@ module Cheffish
             description = [ "update #{actor_type} #{new_resource.name} at #{actor_path}" ] + differences
             converge_by description do
               result = rest.put("#{actor_path}/#{new_resource.name}", normalize_for_put(new_json))
-              current_public_key, current_public_key_format = Cheffish::KeyFormatter.decode(result['public_key']) if result['public_key']
+              current_public_key, current_public_key_format = Cheffish::KeyFormatter.decode(result["public_key"]) if result["public_key"]
             end
           end
         else
@@ -30,7 +30,7 @@ module Cheffish
           description = [ "create #{actor_type} #{new_resource.name} at #{actor_path}" ] + differences
           converge_by description do
             result = rest.post("#{actor_path}", normalize_for_post(new_json))
-            current_public_key, current_public_key_format = Cheffish::KeyFormatter.decode(result['public_key']) if result['public_key']
+            current_public_key, current_public_key_format = Cheffish::KeyFormatter.decode(result["public_key"]) if result["public_key"]
           end
         end
 
@@ -39,9 +39,9 @@ module Cheffish
           # TODO use inline_resource
           key_content = Cheffish::KeyFormatter.encode(current_public_key, { :format => new_resource.output_key_format })
           if !current_resource.output_key_path
-            action = 'create'
+            action = "create"
           elsif key_content != IO.read(current_resource.output_key_path)
-            action = 'overwrite'
+            action = "overwrite"
           else
             action = nil
           end
@@ -109,7 +109,7 @@ module Cheffish
 
       def augment_new_json(json)
         if new_public_key
-          json['public_key'] = new_public_key.to_pem
+          json["public_key"] = new_public_key.to_pem
         end
         json
       end

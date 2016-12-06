@@ -1,13 +1,13 @@
-require 'cheffish/version'
-require 'chef/dsl/recipe'
-require 'chef/event_dispatch/base'
-require 'chef/event_dispatch/dispatcher'
-require 'chef/node'
-require 'chef/run_context'
-require 'chef/runner'
-require 'forwardable'
-require 'chef/providers'
-require 'chef/resources'
+require "cheffish/version"
+require "chef/dsl/recipe"
+require "chef/event_dispatch/base"
+require "chef/event_dispatch/dispatcher"
+require "chef/node"
+require "chef/run_context"
+require "chef/runner"
+require "forwardable"
+require "chef/providers"
+require "chef/resources"
 
 module Cheffish
   class BasicChefClient
@@ -16,8 +16,8 @@ module Cheffish
     def initialize(node = nil, events = nil, **chef_config)
       if !node
         node = Chef::Node.new
-        node.name 'basic_chef_client'
-        node.automatic[:platform] = 'basic_chef_client'
+        node.name "basic_chef_client"
+        node.automatic[:platform] = "basic_chef_client"
         node.automatic[:platform_version] = Cheffish::VERSION
       end
 
@@ -25,7 +25,7 @@ module Cheffish
       @chef_config = chef_config
 
       with_chef_config do
-        @cookbook_name = 'basic_chef_client'
+        @cookbook_name = "basic_chef_client"
         @event_catcher = BasicChefClientEvents.new
         dispatcher = Chef::EventDispatch::Dispatcher.new(@event_catcher)
         case events
@@ -37,7 +37,7 @@ module Cheffish
         end
         @run_context = Chef::RunContext.new(node, {}, dispatcher)
         @updated = []
-        @cookbook_name = 'basic_chef_client'
+        @cookbook_name = "basic_chef_client"
       end
     end
 
@@ -58,7 +58,7 @@ module Cheffish
 
     def load_block(&block)
       with_chef_config do
-        @recipe_name = 'block'
+        @recipe_name = "block"
         instance_eval(&block)
       end
     end
@@ -79,7 +79,7 @@ module Cheffish
 
     # Builds a resource sans context, which can be later used in a new client's
     # add_resource() method.
-    def self.build_resource(type, name, created_at=nil, &resource_attrs_block)
+    def self.build_resource(type, name, created_at = nil, &resource_attrs_block)
       created_at ||= caller[0]
       result = BasicChefClient.new.tap do |client|
         client.with_chef_config do
@@ -129,7 +129,7 @@ module Cheffish
       # end
       begin
         deep_merge_config(chef_config, Chef::Config)
-        block.call
+        yield
       ensure
         # $stdout = old_stdout if chef_config[:stdout]
         # $stderr = old_stderr if chef_config[:stderr]

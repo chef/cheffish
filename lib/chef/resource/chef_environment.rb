@@ -1,7 +1,7 @@
-require 'cheffish'
-require 'cheffish/base_resource'
-require 'chef/environment'
-require 'chef/chef_fs/data_handler/environment_data_handler'
+require "cheffish"
+require "cheffish/base_resource"
+require "chef/environment"
+require "chef/chef_fs/data_handler/environment_data_handler"
 
 class Chef
   class Resource
@@ -11,7 +11,7 @@ class Chef
       property :environment_name, Cheffish::NAME_REGEX, name_property: true
       property :description, String
       property :cookbook_versions, Hash, callbacks: {
-        "should have valid cookbook versions" => lambda { |value| Chef::Environment.validate_cookbook_versions(value) }
+        "should have valid cookbook versions" => lambda { |value| Chef::Environment.validate_cookbook_versions(value) },
       }
       property :default_attributes, Hash
       property :override_attributes, Hash
@@ -23,7 +23,7 @@ class Chef
       # end
       # default 'ip_address', :delete
       attr_reader :default_attribute_modifiers
-      def default(attribute_path, value=NOT_PASSED, &block)
+      def default(attribute_path, value = NOT_PASSED, &block)
         @default_attribute_modifiers ||= []
         if value != NOT_PASSED
           @default_attribute_modifiers << [ attribute_path, value ]
@@ -41,7 +41,7 @@ class Chef
       # end
       # override 'ip_address', :delete
       attr_reader :override_attribute_modifiers
-      def override(attribute_path, value=NOT_PASSED, &block)
+      def override(attribute_path, value = NOT_PASSED, &block)
         @override_attribute_modifiers ||= []
         if value != NOT_PASSED
           @override_attribute_modifiers << [ attribute_path, value ]
@@ -54,7 +54,6 @@ class Chef
 
       alias :attributes :default_attributes
       alias :attribute :default
-
 
       action :create do
         differences = json_differences(current_json, new_json)
@@ -97,8 +96,8 @@ class Chef
 
         def augment_new_json(json)
           # Apply modifiers
-          json['default_attributes'] = apply_modifiers(new_resource.default_attribute_modifiers, json['default_attributes'])
-          json['override_attributes'] = apply_modifiers(new_resource.override_attribute_modifiers, json['override_attributes'])
+          json["default_attributes"] = apply_modifiers(new_resource.default_attribute_modifiers, json["default_attributes"])
+          json["override_attributes"] = apply_modifiers(new_resource.override_attribute_modifiers, json["override_attributes"])
           json
         end
 
@@ -116,11 +115,11 @@ class Chef
 
         def keys
           {
-            'name' => :environment_name,
-            'description' => :description,
-            'cookbook_versions' => :cookbook_versions,
-            'default_attributes' => :default_attributes,
-            'override_attributes' => :override_attributes
+            "name" => :environment_name,
+            "description" => :description,
+            "cookbook_versions" => :cookbook_versions,
+            "default_attributes" => :default_attributes,
+            "override_attributes" => :override_attributes,
           }
         end
       end

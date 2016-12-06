@@ -1,10 +1,10 @@
-require 'chef_zero/rspec'
-require 'chef/server_api'
-require 'cheffish/rspec/repository_support'
-require 'uri'
-require 'cheffish/chef_run'
-require 'cheffish/rspec/recipe_run_wrapper'
-require 'cheffish/rspec/matchers'
+require "chef_zero/rspec"
+require "chef/server_api"
+require "cheffish/rspec/repository_support"
+require "uri"
+require "cheffish/chef_run"
+require "cheffish/rspec/recipe_run_wrapper"
+require "cheffish/rspec/matchers"
 
 module Cheffish
   module RSpec
@@ -19,7 +19,7 @@ module Cheffish
       end
 
       def when_the_chef_12_server(*args, **options, &block)
-        if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
+        if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
           when_the_chef_server(*args, :osc_compat => false, :single_org => false, **options, &block)
         end
       end
@@ -37,7 +37,7 @@ module Cheffish
         end
 
         def get(path, *args)
-          if path[0] == '/'
+          if path[0] == "/"
             path = URI.join(rest.url, path)
           end
           rest.get(path, *args)
@@ -47,17 +47,17 @@ module Cheffish
           {}
         end
 
-        def expect_recipe(str=nil, file=nil, line=nil, &recipe)
+        def expect_recipe(str = nil, file = nil, line = nil, &recipe)
           r = recipe(str, file, line, &recipe)
           r.converge
           expect(r)
         end
 
-        def expect_converge(str=nil, file=nil, line=nil, &recipe)
+        def expect_converge(str = nil, file = nil, line = nil, &recipe)
           expect { converge(str, file, line, &recipe) }
         end
 
-        def recipe(str=nil, file=nil, line=nil, &recipe)
+        def recipe(str = nil, file = nil, line = nil, &recipe)
           if !recipe
             if file && line
               recipe = proc { eval(str, nil, file, line) }
@@ -68,7 +68,7 @@ module Cheffish
           RecipeRunWrapper.new(chef_config, &recipe)
         end
 
-        def converge(str=nil, file=nil, line=nil, &recipe)
+        def converge(str = nil, file = nil, line = nil, &recipe)
           r = recipe(str, file, line, &recipe)
           r.converge
           r

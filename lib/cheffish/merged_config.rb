@@ -60,7 +60,7 @@ module Cheffish
     alias_method :has_key?, :key?
 
     def keys
-      configs.map { |c| c.keys }.flatten(1).uniq
+      configs.flat_map { |c| c.keys }.uniq
     end
 
     def values

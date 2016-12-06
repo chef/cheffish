@@ -18,14 +18,22 @@ script:
   - bundle exec rake build
   - bundle exec rake spec
 
-# Add builds that work with specific chefs
-# 12.4 is not specifically included because the *default* version is "latest release"
+
 matrix:
   include:
-    - env: "GEMFILE_MOD=\"gem 'chef', github: 'chef/chef'\""
-      rvm: 2.2.5
-    - env: "GEMFILE_MOD=\"gem 'chef', github: 'chef/chef'\""
-      rvm: 2.3.1
+    - rvm: 2.2.6
+      env: "GEMFILE_MOD=\"gem 'chef', github: 'chef/chef'\""
+    - rvm: 2.3.3
+      env: "GEMFILE_MOD=\"gem 'chef', github: 'chef/chef'\""
+    - rvm: ruby-head
+      env: "GEMFILE_MOD=\"gem 'chef', github: 'chef/chef'\""
+    - rvm: 2.3.3
+      env:
+        CHEFSTYLE: 1
+      script: bundle exec rake style
+  allow_failures:
+    - rvm: ruby-head
+      env: "GEMFILE_MOD=\"gem 'chef', github: 'chef/chef'\""
 
 notifications:
   slack:

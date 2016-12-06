@@ -1,7 +1,7 @@
-require 'cheffish'
-require 'cheffish/base_resource'
-require 'chef/chef_fs/data_handler/node_data_handler'
-require 'cheffish/node_properties'
+require "cheffish"
+require "cheffish/base_resource"
+require "chef/chef_fs/data_handler/node_data_handler"
+require "cheffish/node_properties"
 
 class Chef
   class Resource
@@ -51,14 +51,14 @@ class Chef
 
         def augment_new_json(json)
           # Preserve tags even if "attributes" was overwritten directly
-          json['normal']['tags'] = current_json['normal']['tags'] unless json['normal']['tags']
+          json["normal"]["tags"] = current_json["normal"]["tags"] unless json["normal"]["tags"]
           # Apply modifiers
-          json['run_list'] = apply_run_list_modifiers(new_resource.run_list_modifiers, new_resource.run_list_removers, json['run_list'])
-          json['normal'] = apply_modifiers(new_resource.attribute_modifiers, json['normal'])
+          json["run_list"] = apply_run_list_modifiers(new_resource.run_list_modifiers, new_resource.run_list_removers, json["run_list"])
+          json["normal"] = apply_modifiers(new_resource.attribute_modifiers, json["normal"])
           # Preserve default/override/automatic even when "complete true"
-          json['default'] = current_json['default']
-          json['override'] = current_json['override']
-          json['automatic'] = current_json['automatic']
+          json["default"] = current_json["default"]
+          json["override"] = current_json["override"]
+          json["automatic"] = current_json["automatic"]
           json
         end
 
@@ -76,10 +76,10 @@ class Chef
 
         def keys
           {
-            'name' => :name,
-            'chef_environment' => :chef_environment,
-            'run_list' => :run_list,
-            'normal' => :attributes
+            "name" => :name,
+            "chef_environment" => :chef_environment,
+            "run_list" => :run_list,
+            "normal" => :attributes,
           }
         end
       end

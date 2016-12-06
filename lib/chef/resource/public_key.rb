@@ -1,7 +1,7 @@
-require 'openssl/cipher'
-require 'cheffish/base_resource'
-require 'openssl'
-require 'cheffish/key_formatter'
+require "openssl/cipher"
+require "cheffish/base_resource"
+require "openssl"
+require "cheffish/key_formatter"
 
 class Chef
   class Resource
@@ -22,7 +22,6 @@ class Chef
       def load_prior_resource(*args)
         Chef::Log.debug("Overloading #{resource_name}.load_prior_resource with NOOP")
       end
-
 
       action :create do
         if !new_source_key
@@ -68,10 +67,10 @@ class Chef
             end
 
             if source_key.private?
-              @new_source_key_publicity = 'private'
+              @new_source_key_publicity = "private"
               source_key.public_key
             else
-              @new_source_key_publicity = 'public'
+              @new_source_key_publicity = "public"
               source_key
             end
           end

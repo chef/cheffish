@@ -1,10 +1,10 @@
-require 'cheffish'
-require 'cheffish/base_resource'
-require 'chef/chef_fs/file_pattern'
-require 'chef/chef_fs/file_system'
-require 'chef/chef_fs/parallelizer'
-require 'chef/chef_fs/file_system/chef_server_root_dir'
-require 'chef/chef_fs/file_system/chef_repository_file_system_root_dir'
+require "cheffish"
+require "cheffish/base_resource"
+require "chef/chef_fs/file_pattern"
+require "chef/chef_fs/file_system"
+require "chef/chef_fs/parallelizer"
+require "chef/chef_fs/file_system/chef_server_root_dir"
+require "chef/chef_fs/file_system/chef_repository_file_system_root_dir"
 
 class Chef
   class Resource
@@ -56,7 +56,6 @@ class Chef
       # Number of parallel threads to list/upload/download with.  Defaults to 10.
       property :concurrency, Integer, default: 10, desired_state: false
 
-
       action :upload do
         with_modified_config do
           copy_to(local_fs, remote_fs)
@@ -101,7 +100,7 @@ class Chef
 
           # We don't let the user pass absolute paths; we want to reserve those for
           # multi-org support (/organizations/foo).
-          if new_resource.path[0] == '/'
+          if new_resource.path[0] == "/"
             raise "Absolute paths in chef_mirror not yet supported."
           end
           # Copy!
@@ -131,10 +130,10 @@ class Chef
 
           # Go through the expected object paths and figure out the local paths for each.
           case repo_mode
-          when 'hosted_everything'
-            object_names = %w(acls clients cookbooks containers data_bags environments groups nodes roles)
+          when "hosted_everything"
+            object_names = %w{acls clients cookbooks containers data_bags environments groups nodes roles}
           else
-            object_names = %w(clients cookbooks data_bags environments nodes roles users)
+            object_names = %w{clients cookbooks data_bags environments nodes roles users}
           end
 
           object_paths = {}
@@ -158,13 +157,13 @@ class Chef
             :node_name => new_resource.chef_server[:options][:client_name],
             :client_key => new_resource.chef_server[:options][:signing_key_filename],
             :repo_mode => repo_mode,
-            :versioned_cookbooks => Chef::Config.versioned_cookbooks
+            :versioned_cookbooks => Chef::Config.versioned_cookbooks,
           }
           Chef::ChefFS::FileSystem::ChefServerRootDir.new("remote", config)
         end
 
         def repo_mode
-          new_resource.chef_server[:chef_server_url] =~ /\/organizations\// ? 'hosted_everything' : 'everything'
+          new_resource.chef_server[:chef_server_url] =~ /\/organizations\// ? "hosted_everything" : "everything"
         end
 
         def options
@@ -172,7 +171,7 @@ class Chef
             :purge => new_resource.purge,
             :freeze => new_resource.freeze_on_upload,
             :diff => new_resource.no_diff,
-            :dry_run => whyrun_mode?
+            :dry_run => whyrun_mode?,
           }
           result[:diff] = !result[:diff]
           result[:repo_mode] = repo_mode
@@ -199,10 +198,12 @@ class Chef
             mirror.converge_by str do
             end
           end
+
           def warn(str)
             mirror.converge_by "WARNING: #{str}" do
             end
           end
+
           def error(str)
             mirror.converge_by "ERROR: #{str}" do
             end

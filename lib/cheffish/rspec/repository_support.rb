@@ -12,9 +12,9 @@ module Cheffish
       ::RSpec.shared_context "with a chef repo" do
         before :each do
           raise "Can only create one directory per test" if @repository_dir
-          @repository_dir = Dir.mktmpdir('chef_repo')
+          @repository_dir = Dir.mktmpdir("chef_repo")
           Chef::Config.chef_repo_path = @repository_dir
-          %w(client cookbook data_bag environment node role user).each do |object_name|
+          %w{client cookbook data_bag environment node role user}.each do |object_name|
             Chef::Config.delete("#{object_name}_path".to_sym)
           end
         end
@@ -22,7 +22,7 @@ module Cheffish
         after :each do
           if @repository_dir
             begin
-              %w(client cookbook data_bag environment node role user).each do |object_name|
+              %w{client cookbook data_bag environment node role user}.each do |object_name|
                 Chef::Config.delete("#{object_name}_path".to_sym)
               end
               Chef::Config.delete(:chef_repo_path)
@@ -45,8 +45,8 @@ module Cheffish
         def file(relative_path, contents)
           filename = path_to(relative_path)
           dir = File.dirname(filename)
-          FileUtils.mkdir_p(dir) unless dir == '.'
-          File.open(filename, 'w') do |file|
+          FileUtils.mkdir_p(dir) unless dir == "."
+          File.open(filename, "w") do |file|
             raw = case contents
                   when Hash, Array
                     JSON.pretty_generate(contents)
@@ -60,7 +60,7 @@ module Cheffish
         def symlink(relative_path, relative_dest)
           filename = path_to(relative_path)
           dir = File.dirname(filename)
-          FileUtils.mkdir_p(dir) unless dir == '.'
+          FileUtils.mkdir_p(dir) unless dir == "."
           dest_filename = path_to(relative_dest)
           File.symlink(dest_filename, filename)
         end

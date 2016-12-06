@@ -1,2 +1,2 @@
-name    'cheffish'
-version '0.9.2'
+name    "cheffish"
+version "0.9.2"

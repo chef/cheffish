@@ -1,8 +1,8 @@
-require 'cheffish'
-require 'cheffish/base_resource'
-require 'chef/chef_fs/data_handler/acl_data_handler'
-require 'chef/chef_fs/parallelizer'
-require 'uri'
+require "cheffish"
+require "cheffish/base_resource"
+require "chef/chef_fs/data_handler/acl_data_handler"
+require "chef/chef_fs/parallelizer"
+require "uri"
 
 class Chef
   class Resource
@@ -65,7 +65,7 @@ class Chef
 
         # Find all matching paths so we can update them (resolve * and **)
         paths = match_paths(new_resource.path)
-        if paths.size == 0 && !new_resource.path.split('/').any? { |p| p == '*' }
+        if paths.size == 0 && !new_resource.path.split("/").any? { |p| p == "*" }
           raise "Path #{new_resource.path} cannot have an ACL set on it!"
         end
 
@@ -95,7 +95,7 @@ class Chef
 
                 if differences.size > 0
                   # Verify we aren't trying to destroy grant permissions
-                  if permission == 'grant' && desired_json['actors'] == [] && desired_json['groups'] == []
+                  if permission == "grant" && desired_json["actors"] == [] && desired_json["groups"] == []
                     # NOTE: if superusers exist, this should turn into a warning.
                     raise "chef_acl attempted to remove all actors from GRANT!  I'm sorry Dave, I can't let you remove access to an object with no hope of recovery."
                   end
@@ -106,9 +106,9 @@ class Chef
 
               if modify.size > 0
                 changed = true
-                description = [ "update acl #{path} at #{rest_url(path)}" ] + modify.map do |diffs, permissions|
+                description = [ "update acl #{path} at #{rest_url(path)}" ] + modify.flat_map do |diffs, permissions|
                   diffs.map { |diff| "  #{permissions.keys.join(', ')}:#{diff}" }
-                end.flatten(1)
+                end
                 converge_by description do
                   modify.values.each do |permissions|
                     permissions.each do |permission, desired_json|
@@ -124,14 +124,14 @@ class Chef
           # If recurse is on_change, then we will recurse if there is no ACL, or if
           # the ACL has changed.
           if new_resource.recursive == true || (new_resource.recursive == :on_change && (!acl || changed))
-            children, error = list(path, '*')
+            children, error = list(path, "*")
             Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
-              next if child.split('/')[-1] == 'containers'
+              next if child.split("/")[-1] == "containers"
               create_acl(child)
             end
             # containers mess up our descent, so we do them last
             Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
-              next if child.split('/')[-1] != 'containers'
+              next if child.split("/")[-1] != "containers"
               create_acl(child)
             end
 
@@ -145,7 +145,7 @@ class Chef
             @current_acls[acl_path] = begin
               rest.get(rest_url(acl_path))
             rescue Net::HTTPServerException => e
-              unless e.response.code == '404' && new_resource.path.split('/').any? { |p| p == '*' }
+              unless e.response.code == "404" && new_resource.path.split("/").any? { |p| p == "*" }
                 raise
               end
             end
@@ -212,16 +212,16 @@ class Chef
                 #    => 'foo' instead, idempotence will not notice that anything needs
                 #    to be updated and nothing will happen.
                 if rights[:users]
-                  ace['actors'] ||= []
-                  ace['actors'] |= Array(rights[:users])
+                  ace["actors"] ||= []
+                  ace["actors"] |= Array(rights[:users])
                 end
                 if rights[:clients]
-                  ace['actors'] ||= []
-                  ace['actors'] |= Array(rights[:clients])
+                  ace["actors"] ||= []
+                  ace["actors"] |= Array(rights[:clients])
                 end
                 if rights[:groups]
-                  ace['groups'] ||= []
-                  ace['groups'] |= Array(rights[:groups])
+                  ace["groups"] ||= []
+                  ace["groups"] |= Array(rights[:groups])
                 end
               end
             end
@@ -235,16 +235,16 @@ class Chef
                 if permission == :all
                   json.each_key do |key|
                     ace = json[key] = json[key.dup]
-                    ace['actors'] = ace['actors'] - Array(rights[:users])   if rights[:users]   && ace['actors']
-                    ace['actors'] = ace['actors'] - Array(rights[:clients]) if rights[:clients] && ace['actors']
-                    ace['groups'] = ace['groups'] - Array(rights[:groups])  if rights[:groups]  && ace['groups']
+                    ace["actors"] = ace["actors"] - Array(rights[:users])   if rights[:users]   && ace["actors"]
+                    ace["actors"] = ace["actors"] - Array(rights[:clients]) if rights[:clients] && ace["actors"]
+                    ace["groups"] = ace["groups"] - Array(rights[:groups])  if rights[:groups]  && ace["groups"]
                   end
                 else
                   ace = json[permission.to_s] = json[permission.to_s].dup
                   if ace
-                    ace['actors'] = ace['actors'] - Array(rights[:users])   if rights[:users]   && ace['actors']
-                    ace['actors'] = ace['actors'] - Array(rights[:clients]) if rights[:clients] && ace['actors']
-                    ace['groups'] = ace['groups'] - Array(rights[:groups])  if rights[:groups]  && ace['groups']
+                    ace["actors"] = ace["actors"] - Array(rights[:users])   if rights[:users]   && ace["actors"]
+                    ace["actors"] = ace["actors"] - Array(rights[:clients]) if rights[:clients] && ace["actors"]
+                    ace["groups"] = ace["groups"] - Array(rights[:groups])  if rights[:groups]  && ace["groups"]
                   end
                 end
               end
@@ -270,17 +270,17 @@ class Chef
         def match_paths(path)
           # Turn multiple slashes into one
           # nodes//x -> nodes/x
-          path = path.gsub(/[\/]+/, '/')
+          path = path.gsub(/[\/]+/, "/")
           # If it's absolute, start the matching with /.  If it's relative, start with '' (relative root).
-          if path[0] == '/'
-            matches = [ '/' ]
+          if path[0] == "/"
+            matches = [ "/" ]
           else
-            matches = [ '' ]
+            matches = [ "" ]
           end
 
           # Split the path, and get rid of the empty path at the beginning and end
           # (/a/b/c/ -> [ 'a', 'b', 'c' ])
-          parts = path.split('/').select { |x| x != '' }.to_a
+          parts = path.split("/").select { |x| x != "" }.to_a
 
           # Descend until we find the matches:
           # path = 'a/b/c'
@@ -302,7 +302,7 @@ class Chef
             matches = Chef::ChefFS::Parallelizer.parallelize(matches) do |path|
               found, error = list(path, part)
               if error
-                if parts[0..index-1].all? { |p| p != '*' }
+                if parts[0..index - 1].all? { |p| p != "*" }
                   raise error
                 end
                 []
@@ -326,56 +326,56 @@ class Chef
         # /organizations/foo/nodes/x -> /organizations/foo/nodes/x/_acl
         #
         def acl_path(path)
-          parts = path.split('/').select { |x| x != '' }.to_a
-          prefix = (path[0] == '/') ? '/' : ''
+          parts = path.split("/").select { |x| x != "" }.to_a
+          prefix = (path[0] == "/") ? "/" : ""
 
           case parts.size
           when 0
             # /, empty (relative root)
             # The root of the server has no publicly visible ACLs.  Only nodes/*, etc.
-            if prefix == ''
-              ::File.join('organizations', '_acl')
+            if prefix == ""
+              ::File.join("organizations", "_acl")
             end
 
           when 1
             # nodes, roles, etc.
             # The top level organizations and users containers have no publicly
             # visible ACLs.  Only nodes/*, etc.
-            if prefix == ''
-              ::File.join('containers', path, '_acl')
+            if prefix == ""
+              ::File.join("containers", path, "_acl")
             end
 
           when 2
             # /organizations/NAME, /users/NAME, nodes/NAME, roles/NAME, etc.
-            if prefix == '/' && parts[0] == 'organizations'
-              ::File.join(path, 'organizations', '_acl')
+            if prefix == "/" && parts[0] == "organizations"
+              ::File.join(path, "organizations", "_acl")
             else
-              ::File.join(path, '_acl')
+              ::File.join(path, "_acl")
             end
 
           when 3
             # /organizations/NAME/nodes, cookbooks/NAME/VERSION, etc.
-            if prefix == '/'
-              ::File.join('/', parts[0], parts[1], 'containers', parts[2], '_acl')
+            if prefix == "/"
+              ::File.join("/", parts[0], parts[1], "containers", parts[2], "_acl")
             else
-              ::File.join(parts[0], parts[1], '_acl')
+              ::File.join(parts[0], parts[1], "_acl")
             end
 
           when 4
             # /organizations/NAME/nodes/NAME, cookbooks/NAME/VERSION/BLAH
             # /organizations/NAME/nodes/NAME, cookbooks/NAME/VERSION, etc.
-            if prefix == '/'
-              ::File.join(path, '_acl')
+            if prefix == "/"
+              ::File.join(path, "_acl")
             else
-              ::File.join(parts[0], parts[1], '_acl')
+              ::File.join(parts[0], parts[1], "_acl")
             end
 
           else
             # /organizations/NAME/cookbooks/NAME/VERSION/..., cookbooks/NAME/VERSION/A/B/...
-            if prefix == '/'
-              ::File.join('/', parts[0], parts[1], parts[2], parts[3], '_acl')
+            if prefix == "/"
+              ::File.join("/", parts[0], parts[1], parts[2], parts[3], "_acl")
             else
-              ::File.join(parts[0], parts[1], '_acl')
+              ::File.join(parts[0], parts[1], "_acl")
             end
           end
         end
@@ -398,9 +398,9 @@ class Chef
         #
         def list(path, child)
           # TODO make ChefFS understand top level organizations and stop doing this altogether.
-          parts = path.split('/').select { |x| x != '' }.to_a
-          absolute = (path[0] == '/')
-          if absolute && parts[0] == 'organizations'
+          parts = path.split("/").select { |x| x != "" }.to_a
+          absolute = (path[0] == "/")
+          if absolute && parts[0] == "organizations"
             return [ [], "ACLs cannot be set on children of #{path}" ] if parts.size > 3
           else
             return [ [], "ACLs cannot be set on children of #{path}" ] if parts.size > 1
@@ -408,7 +408,7 @@ class Chef
 
           error = nil
 
-          if child == '*'
+          if child == "*"
             case parts.size
             when 0
               # /*, *
@@ -427,7 +427,7 @@ class Chef
 
             when 2
               # /organizations/NAME/*
-              results, error = rest_list(::File.join(path, 'containers'))
+              results, error = rest_list(::File.join(path, "containers"))
               if !error
                 results = results.map { |result| ::File.join(path, result) }
               end
@@ -441,14 +441,14 @@ class Chef
             end
 
           else
-            if child == 'data_bags' &&
-              (parts.size == 0 || (parts.size == 2 && parts[0] == 'organizations'))
-              child = 'data'
+            if child == "data_bags" &&
+                (parts.size == 0 || (parts.size == 2 && parts[0] == "organizations"))
+              child = "data"
             end
 
             if absolute
               # /<child>, /users/<child>, /organizations/<child>, /organizations/foo/<child>, /organizations/foo/nodes/<child> ...
-              results = [ ::File.join('/', parts[0..2], child) ]
+              results = [ ::File.join("/", parts[0..2], child) ]
             elsif parts.size == 0
               # <child> (nodes, roles, etc.)
               results = [ child ]
@@ -462,7 +462,7 @@ class Chef
         end
 
         def rest_url(path)
-          path[0] == '/' ? URI.join(rest.url, path) : path
+          path[0] == "/" ? URI.join(rest.url, path) : path
         end
 
         def rest_list(path)
@@ -470,12 +470,12 @@ class Chef
             # All our rest lists are hashes where the keys are the names
             [ rest.get(rest_url(path)).keys, nil ]
           rescue Net::HTTPServerException => e
-            if e.response.code == '405' || e.response.code == '404'
-              parts = path.split('/').select { |p| p != '' }.to_a
+            if e.response.code == "405" || e.response.code == "404"
+              parts = path.split("/").select { |p| p != "" }.to_a
 
               # We KNOW we expect these to exist.  Other containers may or may not.
-              unless (parts.size == 1 || (parts.size == 3 && parts[0] == 'organizations')) &&
-                %w(clients containers cookbooks data environments groups nodes roles).include?(parts[-1])
+              unless (parts.size == 1 || (parts.size == 3 && parts[0] == "organizations")) &&
+                  %w{clients containers cookbooks data environments groups nodes roles}.include?(parts[-1])
                 return [ [], "Cannot get list of #{path}: HTTP response code #{e.response.code}" ]
               end
             end

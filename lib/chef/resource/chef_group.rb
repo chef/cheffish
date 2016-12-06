@@ -1,7 +1,7 @@
-require 'cheffish'
-require 'cheffish/base_resource'
-require 'chef/run_list/run_list_item'
-require 'chef/chef_fs/data_handler/group_data_handler'
+require "cheffish"
+require "cheffish/base_resource"
+require "chef/run_list/run_list_item"
+require "chef/chef_fs/data_handler/group_data_handler"
 
 class Chef
   class Resource
@@ -57,12 +57,12 @@ class Chef
 
         def augment_new_json(json)
           # Apply modifiers
-          json['users']   |= new_resource.users
-          json['clients'] |= new_resource.clients
-          json['groups']  |= new_resource.groups
-          json['users']   -= new_resource.remove_users
-          json['clients'] -= new_resource.remove_clients
-          json['groups']  -= new_resource.remove_groups
+          json["users"]   |= new_resource.users
+          json["clients"] |= new_resource.clients
+          json["groups"]  |= new_resource.groups
+          json["users"]   -= new_resource.remove_users
+          json["clients"] -= new_resource.remove_clients
+          json["groups"]  -= new_resource.remove_groups
           json
         end
 
@@ -80,8 +80,8 @@ class Chef
 
         def keys
           {
-            'name' => :group_name,
-            'groupname' => :group_name
+            "name" => :group_name,
+            "groupname" => :group_name,
           }
         end
       end

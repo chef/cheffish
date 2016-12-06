@@ -1,5 +1,5 @@
-require 'cheffish'
-require 'cheffish/base_resource'
+require "cheffish"
+require "cheffish/base_resource"
 
 class Chef
   class Resource
@@ -11,7 +11,7 @@ class Chef
       action :create do
         if !current_resource_exists?
           converge_by "create data bag #{new_resource.data_bag_name} at #{rest.url}" do
-            rest.post("data", { 'name' => new_resource.data_bag_name })
+            rest.post("data", { "name" => new_resource.data_bag_name })
           end
         end
       end
@@ -47,7 +47,7 @@ class Chef
         end
 
         def json_to_resource(json)
-          Chef::Resource::ChefDataBag.new(json['name'], run_context)
+          Chef::Resource::ChefDataBag.new(json["name"], run_context)
         end
       end
     end
