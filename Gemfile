@@ -7,6 +7,7 @@ group :changelog do
 end
 
 group :development do
+  gem "chefstyle"
   gem "rake"
   gem "rspec", "~> 3.0"
 end
