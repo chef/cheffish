@@ -29,7 +29,7 @@ module Cheffish
           # 12.3-ish resource or we want to call a `let` variable.
           #
           @client.instance_eval { @rspec_example = example }
-          def @client.method_missing(name, *args, &block)
+          def @client.method_missing(name, *args, &block) # rubocop:disable Lint/NestedMethodDefinition
             # If there is a let variable, call it. This is because in 12.4,
             # the parent class is going to call respond_to?(name) to find out
             # if someone was doing weird things, and then call send(). This
@@ -58,7 +58,7 @@ module Cheffish
 
           # This is called by respond_to?, and is required to make sure the
           # resource knows that we will in fact call the given method.
-          def @client.respond_to_missing?(name, include_private = false)
+          def @client.respond_to_missing?(name, include_private = false) # rubocop:disable Lint/NestedMethodDefinition
             @rspec_example.respond_to?(name, include_private) || super
           end
 
@@ -66,7 +66,7 @@ module Cheffish
           # will hook resources up to the example let variables as well (via
           # enclosing_provider).
           # Please don't hurt me
-          def @client.is_a?(klass)
+          def @client.is_a?(klass) # rubocop:disable Lint/NestedMethodDefinition
             klass == Chef::Provider || super(klass)
           end
 

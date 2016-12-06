@@ -90,20 +90,20 @@ class Chef
             #
             if current_resource.action == [ :delete ] || regenerate ||
                 (new_resource.regenerate_if_different &&
-                  (!current_private_key ||
-                   current_resource.size != new_resource.size ||
-                   current_resource.type != new_resource.type))
+                 (!current_private_key ||
+                  current_resource.size != new_resource.size ||
+                  current_resource.type != new_resource.type))
 
               case new_resource.type
-               when :rsa
-                 if new_resource.exponent
-                   final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size, new_resource.exponent)
-                 else
-                   final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size)
-                 end
-               when :dsa
-                 final_private_key = OpenSSL::PKey::DSA.generate(new_resource.size)
-               end
+              when :rsa
+                if new_resource.exponent
+                  final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size, new_resource.exponent)
+                else
+                  final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size)
+                end
+              when :dsa
+                final_private_key = OpenSSL::PKey::DSA.generate(new_resource.size)
+              end
 
               generated_key = true
             elsif !current_private_key
@@ -179,18 +179,18 @@ class Chef
 
         def new_source_key
           @new_source_key ||= begin
-            if new_resource.source_key.is_a?(String)
-              source_key, source_key_format = Cheffish::KeyFormatter.decode(new_resource.source_key, new_resource.source_key_pass_phrase)
-              source_key
-            elsif new_resource.source_key
-              new_resource.source_key
-            elsif new_resource.source_key_path
-              source_key, source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
-              source_key
-            else
-              nil
-            end
-          end
+                                if new_resource.source_key.is_a?(String)
+                                  source_key, source_key_format = Cheffish::KeyFormatter.decode(new_resource.source_key, new_resource.source_key_pass_phrase)
+                                  source_key
+                                elsif new_resource.source_key
+                                  new_resource.source_key
+                                elsif new_resource.source_key_path
+                                  source_key, source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
+                                  source_key
+                                else
+                                  nil
+                                end
+                              end
         end
 
         attr_reader :current_private_key

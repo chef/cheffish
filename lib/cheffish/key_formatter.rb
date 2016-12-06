@@ -69,8 +69,6 @@ module Cheffish
       end
     end
 
-    private
-
     def self.encode_openssh_key(key)
       # TODO there really isn't a method somewhere in net/ssh or openssl that does this??
       type = key.ssh_type
@@ -85,7 +83,7 @@ module Cheffish
     def self.format_of(key_contents)
       if key_contents.start_with?("-----BEGIN ")
         :pem
-      elsif key_contents.start_with?("ssh-rsa ") || key_contents.start_with?("ssh-dss ")
+      elsif key_contents.start_with?("ssh-rsa ", "ssh-dss ")
         :openssh
       else
         :der
