@@ -33,7 +33,21 @@ class Chef
       property :purge, Boolean
 
       # Whether to freeze cookbooks on upload
-      property :freeze, Boolean
+      property :freeze_on_upload, Boolean
+
+      # `freeze` is an already-existing instance method on Object, so we can't use it or we'll throw
+      # a deprecation warning. `freeze` has been renamed to `freeze_on_upload` and this method
+      # is here to log a deprecation warning.
+      def freeze(arg = nil)
+        Chef::Log.warn("Property `freeze` on the `chef_mirror` resource has changed to `freeze_on_upload`." \
+          "Please use `freeze_on_upload` instead. This will raise an exception in a future version of the cheffish gem.")
+
+        set_or_return(
+          :freeze_on_upload,
+          arg,
+          :kind_of => Boolean
+        )
+      end
 
       # If this is true, only new files will be copied.  File contents will not be
       # diffed, so changed files will never be uploaded.
@@ -156,7 +170,7 @@ class Chef
         def options
           result = {
             :purge => new_resource.purge,
-            :freeze => new_resource.freeze,
+            :freeze => new_resource.freeze_on_upload,
             :diff => new_resource.no_diff,
             :dry_run => whyrun_mode?
           }

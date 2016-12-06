@@ -7,7 +7,7 @@ class Chef
       resource_name :chef_user
 
       # Client attributes
-      property :name, Cheffish::NAME_REGEX, name_property: true
+      property :user_name, Cheffish::NAME_REGEX, name_property: true
       property :display_name, String
       property :admin, Boolean
       property :email, String
@@ -70,8 +70,8 @@ class Chef
 
         def keys
           {
-            'name' => :name,
-            'username' => :name,
+            'name' => :user_name,
+            'username' => :user_name,
             'display_name' => :display_name,
             'admin' => :admin,
             'email' => :email,
