@@ -3,8 +3,8 @@ require "cheffish/base_resource"
 require "chef/chef_fs/file_pattern"
 require "chef/chef_fs/file_system"
 require "chef/chef_fs/parallelizer"
-require "chef/chef_fs/file_system/chef_server_root_dir"
-require "chef/chef_fs/file_system/chef_repository_file_system_root_dir"
+require "chef/chef_fs/file_system/chef_server/chef_server_root_dir"
+require "chef/chef_fs/file_system/repository/chef_repository_file_system_root_dir"
 
 class Chef
   class Resource
@@ -148,7 +148,7 @@ class Chef
           end
 
           # Set up the root dir
-          Chef::ChefFS::FileSystem::ChefRepositoryFileSystemRootDir.new(object_paths)
+          Chef::ChefFS::FileSystem::Repository::ChefRepositoryFileSystemRootDir.new(object_paths)
         end
 
         def remote_fs
@@ -159,7 +159,7 @@ class Chef
             :repo_mode => repo_mode,
             :versioned_cookbooks => Chef::Config.versioned_cookbooks,
           }
-          Chef::ChefFS::FileSystem::ChefServerRootDir.new("remote", config)
+          Chef::ChefFS::FileSystem::ChefServer::ChefServerRootDir.new("remote", config)
         end
 
         def repo_mode
