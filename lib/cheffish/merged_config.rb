@@ -3,8 +3,8 @@ require "chef/mash"
 module Cheffish
   class MergedConfig
     def initialize(*configs)
-      @configs = configs.map { |config| Chef::Mash.from_hash config }
-      @merge_arrays = Chef::Mash.new
+      @configs = configs.map { |config| ::Mash.from_hash config }
+      @merge_arrays = ::Mash.new
     end
 
     include Enumerable
@@ -95,6 +95,14 @@ module Cheffish
 
     def to_s
       to_hash.to_s
+    end
+
+    def symbolize_keys
+      result = {}
+      each_pair do |key, value|
+        result[key.to_sym] = value
+      end
+      result
     end
   end
 end
