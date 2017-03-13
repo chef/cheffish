@@ -57,4 +57,12 @@ describe "merged_config" do
   it "merges values when they're hashes" do
     expect(config_hashes[:test].keys).to eq(%w{test test2})
   end
+
+  it "can convert to a hash" do
+    expect(config.to_h).to eq({"test"=>"val"})
+  end
+
+  it "can convert to a hash with symbol keys" do
+    expect(config.symbolize_keys).to eq({:test=>"val"})
+  end
 end
