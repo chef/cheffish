@@ -18,6 +18,7 @@ if ENV["GEMFILE_MOD"]
   instance_eval(ENV["GEMFILE_MOD"])
 else
   group :development do
-    gem "chef", git: "https://github.com/chef/chef" # until a version allowing chef-zero 5 is released
+    gem "chef", git: "https://github.com/chef/chef" # until 13 is released
+    gem "ohai", git: "https://github.com/chef/ohai" # until 13 is released
   end
 end
