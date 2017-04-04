@@ -35,7 +35,11 @@ module Cheffish
         else
           dispatcher.register(events)
         end
-        @run_context = Chef::RunContext.new(node, {}, dispatcher)
+        @run_context = if Chef::RunContext.allocate.method(:initialize).arity == 4
+                         Chef::RunContext.new(node, {}, dispatcher, Ohai::System.new)
+                       else
+                         Chef::RunContext.new(node, {}, dispatcher)
+                       end
         @updated = []
         @cookbook_name = "basic_chef_client"
       end
