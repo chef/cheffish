@@ -26,7 +26,7 @@ module Cheffish
       else
         result_configs = []
         configs.each do |config|
-          value = config[name]
+          value = config[name.to_s] || config[name.to_sym]
           if !value.nil?
             if value.respond_to?(:keys)
               result_configs << value
