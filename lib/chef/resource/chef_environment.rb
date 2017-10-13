@@ -83,14 +83,12 @@ class Chef
 
       action_class.class_eval do
         def load_current_resource
-          begin
-            @current_resource = json_to_resource(rest.get("environments/#{new_resource.environment_name}"))
-          rescue Net::HTTPServerException => e
-            if e.response.code == "404"
-              @current_resource = not_found_resource
-            else
-              raise
-            end
+          @current_resource = json_to_resource(rest.get("environments/#{new_resource.environment_name}"))
+        rescue Net::HTTPServerException => e
+          if e.response.code == "404"
+            @current_resource = not_found_resource
+          else
+            raise
           end
         end
 

@@ -466,21 +466,19 @@ class Chef
         end
 
         def rest_list(path)
-          begin
             # All our rest lists are hashes where the keys are the names
-            [ rest.get(rest_url(path)).keys, nil ]
-          rescue Net::HTTPServerException => e
-            if e.response.code == "405" || e.response.code == "404"
-              parts = path.split("/").select { |p| p != "" }.to_a
+          [ rest.get(rest_url(path)).keys, nil ]
+        rescue Net::HTTPServerException => e
+          if e.response.code == "405" || e.response.code == "404"
+            parts = path.split("/").select { |p| p != "" }.to_a
 
-              # We KNOW we expect these to exist.  Other containers may or may not.
-              unless (parts.size == 1 || (parts.size == 3 && parts[0] == "organizations")) &&
-                  %w{clients containers cookbooks data environments groups nodes roles}.include?(parts[-1])
-                return [ [], "Cannot get list of #{path}: HTTP response code #{e.response.code}" ]
-              end
+            # We KNOW we expect these to exist.  Other containers may or may not.
+            unless (parts.size == 1 || (parts.size == 3 && parts[0] == "organizations")) &&
+                %w{clients containers cookbooks data environments groups nodes roles}.include?(parts[-1])
+              return [ [], "Cannot get list of #{path}: HTTP response code #{e.response.code}" ]
             end
-            raise
           end
+          raise
         end
       end
 
