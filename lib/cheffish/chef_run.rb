@@ -86,13 +86,11 @@ module Cheffish
     end
 
     def converge
-      begin
-        client.converge
-        @converged = true
-      rescue RuntimeError => e
-        @raised_exception = e
-        raise
-      end
+      client.converge
+      @converged = true
+    rescue RuntimeError => e
+      @raised_exception = e
+      raise
     end
 
     def reset

@@ -27,14 +27,12 @@ class Chef
 
       action_class.class_eval do
         def load_current_resource
-          begin
-            @current_exists = rest.get("containers/#{new_resource.chef_container_name}")
-          rescue Net::HTTPServerException => e
-            if e.response.code == "404"
-              @current_exists = false
-            else
-              raise
-            end
+          @current_exists = rest.get("containers/#{new_resource.chef_container_name}")
+        rescue Net::HTTPServerException => e
+          if e.response.code == "404"
+            @current_exists = false
+          else
+            raise
           end
         end
 
