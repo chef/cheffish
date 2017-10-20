@@ -3,7 +3,7 @@ require "chef/mash"
 module Cheffish
   class MergedConfig
     def initialize(*configs)
-      @configs = configs.map { |config| Mash.from_hash config }
+      @configs = configs.map { |config| Mash.from_hash config.to_hash }
       @merge_arrays = Mash.new
     end
 
