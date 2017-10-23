@@ -24,6 +24,13 @@ describe "merged_config" do
     Cheffish::MergedConfig.new(c1, c2)
   end
 
+  let(:nested_config) do
+    c1 = { :test => { :test => "val" } }
+    c2 = { :test => { :test2 => "val2" } }
+    mc = Cheffish::MergedConfig.new(c2)
+    Cheffish::MergedConfig.new(c1, mc)
+  end
+
   it "returns value in config" do
     expect(config.test).to eq("val")
   end
@@ -56,5 +63,9 @@ describe "merged_config" do
 
   it "merges values when they're hashes" do
     expect(config_hashes[:test].keys).to eq(%w{test test2})
+  end
+
+  it "supports nested merged configs" do
+    expect(nested_config[:test].keys).to eq(%w{test test2})
   end
 end
