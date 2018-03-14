@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.3.3"
 
-  s.add_dependency "chef-zero", "~> 13.0"
+  s.add_dependency "chef-zero", "~> 14.0"
   s.add_dependency "net-ssh"
 
   s.bindir       = "bin"
