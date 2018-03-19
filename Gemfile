@@ -2,13 +2,8 @@ source "https://rubygems.org"
 
 gemspec
 
-group :changelog do
-  gem "github_changelog_generator"
-end
-
-
 group :development do
-  gem "chefstyle"
+  gem "chefstyle", "= 0.6.0"
   gem "rake"
   gem "rspec", "~> 3.0"
 end
@@ -19,7 +14,7 @@ if ENV["GEMFILE_MOD"]
   instance_eval(ENV["GEMFILE_MOD"])
 else
   group :development do
-    gem "chef", git: "https://github.com/chef/chef" # until 13 is released
-    gem "ohai", git: "https://github.com/chef/ohai" # until 13 is released
+    gem "chef", "~> 13"
+    gem "ohai", "~> 13"
   end
 end
