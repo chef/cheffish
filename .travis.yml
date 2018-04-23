@@ -21,10 +21,10 @@ script:
 
 matrix:
   include:
-    - rvm: 2.3.3
-    - rvm: 2.4.2
+    - rvm: 2.4.4
+    - rvm: 2.5.1
     - rvm: ruby-head
-    - rvm: 2.4.2
+    - rvm: 2.5.1
       env:
         CHEFSTYLE: 1
       script: bundle exec rake style
