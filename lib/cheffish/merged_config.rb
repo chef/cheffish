@@ -70,6 +70,10 @@ module Cheffish
       keys.map { |key| self[key] }
     end
 
+    def empty?
+      configs.empty?
+    end
+
     def each_pair(&block)
       each(&block)
     end
