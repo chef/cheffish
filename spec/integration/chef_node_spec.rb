@@ -25,7 +25,7 @@ describe Chef::Resource::ChefNode do
 
       context "and another chef server is running on port 8899" do
         before :each do
-          @server = ChefZero::Server.new(:port => 8899)
+          @server = ChefZero::Server.new(port: 8899)
           @server.start_background
         end
 
@@ -50,7 +50,7 @@ describe Chef::Resource::ChefNode do
           it "the node is created on the second chef server but not the first" do
             expect_recipe do
               chef_node "blah" do
-                chef_server({ :chef_server_url => "http://127.0.0.1:8899" })
+                chef_server({ chef_server_url: "http://127.0.0.1:8899" })
               end
             end.to have_updated "chef_node[blah]", :create
             expect { get("nodes/blah") }.to raise_error(Net::HTTPServerException)

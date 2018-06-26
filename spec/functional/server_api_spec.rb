@@ -3,7 +3,7 @@ require "cheffish"
 describe "api version" do
 
   let(:server_api) do
-    Cheffish.chef_server_api({ :chef_server_url => "my.chef.server" })
+    Cheffish.chef_server_api({ chef_server_url: "my.chef.server" })
   end
 
   it "is pinned to 0" do

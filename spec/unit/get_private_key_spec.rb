@@ -81,7 +81,7 @@ describe Cheffish do
   describe "#get_private_key" do
     context "when private_key_paths has a directory which is empty" do
       let(:config) do
-        { :private_key_paths => [ directory_that_exists ] }
+        { private_key_paths: [ directory_that_exists ] }
       end
 
       it_behaves_like "returning the contents of the key file if it finds one"
@@ -101,7 +101,7 @@ describe Cheffish do
 
     context "when private_key_paths leads with a directory that does not exist and then an empty directory" do
       let(:config) do
-        { :private_key_paths => [ directory_that_does_not_exist, directory_that_exists ] }
+        { private_key_paths: [ directory_that_does_not_exist, directory_that_exists ] }
       end
 
       it_behaves_like "returning the contents of the key file if it finds one"
@@ -109,7 +109,7 @@ describe Cheffish do
 
     context "when private_keys is empty" do
       let(:config) do
-        { :private_keys => {} }
+        { private_keys: {} }
       end
 
       it "returns nil" do
@@ -120,7 +120,7 @@ describe Cheffish do
     context "when private_keys contains the path to a key" do
       let(:name) { "ned_stark" }
       let(:config) do
-        { :private_keys => { name => setup_key } }
+        { private_keys: { name => setup_key } }
       end
 
       it "returns the contents of the key file" do
@@ -131,9 +131,9 @@ describe Cheffish do
 
     context "when private_keys contains the path to a key" do
       let(:name) { "ned_stark" }
-      let(:key) { double("key", :to_pem => private_key_contents) }
+      let(:key) { double("key", to_pem: private_key_contents) }
       let(:config) do
-        { :private_keys => { name => key } }
+        { private_keys: { name => key } }
       end
 
       it "returns the contents of the key file" do

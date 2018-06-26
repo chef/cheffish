@@ -3,7 +3,7 @@ require "cheffish/merged_config"
 describe "merged_config" do
 
   let(:config) do
-    Cheffish::MergedConfig.new({ :test => "val" })
+    Cheffish::MergedConfig.new({ test: "val" })
   end
 
   let(:collision) do
@@ -13,20 +13,20 @@ describe "merged_config" do
   end
 
   let(:config_mismatch) do
-    c1 = { :test => { :test => "val" } }
-    c2 = { :test => [2, 3, 4] }
+    c1 = { test: { test: "val" } }
+    c2 = { test: [2, 3, 4] }
     Cheffish::MergedConfig.new(c1, c2)
   end
 
   let(:config_hashes) do
-    c1 = { :test => { :test => "val" } }
-    c2 = { :test => { :test2 => "val2" } }
+    c1 = { test: { test: "val" } }
+    c2 = { test: { test2: "val2" } }
     Cheffish::MergedConfig.new(c1, c2)
   end
 
   let(:nested_config) do
-    c1 = { :test => { :test => "val" } }
-    c2 = { :test => { :test2 => "val2" } }
+    c1 = { test: { test: "val" } }
+    c2 = { test: { test2: "val2" } }
     mc = Cheffish::MergedConfig.new(c2)
     Cheffish::MergedConfig.new(c1, mc)
   end
@@ -36,7 +36,7 @@ describe "merged_config" do
   end
 
   it "raises a NoMethodError if calling an unknown method with arguments" do
-    expect { config.merge({ :some => "hash" }) }.to raise_error(NoMethodError)
+    expect { config.merge({ some: "hash" }) }.to raise_error(NoMethodError)
   end
 
   it "has an informative string representation" do

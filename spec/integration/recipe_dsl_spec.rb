@@ -17,7 +17,7 @@ describe "Cheffish Recipe DSL" do
     it "chef_nodes get put into said server" do
       tmp_repo = @tmp_repo
       expect_recipe do
-        with_chef_local_server :chef_repo_path => tmp_repo
+        with_chef_local_server chef_repo_path: tmp_repo
         chef_node "blah"
       end.to have_updated "chef_node[blah]", :create
       expect(File).to exist("#{@tmp_repo}/nodes/blah.json")
