@@ -7,10 +7,10 @@ module Cheffish
 
   def self.default_chef_server(config = profiled_config)
     {
-      :chef_server_url => config[:chef_server_url],
-      :options => {
-        :client_name => config[:node_name],
-        :signing_key_filename => config[:client_key],
+      chef_server_url: config[:chef_server_url],
+      options: {
+        client_name: config[:node_name],
+        signing_key_filename: config[:client_key],
       },
     }
   end

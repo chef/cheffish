@@ -10,7 +10,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
     #        let(:chef_config) { super().merge(log_level: :debug, stdout: STDOUT, stderr: STDERR, log_location: STDOUT) }
 
     context "Rights attributes" do
-      when_the_chef_server "has a node named x", :osc_compat => false do
+      when_the_chef_server "has a node named x", osc_compat: false do
         node "x", {}
 
         it 'Converging chef_acl "nodes/x" changes nothing' do
@@ -195,7 +195,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
         end
       end
 
-      when_the_chef_server "has a node named x with user blarghle in its acl", :osc_compat => false do
+      when_the_chef_server "has a node named x with user blarghle in its acl", osc_compat: false do
         user "blarghle", {}
         node "x", {} do
           acl "read" => { "actors" => %w{blarghle} }
@@ -211,7 +211,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
         end
       end
 
-      when_the_chef_server "has a node named x with users foo and bar in all its acls", :osc_compat => false do
+      when_the_chef_server "has a node named x with users foo and bar in all its acls", osc_compat: false do
         user "foo", {}
         user "bar", {}
         node "x", {} do
@@ -241,7 +241,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
       ::RSpec::Matchers.define_negated_matcher :exclude, :include
 
       context "recursive" do
-        when_the_chef_server "has a nodes container with user blarghle in its acl", :osc_compat => false do
+        when_the_chef_server "has a nodes container with user blarghle in its acl", osc_compat: false do
           user "blarghle", {}
           acl_for "containers/nodes", "read" => { "actors" => %w{blarghle} }
           node "x", {} do
@@ -320,7 +320,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
     end
 
     context "ACLs on each type of thing" do
-      when_the_chef_server "has an organization named foo", :osc_compat => false, :single_org => false do
+      when_the_chef_server "has an organization named foo", osc_compat: false, single_org: false do
         organization "foo" do
           user "u", {}
           client "x", {}
@@ -568,7 +568,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
         end
       end
 
-      when_the_chef_server 'has a user "u" in single org mode', :osc_compat => false do
+      when_the_chef_server 'has a user "u" in single org mode', osc_compat: false do
         user "u", {}
         client "x", {}
         container "x", {}
@@ -670,7 +670,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
     end
 
     context "ACLs on each container type" do
-      when_the_chef_server "has an organization named foo", :osc_compat => false, :single_org => false do
+      when_the_chef_server "has an organization named foo", osc_compat: false, single_org: false do
         organization "foo" do
           user "u", {}
           client "x", {}
@@ -738,7 +738,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
         end
       end
 
-      when_the_chef_server 'has a user "u" in single org mode', :osc_compat => false do
+      when_the_chef_server 'has a user "u" in single org mode', osc_compat: false do
         user "u", {}
         client "x", {}
         container "x", {}
@@ -777,7 +777,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
     end
 
     context "remove_rights" do
-      when_the_chef_server 'has a node "x" with "u", "c" and "g" in its acl', :osc_compat => false do
+      when_the_chef_server 'has a node "x" with "u", "c" and "g" in its acl', osc_compat: false do
         user "u", {}
         user "u2", {}
         client "c", {}
@@ -843,7 +843,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
       end
     end
 
-    when_the_chef_server "has a node named data_bags", :osc_compat => false do
+    when_the_chef_server "has a node named data_bags", osc_compat: false do
       user "blarghle", {}
       node "data_bags", {}
 
@@ -857,7 +857,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
       end
     end
 
-    when_the_chef_server "has a node named data_bags in multi-org mode", :osc_compat => false, :single_org => false do
+    when_the_chef_server "has a node named data_bags in multi-org mode", osc_compat: false, single_org: false do
       user "blarghle", {}
       organization "foo" do
         node "data_bags", {}
@@ -873,7 +873,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
       end
     end
 
-    when_the_chef_server "has a user named data_bags in multi-org mode", :osc_compat => false, :single_org => false do
+    when_the_chef_server "has a user named data_bags in multi-org mode", osc_compat: false, single_org: false do
       user "data_bags", {}
       user "blarghle", {}
 

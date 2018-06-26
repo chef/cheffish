@@ -45,7 +45,7 @@ class Chef
         set_or_return(
           :freeze_on_upload,
           arg,
-          :kind_of => Boolean
+          kind_of: Boolean
         )
       end
 
@@ -153,11 +153,11 @@ class Chef
 
         def remote_fs
           config = {
-            :chef_server_url => new_resource.chef_server[:chef_server_url],
-            :node_name => new_resource.chef_server[:options][:client_name],
-            :client_key => new_resource.chef_server[:options][:signing_key_filename],
-            :repo_mode => repo_mode,
-            :versioned_cookbooks => Chef::Config.versioned_cookbooks,
+            chef_server_url: new_resource.chef_server[:chef_server_url],
+            node_name: new_resource.chef_server[:options][:client_name],
+            client_key: new_resource.chef_server[:options][:signing_key_filename],
+            repo_mode: repo_mode,
+            versioned_cookbooks: Chef::Config.versioned_cookbooks,
           }
           Chef::ChefFS::FileSystem::ChefServer::ChefServerRootDir.new("remote", config)
         end
@@ -168,10 +168,10 @@ class Chef
 
         def options
           result = {
-            :purge => new_resource.purge,
-            :freeze => new_resource.freeze_on_upload,
-            :diff => new_resource.no_diff,
-            :dry_run => whyrun_mode?,
+            purge: new_resource.purge,
+            freeze: new_resource.freeze_on_upload,
+            diff: new_resource.no_diff,
+            dry_run: whyrun_mode?,
           }
           result[:diff] = !result[:diff]
           result[:repo_mode] = repo_mode

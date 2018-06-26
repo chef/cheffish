@@ -37,7 +37,7 @@ module Cheffish
         # Write out the public key
         if new_resource.output_key_path
           # TODO use inline_resource
-          key_content = Cheffish::KeyFormatter.encode(current_public_key, { :format => new_resource.output_key_format })
+          key_content = Cheffish::KeyFormatter.encode(current_public_key, { format: new_resource.output_key_format })
           if !current_resource.output_key_path
             action = "create"
           elsif key_content != IO.read(current_resource.output_key_path)

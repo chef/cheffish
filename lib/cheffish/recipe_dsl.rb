@@ -41,7 +41,7 @@ class Chef
       end
 
       def with_chef_server(server_url, options = {}, &block)
-        run_context.cheffish.with_chef_server({ :chef_server_url => server_url, :options => options }, &block)
+        run_context.cheffish.with_chef_server({ chef_server_url: server_url, options: options }, &block)
       end
 
       def with_chef_local_server(options, &block)
