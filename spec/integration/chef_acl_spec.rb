@@ -255,8 +255,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
                   rights :read, users: %w{blarghle}
                 end
               end.to be_up_to_date
-            end.to(not_change { get("containers/nodes/_acl") })
-               .and(not_change { get("nodes/x/_acl") })
+            end.to((not_change { get("containers/nodes/_acl") }).and(not_change { get("nodes/x/_acl") }))
           end
 
           RSpec::Matchers.define_negated_matcher :not_change, :change
@@ -269,8 +268,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
                   recursive :on_change
                 end
               end.to be_up_to_date
-            end.to(not_change { get("containers/nodes/_acl") })
-               .and(not_change { get("nodes/x/_acl") })
+            end.to((not_change { get("containers/nodes/_acl") }).and(not_change { get("nodes/x/_acl") }))
           end
 
           it 'Converging chef_acl "nodes" with recursive true changes nodes/x\'s acls' do
