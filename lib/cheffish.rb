@@ -58,10 +58,10 @@ module Cheffish
   end
 
   def self.honor_local_mode(local_mode_default = true, &block)
-    if !Chef::Config.has_key?(:local_mode) && !local_mode_default.nil?
+    if !Chef::Config.key?(:local_mode) && !local_mode_default.nil?
       Chef::Config.local_mode = local_mode_default
     end
-    if Chef::Config.local_mode && !Chef::Config.has_key?(:cookbook_path) && !Chef::Config.has_key?(:chef_repo_path)
+    if Chef::Config.local_mode && !Chef::Config.key?(:cookbook_path) && !Chef::Config.key?(:chef_repo_path)
       Chef::Config.chef_repo_path = Chef::Config.find_chef_repo_path(Dir.pwd)
     end
     begin
@@ -81,7 +81,7 @@ module Cheffish
   end
 
   def self.get_private_key(name, config = profiled_config)
-    key, key_path = get_private_key_with_path(name, config)
+    key, _key_path = get_private_key_with_path(name, config)
     key
   end
 

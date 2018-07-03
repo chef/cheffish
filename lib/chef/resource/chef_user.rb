@@ -14,9 +14,9 @@ class Chef
       property :external_authentication_uid
       property :recovery_authentication_enabled, Boolean
       property :password, String # Hmm.  There is no way to idempotentize this.
-      #property :salt  # TODO server doesn't support sending or receiving these, but it's the only way to backup / restore a user
-      #property :hashed_password
-      #property :hash_type
+      # property :salt  # TODO server doesn't support sending or receiving these, but it's the only way to backup / restore a user
+      # property :hashed_password
+      # property :hash_type
 
       # Input key
       property :source_key # String or OpenSSL::PKey::*

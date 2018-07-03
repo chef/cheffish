@@ -124,7 +124,7 @@ class Chef
           # If recurse is on_change, then we will recurse if there is no ACL, or if
           # the ACL has changed.
           if new_resource.recursive == true || (new_resource.recursive == :on_change && (!acl || changed))
-            children, error = list(path, "*")
+            children, _error = list(path, "*")
             Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
               next if child.split("/")[-1] == "containers"
               create_acl(child)
@@ -141,7 +141,7 @@ class Chef
         # Get the current ACL for the given path
         def current_acl(acl_path)
           @current_acls ||= {}
-          if !@current_acls.has_key?(acl_path)
+          if !@current_acls.key?(acl_path)
             @current_acls[acl_path] = begin
               rest.get(rest_url(acl_path))
             rescue Net::HTTPServerException => e
@@ -299,8 +299,8 @@ class Chef
             #
             # Result: /*/foo = [ '/organizations/foo', '/users/foo' ]
             #
-            matches = Chef::ChefFS::Parallelizer.parallelize(matches) do |path|
-              found, error = list(path, part)
+            matches = Chef::ChefFS::Parallelizer.parallelize(matches) do |pth|
+              found, error = list(pth, part)
               if error
                 if parts[0..index - 1].all? { |p| p != "*" }
                   raise error

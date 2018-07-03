@@ -65,7 +65,7 @@ module Cheffish
         attribute("tags")
       else
         tags = tags[0] if tags.size == 1 && tags[0].kind_of?(Array)
-        attribute "tags", tags.map { |tag| tag.to_s }
+        attribute("tags", tags.map { |tag| tag.to_s })
       end
     end
 

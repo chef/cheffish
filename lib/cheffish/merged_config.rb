@@ -57,7 +57,7 @@ module Cheffish
     end
 
     def key?(name)
-      configs.any? { |config| config.has_key?(name) }
+      configs.any? { |config| config.key?(name) }
     end
 
     alias_method :has_key?, :key?

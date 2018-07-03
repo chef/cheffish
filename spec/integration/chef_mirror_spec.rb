@@ -48,7 +48,7 @@ describe Chef::Resource::ChefMirror do
                 action :download
               end
             end
-          end.to raise_error /chef_mirror.concurrency must be above 0/
+          end.to raise_error(/chef_mirror.concurrency must be above 0/)
         end
       end
     end
@@ -158,8 +158,8 @@ describe Chef::Resource::ChefMirror do
           end.to have_updated("chef_mirror[]", :upload)
           expect { get("nodes/x") }.not_to raise_error
           expect { get("roles/x") }.not_to raise_error
-          expect { get("nodes/y") }.to raise_error /404/
-          expect { get("roles/y") }.to raise_error /404/
+          expect { get("nodes/y") }.to raise_error(/404/)
+          expect { get("roles/y") }.to raise_error(/404/)
         end
 
         it "Upload with chef_repo_path(:chef_repo_path) with multiple paths uploads everything" do
@@ -190,8 +190,8 @@ describe Chef::Resource::ChefMirror do
             end
           end.to have_updated("chef_mirror[]", :upload)
           expect { get("nodes/x") }.not_to raise_error
-          expect { get("roles/x") }.to raise_error /404/
-          expect { get("nodes/y") }.to raise_error /404/
+          expect { get("roles/x") }.to raise_error(/404/)
+          expect { get("nodes/y") }.to raise_error(/404/)
           expect { get("roles/y") }.not_to raise_error
         end
 
@@ -207,8 +207,8 @@ describe Chef::Resource::ChefMirror do
             end
           end.to have_updated("chef_mirror[]", :upload)
           expect { get("nodes/x") }.not_to raise_error
-          expect { get("roles/x") }.to raise_error /404/
-          expect { get("nodes/y") }.to raise_error /404/
+          expect { get("roles/x") }.to raise_error(/404/)
+          expect { get("nodes/y") }.to raise_error(/404/)
           expect { get("roles/y") }.not_to raise_error
         end
 

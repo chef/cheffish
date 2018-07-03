@@ -4,8 +4,8 @@ RSpec::Matchers.define :have_updated do |resource_name, *expected_actions|
   match do |recipe|
     @recipe = recipe
     actual = @recipe.event_sink.events
-    actual_actions = actual.select { |event, resource, action| event == :resource_updated && resource.to_s == resource_name }.
-                               map { |event, resource, action| action }
+    actual_actions = actual.select { |event, resource, action| event == :resource_updated && resource.to_s == resource_name }
+                               .map { |event, resource, action| action }
     expect(actual_actions).to eq(expected_actions)
   end
 

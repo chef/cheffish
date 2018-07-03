@@ -112,12 +112,12 @@ class Chef
           end
 
           # Determine if data bag is encrypted and if so, what its version is
-          first_real_key, first_real_value = (current_resource.raw_data || {}).select { |key, value| key != "id" && !value.nil? }.first
+          _first_real_key, first_real_value = (current_resource.raw_data || {}).select { |key, value| key != "id" && !value.nil? }.first
           if first_real_value
             if first_real_value.is_a?(Hash) &&
                 first_real_value["version"].is_a?(Integer) &&
                 first_real_value["version"] > 0 &&
-                first_real_value.has_key?("encrypted_data")
+                first_real_value.key?("encrypted_data")
 
               current_resource.encrypt true
               current_resource.encryption_version first_real_value["version"]
@@ -232,7 +232,7 @@ class Chef
               result = current_decrypted.merge(new_resource.raw_data || {})
             end
             result["id"] = new_resource.id
-            result = apply_modifiers(new_resource.raw_data_modifiers, result)
+            _result = apply_modifiers(new_resource.raw_data_modifiers, result)
           end
         end
 
@@ -283,7 +283,7 @@ class Chef
               if !new_resource.complete
                 raise "Cannot encrypt #{new_resource.name} due to failure to decrypt existing resource.  Set 'complete true' to overwrite or add the old secret as old_secret / old_secret_path."
               end
-              differences = [ "overwrite data bag item (cannot decrypt old data bag item)"]
+              _differences = [ "overwrite data bag item (cannot decrypt old data bag item)"]
               differences = (new_resource.raw_data.keys & current_resource.raw_data.keys).map { |key| "overwrite #{key}" }
               differences += (new_resource.raw_data.keys - current_resource.raw_data.keys).map { |key| "add #{key}" }
               differences += (current_resource.raw_data.keys - new_resource.raw_data.keys).map { |key| "remove #{key}" }

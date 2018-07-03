@@ -394,7 +394,7 @@ describe Chef::Resource::ChefNode do
                   attribute %w{a b}, "x"
                 end
               end
-            end.to raise_error /Attempt to set \["a", "b"\] to x when \["a"\] is not a hash/
+            end.to raise_error(/Attempt to set \["a", "b"\] to x when \["a"\] is not a hash/)
           end
 
           it "chef_node with attribute [ a, b, c ], x raises an error" do
@@ -404,7 +404,7 @@ describe Chef::Resource::ChefNode do
                   attribute %w{a b c}, "x"
                 end
               end
-            end.to raise_error /Attempt to set \["a", "b", "c"\] to x when \["a"\] is not a hash/
+            end.to raise_error(/Attempt to set \["a", "b", "c"\] to x when \["a"\] is not a hash/)
           end
 
           it "chef_node with attribute [ x, y ], z adds a new attribute" do

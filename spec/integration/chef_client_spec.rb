@@ -30,7 +30,7 @@ describe Chef::Resource::ChefClient do
             end.to have_updated "chef_client[blah]", :create
             client = get("clients/blah")
             expect(client["name"]).to eq("blah")
-            key, format = Cheffish::KeyFormatter.decode(client["public_key"])
+            key, _format = Cheffish::KeyFormatter.decode(client["public_key"])
             expect(key).to be_public_key_for("#{repo_path}/blah.pem")
           end
         end
@@ -67,7 +67,7 @@ describe Chef::Resource::ChefClient do
               end
             end.to have_updated "chef_client[foobar]", :create
             client = get("clients/foobar")
-            key, format = Cheffish::KeyFormatter.decode(client["public_key"])
+            key, _format = Cheffish::KeyFormatter.decode(client["public_key"])
             expect(key).to be_public_key_for("#{repo_path}/blah.pem")
 
             private_key = Cheffish::KeyFormatter.decode(Cheffish.get_private_key("blah"))
@@ -94,7 +94,7 @@ describe Chef::Resource::ChefClient do
             end.to have_updated "chef_client[blah]", :create
             client = get("clients/blah")
             expect(client["name"]).to eq("blah")
-            key, format = Cheffish::KeyFormatter.decode(client["public_key"])
+            key, _format = Cheffish::KeyFormatter.decode(client["public_key"])
             expect(key).to be_public_key_for("#{repo_path}/blah.pem")
           end
         end
