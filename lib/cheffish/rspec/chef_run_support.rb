@@ -60,9 +60,9 @@ module Cheffish
         def recipe(str = nil, file = nil, line = nil, &recipe)
           if !recipe
             if file && line
-              recipe = proc { eval(str, nil, file, line) }
+              recipe = proc { eval(str, nil, file, line) } # rubocop:disable Security/Eval
             else
-              recipe = proc { eval(str) }
+              recipe = proc { eval(str) } # rubocop:disable Security/Eval
             end
           end
           RecipeRunWrapper.new(chef_config, &recipe)

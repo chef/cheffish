@@ -50,7 +50,7 @@ module Cheffish
         # Put : between every pair of hexes
         hexes.scan(/../).join(":")
       when :rfc4716md5fingerprint
-        type, base64_data, etc = encode_openssh_key(key).split
+        _type, base64_data, _etc = encode_openssh_key(key).split
         data = Base64.decode64(base64_data)
         hexes = Digest::MD5.hexdigest(data)
         hexes.scan(/../).join(":")

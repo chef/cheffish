@@ -119,7 +119,7 @@ class Chef
   Chef::Client.when_run_starts do |run_status|
     # Pulling on cheffish_run_data makes it initialize right now
     run_status.node.run_state[:chef_config] = config = Cheffish.profiled_config(Chef::Config)
-    run_status.node.run_state[:cheffish] = run_data = Cheffish::ChefRunData.new(config)
+    run_status.node.run_state[:cheffish] = Cheffish::ChefRunData.new(config)
     run_status.events.register(Cheffish::ChefRunListener.new(run_status.node))
   end
 

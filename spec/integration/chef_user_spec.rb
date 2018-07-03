@@ -21,7 +21,7 @@ describe Chef::Resource::ChefUser do
         end.to have_updated "chef_user[blah]", :create
         user = get("/users/blah")
         expect(user["name"]).to eq("blah")
-        key, format = Cheffish::KeyFormatter.decode(user["public_key"])
+        key, _format = Cheffish::KeyFormatter.decode(user["public_key"])
         expect(key).to be_public_key_for("#{repo_path}/blah.pem")
       end
     end
@@ -52,7 +52,7 @@ describe Chef::Resource::ChefUser do
           end.to have_updated "chef_user[blah]", :create
           user = get("/users/blah")
           expect(user["name"]).to eq("blah")
-          key, format = Cheffish::KeyFormatter.decode(user["public_key"])
+          key, _format = Cheffish::KeyFormatter.decode(user["public_key"])
           expect(key).to be_public_key_for("#{repo_path}/blah.pem")
         end
       end
@@ -74,7 +74,7 @@ describe Chef::Resource::ChefUser do
           end.to have_updated "chef_user[blah]", :create
           user = get("/users/blah")
           expect(user["name"]).to eq("blah")
-          key, format = Cheffish::KeyFormatter.decode(user["public_key"])
+          key, _format = Cheffish::KeyFormatter.decode(user["public_key"])
           expect(key).to be_public_key_for("#{repo_path}/blah.pem")
         end
       end

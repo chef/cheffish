@@ -150,7 +150,7 @@ describe Chef::Resource::PrivateKey do
       end
 
       it "and another public_key based off the first public_key in-memory in a key, the second public_key is created" do
-        key, format = Cheffish::KeyFormatter.decode(IO.read("#{repo_path}/blah.pub"))
+        key, _format = Cheffish::KeyFormatter.decode(IO.read("#{repo_path}/blah.pub"))
 
         expect_recipe do
           public_key "#{repo_path}/blah.pub2" do
@@ -293,7 +293,7 @@ describe Chef::Resource::PrivateKey do
           converge do
             private_key "#{repo_path}/blah"
           end
-        end.to raise_error /missing pass phrase?/
+        end.to raise_error(/missing pass phrase?/)
       end
     end
 

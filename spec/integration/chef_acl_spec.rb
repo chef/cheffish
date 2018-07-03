@@ -255,8 +255,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
                   rights :read, users: %w{blarghle}
                 end
               end.to be_up_to_date
-            end.to not_change { get("containers/nodes/_acl") }.
-               and not_change { get("nodes/x/_acl") }
+            end.to(not_change { get("containers/nodes/_acl") })
+               .and(not_change { get("nodes/x/_acl") })
           end
 
           RSpec::Matchers.define_negated_matcher :not_change, :change
@@ -269,8 +269,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
                   recursive :on_change
                 end
               end.to be_up_to_date
-            end.to not_change { get("containers/nodes/_acl") }.
-               and not_change { get("nodes/x/_acl") }
+            end.to(not_change { get("containers/nodes/_acl") })
+               .and(not_change { get("nodes/x/_acl") })
           end
 
           it 'Converging chef_acl "nodes" with recursive true changes nodes/x\'s acls' do
@@ -754,7 +754,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
         %w{clients containers cookbooks data environments groups nodes roles sandboxes}.each do |type|
           it "chef_acl #{type}' changes the acl" do
             expect_recipe do
-              chef_acl "#{type}" do
+              chef_acl type.to_s do
                 rights :read, users: %w{u}
               end
             end.to be_updated
@@ -838,7 +838,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
                 remove_rights :read, users: %w{u2}, clients: %w{c2}, groups: %w{g2}
               end
             end.to be_up_to_date
-          end.not_to change { get("nodes/x/_acl") }
+          end.not_to(change { get("nodes/x/_acl") })
         end
       end
     end

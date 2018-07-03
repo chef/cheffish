@@ -19,7 +19,7 @@ module Cheffish
             description = [ "update #{actor_type} #{new_resource.name} at #{actor_path}" ] + differences
             converge_by description do
               result = rest.put("#{actor_path}/#{new_resource.name}", normalize_for_put(new_json))
-              current_public_key, current_public_key_format = Cheffish::KeyFormatter.decode(result["public_key"]) if result["public_key"]
+              current_public_key, _current_public_key_format = Cheffish::KeyFormatter.decode(result["public_key"]) if result["public_key"]
             end
           end
         else
@@ -29,8 +29,8 @@ module Cheffish
           end
           description = [ "create #{actor_type} #{new_resource.name} at #{actor_path}" ] + differences
           converge_by description do
-            result = rest.post("#{actor_path}", normalize_for_post(new_json))
-            current_public_key, current_public_key_format = Cheffish::KeyFormatter.decode(result["public_key"]) if result["public_key"]
+            result = rest.post((actor_path).to_s, normalize_for_post(new_json))
+            current_public_key, _current_public_key_format = Cheffish::KeyFormatter.decode(result["public_key"]) if result["public_key"]
           end
         end
 
@@ -76,7 +76,7 @@ module Cheffish
         @new_public_key ||= begin
           if new_resource.source_key
             if new_resource.source_key.is_a?(String)
-              key, key_format = Cheffish::KeyFormatter.decode(new_resource.source_key)
+              key, _key_format = Cheffish::KeyFormatter.decode(new_resource.source_key)
 
               if key.private?
                 key.public_key
@@ -95,7 +95,7 @@ module Cheffish
             else
               source_key_str = IO.read(source_key_path)
             end
-            source_key, source_key_format = Cheffish::KeyFormatter.decode(source_key_str, new_resource.source_key_pass_phrase, source_key_path)
+            source_key, _source_key_format = Cheffish::KeyFormatter.decode(source_key_str, new_resource.source_key_pass_phrase, source_key_path)
             if source_key.private?
               source_key.public_key
             else

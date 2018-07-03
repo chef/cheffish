@@ -45,7 +45,7 @@ class Chef
 
         # Revoke invites and memberships when asked
         invites_to_remove.each do |user|
-          if outstanding_invites.has_key?(user)
+          if outstanding_invites.key?(user)
             converge_by "revoke #{user}'s invitation to organization #{new_resource.organization_name}" do
               rest.delete("#{rest.root_url}/organizations/#{new_resource.organization_name}/association_requests/#{outstanding_invites[user]}")
             end
@@ -61,7 +61,7 @@ class Chef
 
         # Invite and add members when asked
         new_resource.invites.each do |user|
-          if !existing_members.include?(user) && !outstanding_invites.has_key?(user)
+          if !existing_members.include?(user) && !outstanding_invites.key?(user)
             converge_by "invite #{user} to organization #{new_resource.organization_name}" do
               rest.post("#{rest.root_url}/organizations/#{new_resource.organization_name}/association_requests", { "user" => user })
             end

@@ -29,10 +29,9 @@ module Cheffish
         @event_catcher = BasicChefClientEvents.new
         dispatcher = Chef::EventDispatch::Dispatcher.new(@event_catcher)
         case events
-        when nil
         when Array
           events.each { |e| dispatcher.register(e) } if events
-        else
+        when !nil
           dispatcher.register(events)
         end
         @run_context = Chef::RunContext.new(node, {}, dispatcher)

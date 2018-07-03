@@ -13,7 +13,7 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = "spec/**/*_spec.rb"
 end
 
-gem_spec = eval(File.read("cheffish.gemspec"))
+gem_spec = eval(File.read("cheffish.gemspec")) # rubocop:disable Security/Eval
 
 RDoc::Task.new do |rdoc|
   rdoc.rdoc_dir = "rdoc"
