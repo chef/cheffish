@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 14.0.2 -->
-## [v14.0.2](https://github.com/chef/cheffish/tree/v14.0.2) (2018-11-14)
+<!-- latest_release 14.0.3 -->
+## [v14.0.3](https://github.com/chef/cheffish/tree/v14.0.3) (2018-11-14)
 
 #### Merged Pull Requests
-- Test on the latest Ruby releases in Travis [#138](https://github.com/chef/cheffish/pull/138) ([tas50](https://github.com/tas50))
+- Skip shipping the readme in the gem + add a license [#139](https://github.com/chef/cheffish/pull/139) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=14.0.1 -->
 ### Changes since 14.0.1 release
 
 #### Merged Pull Requests
+- Skip shipping the readme in the gem + add a license [#139](https://github.com/chef/cheffish/pull/139) ([tas50](https://github.com/tas50)) <!-- 14.0.3 -->
 - Test on the latest Ruby releases in Travis [#138](https://github.com/chef/cheffish/pull/138) ([tas50](https://github.com/tas50)) <!-- 14.0.2 -->
 <!-- release_rollup -->
 
