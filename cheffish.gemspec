@@ -5,12 +5,12 @@ Gem::Specification.new do |s|
   s.name = "cheffish"
   s.version = Cheffish::VERSION
   s.platform = Gem::Platform::RUBY
-  s.extra_rdoc_files = [ "README.md", "LICENSE" ]
+  s.license = "Apache-2.0"
   s.summary = "A library to manipulate Chef in Chef."
   s.description = s.summary
   s.author = "John Keiser"
   s.email = "jkeiser@chef.io"
-  s.homepage = "http://github.com/chef/cheffish"
+  s.homepage = "https://github.com/chef/cheffish"
 
   s.required_ruby_version = ">= 2.4.0"
 
@@ -21,6 +21,6 @@ Gem::Specification.new do |s|
   s.executables  = %w{ }
 
   s.require_path = "lib"
-  s.files = %w{Gemfile Rakefile LICENSE README.md} + Dir.glob("*.gemspec") +
-    Dir.glob("{distro,lib,tasks,spec}/**/*", File::FNM_DOTMATCH).reject { |f| File.directory?(f) }
+  s.files = %w{Gemfile Rakefile LICENSE} + Dir.glob("*.gemspec") +
+    Dir.glob("{lib,spec}/**/*", File::FNM_DOTMATCH).reject { |f| File.directory?(f) }
 end
