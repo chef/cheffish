@@ -1,23 +1,21 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 14.0.4 -->
-## [v14.0.4](https://github.com/chef/cheffish/tree/v14.0.4) (2018-11-14)
-
-#### Merged Pull Requests
-- private_key: Fix cipher comparison to ignore case [#137](https://github.com/chef/cheffish/pull/137) ([tas50](https://github.com/tas50))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=14.0.1 -->
-### Changes since 14.0.1 release
-
-#### Merged Pull Requests
-- private_key: Fix cipher comparison to ignore case [#137](https://github.com/chef/cheffish/pull/137) ([tas50](https://github.com/tas50)) <!-- 14.0.4 -->
-- Skip shipping the readme in the gem + add a license [#139](https://github.com/chef/cheffish/pull/139) ([tas50](https://github.com/tas50)) <!-- 14.0.3 -->
-- Test on the latest Ruby releases in Travis [#138](https://github.com/chef/cheffish/pull/138) ([tas50](https://github.com/tas50)) <!-- 14.0.2 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v14.0.4](https://github.com/chef/cheffish/tree/v14.0.4) (2018-11-14)
+
+#### Merged Pull Requests
+- Test on the latest Ruby releases in Travis [#138](https://github.com/chef/cheffish/pull/138) ([tas50](https://github.com/tas50))
+- Skip shipping the readme in the gem + add a license [#139](https://github.com/chef/cheffish/pull/139) ([tas50](https://github.com/tas50))
+- private_key: Fix cipher comparison to ignore case [#137](https://github.com/chef/cheffish/pull/137) ([tas50](https://github.com/tas50))
+<!-- latest_stable_release -->
+
 ## [v13.1.0](https://github.com/chef/cheffish/tree/v13.1.0) (2017-10-23)
 [Full Changelog](https://github.com/chef/cheffish/compare/v13.0.0...v13.1.0)
 
@@ -27,7 +25,6 @@
 - deprecate method\_missing in cheffish merged\_config [\#129](https://github.com/chef/cheffish/pull/129) ([lamont-granquist](https://github.com/lamont-granquist))
 - test on recent rubies, and chefstyle [\#128](https://github.com/chef/cheffish/pull/128) ([thommay](https://github.com/thommay))
 - remove Chef::Mash [\#127](https://github.com/chef/cheffish/pull/127) ([lamont-granquist](https://github.com/lamont-granquist))
-<!-- latest_stable_release -->
 
 ## [v13.0.0](https://github.com/chef/cheffish/tree/v13.0.0) (2017-04-03)
 [Full Changelog](https://github.com/chef/cheffish/compare/v5.0.1...v13.0.0)
