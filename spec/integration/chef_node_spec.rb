@@ -104,11 +104,11 @@ describe Chef::Resource::ChefNode do
       context 'when the Chef server has a node named "blah" with everything in it' do
         node "blah", {
           "chef_environment" => "blah",
-          "run_list"  => [ "recipe[bjork]" ],
-          "normal"    => { "foo" => "bar", "tags" => %w{a b} },
-          "default"   => { "foo2" => "bar2" },
+          "run_list" => [ "recipe[bjork]" ],
+          "normal" => { "foo" => "bar", "tags" => %w{a b} },
+          "default" => { "foo2" => "bar2" },
           "automatic" => { "foo3" => "bar3" },
-          "override"  => { "foo4" => "bar4" },
+          "override" => { "foo4" => "bar4" },
         }
 
         it "chef_node with no attributes modifies nothing" do

@@ -24,9 +24,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => [],
-          "groups"  => [],
-          "users"   => [],
+          "actors" => [],
+          "groups" => [],
+          "users" => [],
           "clients" => [],
         })
       end
@@ -52,9 +52,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => %w{c u},
-          "groups"  => %w{g},
-          "users"   => %w{u},
+          "actors" => %w{c u},
+          "groups" => %w{g},
+          "users" => %w{u},
           "clients" => %w{c},
         })
       end
@@ -88,9 +88,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => %w{c c2 u u2},
-          "groups"  => %w{g g2},
-          "users"   => %w{u u2},
+          "actors" => %w{c c2 u u2},
+          "groups" => %w{g g2},
+          "users" => %w{u u2},
           "clients" => %w{c c2},
         })
       end
@@ -116,9 +116,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => %w{c c2 u u2},
-          "groups"  => %w{g g2},
-          "users"   => %w{u u2},
+          "actors" => %w{c c2 u u2},
+          "groups" => %w{g g2},
+          "users" => %w{u u2},
           "clients" => %w{c c2},
         })
       end
@@ -135,9 +135,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => %w{c c2 c3 u u2 u3},
-          "groups"  => %w{g g2 g3},
-          "users"   => %w{u u2 u3},
+          "actors" => %w{c c2 c3 u u2 u3},
+          "groups" => %w{g g2 g3},
+          "users" => %w{u u2 u3},
           "clients" => %w{c c2 c3},
         })
       end
@@ -154,9 +154,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => %w{c c2 c3 c4 u u2 u3 u4},
-          "groups"  => %w{g g2 g3 g4},
-          "users"   => %w{u u2 u3 u4},
+          "actors" => %w{c c2 c3 c4 u u2 u3 u4},
+          "groups" => %w{g g2 g3 g4},
+          "users" => %w{u u2 u3 u4},
           "clients" => %w{c c2 c3 c4},
         })
       end
@@ -173,9 +173,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => %w{c c2 c3 c4 u u2 u3 u4},
-          "groups"  => %w{g g2 g3 g4},
-          "users"   => %w{u u2 u3 u4},
+          "actors" => %w{c c2 c3 c4 u u2 u3 u4},
+          "groups" => %w{g g2 g3 g4},
+          "users" => %w{u u2 u3 u4},
           "clients" => %w{c c2 c3 c4},
         })
       end
@@ -195,9 +195,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => %w{c c2 c3 c4 u u2 u3 u4},
-          "groups"  => %w{g g2 g3 g4},
-          "users"   => %w{u u2 u3 u4},
+          "actors" => %w{c c2 c3 c4 u u2 u3 u4},
+          "groups" => %w{g g2 g3 g4},
+          "users" => %w{u u2 u3 u4},
           "clients" => %w{c c2 c3 c4},
         })
       end
@@ -214,9 +214,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => %w{c u},
-          "groups"  => %w{g},
-          "users"   => %w{u},
+          "actors" => %w{c u},
+          "groups" => %w{g},
+          "users" => %w{u},
           "clients" => %w{c},
         })
       end
@@ -233,9 +233,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => [],
-          "groups"  => [],
-          "users"   => [],
+          "actors" => [],
+          "groups" => [],
+          "users" => [],
           "clients" => [],
         })
       end
@@ -252,9 +252,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => [],
-          "groups"  => [],
-          "users"   => [],
+          "actors" => [],
+          "groups" => [],
+          "users" => [],
           "clients" => [],
         })
       end
@@ -274,9 +274,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => [],
-          "groups"  => [],
-          "users"   => [],
+          "actors" => [],
+          "groups" => [],
+          "users" => [],
           "clients" => [],
         })
       end
@@ -296,9 +296,9 @@ describe Chef::Resource::ChefGroup do
           "name" => "x",
           "groupname" => "x",
           "orgname" => "foo",
-          "actors"  => %w{c2 c3 u2 u3},
-          "groups"  => %w{g2 g3},
-          "users"   => %w{u2 u3},
+          "actors" => %w{c2 c3 u2 u3},
+          "groups" => %w{g2 g3},
+          "users" => %w{u2 u3},
           "clients" => %w{c2 c3},
         })
       end
