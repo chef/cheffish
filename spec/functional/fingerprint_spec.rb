@@ -29,7 +29,7 @@ describe "Cheffish fingerprint key formatter" do
     rxs0NeNqGdrzmyAPN35OHXYclPwfp+DbtbJHgGMRc/9VFPqW9PeTKjIByeEsXyrcdreR35AR/fwR
     AUcSSKTvw+PobCpXhdkiw4TgJhFNuZnoC63FOjNqA5mu1ICZYBb4ZVlgUAgSmDQxSIgK
     -----END RSA PRIVATE KEY-----
-EOF
+  EOF
   sample_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCab6TEOzKMPQTB+8BJhTkhi2co5BzTX20n1JHvcF8LIIPcGsl32hn1S6grBEdz8gZn6WJ8VDq7O0G2655DGMo8aPSHu9Dxye6poxAbfR0YCYPFRArEGD546eJW+mh9iqxjshYXpLArNb9eMHo7dpYaFs2Ek+kjU2s0zCstqNRSINV+8iQ7CBtVW4Tx2greDolsKqlpEbQUMLWer3Xb/7fqp8Wzpoby1Hok47fxrLCET4Si/txjZgrjZrgAzZRICT1rHZZQPrt4B7SCV+FsPYp8mozF3WMRaqZzvZ4JdU3gk1hIbnQ+NMajZC7rZLIgjvyW3zkVFXJVenVji9BZwhpV"
 
   def key_to_format(key, format)

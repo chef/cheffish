@@ -144,10 +144,10 @@ class Chef
           if !@current_acls.key?(acl_path)
             @current_acls[acl_path] = begin
               rest.get(rest_url(acl_path))
-            rescue Net::HTTPServerException => e
-              unless e.response.code == "404" && new_resource.path.split("/").any? { |p| p == "*" }
-                raise
-              end
+                                      rescue Net::HTTPServerException => e
+                                        unless e.response.code == "404" && new_resource.path.split("/").any? { |p| p == "*" }
+                                          raise
+                                        end
             end
           end
           @current_acls[acl_path]

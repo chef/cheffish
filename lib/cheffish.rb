@@ -1,5 +1,5 @@
 module Cheffish
-  NAME_REGEX = /^[.\-[:alnum:]_]+$/
+  NAME_REGEX = /^[.\-[:alnum:]_]+$/.freeze
 
   def self.inline_resource(provider, provider_action, *resources, &block)
     BasicChefClient.inline_resource(provider, provider_action, *resources, &block)
