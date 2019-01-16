@@ -31,6 +31,10 @@ describe "merged_config" do
     Cheffish::MergedConfig.new(c1, mc)
   end
 
+  let(:empty_config) do
+    Cheffish::MergedConfig.new
+  end
+
   it "returns value in config" do
     expect(config.test).to eq("val")
   end
@@ -67,5 +71,10 @@ describe "merged_config" do
 
   it "supports nested merged configs" do
     expect(nested_config[:test].keys).to eq(%w{test test2})
+  end
+
+  it "supports empty?" do
+    expect(empty_config.empty?).to eq true
+    expect(nested_config.empty?).to eq false
   end
 end
