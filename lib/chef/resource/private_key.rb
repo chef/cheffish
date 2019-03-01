@@ -34,7 +34,7 @@ class Chef
       property :cipher, String, equal_to: OpenSSL::Cipher.ciphers.map { |x| x.downcase }, default: "des-ede3-cbc", coerce: proc { |x| x.downcase }
 
       # Set this to regenerate the key if it does not have the desired characteristics (like size, type, etc.)
-      property :regenerate_if_different, Boolean
+      property :regenerate_if_different, [TrueClass, FalseClass]
 
       # Proc that runs after the resource completes.  Called with (resource, private_key)
       def after(&block)

@@ -37,7 +37,7 @@ class Chef
       property :raw_data, Hash
 
       # If secret or secret_path are set, encrypt is assumed true.  encrypt exists mainly for with_secret and with_secret_path
-      property :encrypt, Boolean, default: lazy {
+      property :encrypt, [TrueClass, FalseClass], default: lazy {
         if secret.nil? && secret_path.nil?
           false
         else
