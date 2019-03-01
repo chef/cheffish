@@ -11,11 +11,10 @@ module Cheffish
       chef_server run_context.cheffish.current_chef_server
     end
 
-    Boolean = property_type(is: [ true, false ])
     ArrayType = ArrayProperty.new
 
     property :chef_server, Hash
     property :raw_json, Hash
-    property :complete, Boolean
+    property :complete, [TrueClass, FalseClass]
   end
 end

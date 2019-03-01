@@ -25,15 +25,15 @@ class Chef
       # Whether the repo path should contain cookbooks with versioned names,
       # i.e. cookbooks/mysql-1.0.0, cookbooks/mysql-1.2.0, etc.
       # Defaults to true if chef_repo_path is specified, or to Chef::Config.versioned_cookbooks otherwise.
-      property :versioned_cookbooks, Boolean
+      property :versioned_cookbooks, [TrueClass, FalseClass]
 
       # Whether to purge deleted things: if we do not have cookbooks/x locally and we
       # *do* have cookbooks/x remotely, then :upload with purge will delete it.
       # Defaults to false.
-      property :purge, Boolean
+      property :purge, [TrueClass, FalseClass]
 
       # Whether to freeze cookbooks on upload
-      property :freeze_on_upload, Boolean
+      property :freeze_on_upload, [TrueClass, FalseClass]
 
       # `freeze` is an already-existing instance method on Object, so we can't use it or we'll throw
       # a deprecation warning. `freeze` has been renamed to `freeze_on_upload` and this method
@@ -45,13 +45,13 @@ class Chef
         set_or_return(
           :freeze_on_upload,
           arg,
-          kind_of: Boolean
+          kind_of: [TrueClass, FalseClass]
         )
       end
 
       # If this is true, only new files will be copied.  File contents will not be
       # diffed, so changed files will never be uploaded.
-      property :no_diff, Boolean
+      property :no_diff, [TrueClass, FalseClass]
 
       # Number of parallel threads to list/upload/download with.  Defaults to 10.
       property :concurrency, Integer, default: 10, desired_state: false
