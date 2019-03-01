@@ -1,4 +1,3 @@
-sudo: false
 language: ruby
 cache: bundler
 
@@ -18,22 +17,15 @@ script:
   - bundle exec rake build
   - bundle exec rake spec
 
-
 matrix:
   include:
     - rvm: 2.4.5
     - rvm: 2.5.3
-    - rvm: 2.6.0
+    - rvm: 2.6.1
     - rvm: ruby-head
-    - rvm: 2.6.0
+    - rvm: 2.6.1
       env:
         CHEFSTYLE: 1
       script: bundle exec rake style
   allow_failures:
     - rvm: ruby-head
-
-notifications:
-  slack:
-    on_failure: always
-    on_success: change
-    secure: W2QBW06FQcKP8F6VrVJZjhJDZkz46meV0Zuj/AHcexYbGvB9zWE8Vb/U5h7YW5CS1U2y0hKwl1VgdOmLf+SWDZLFLZ5hYcc44VJqQl5XZlaOw4OCeUvp4aluzTl9n4qRh1DTPrvb37iZbA2uMcLlyhiv1jVS8NnNaqqh9Uy/A5A=
