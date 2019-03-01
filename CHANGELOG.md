@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 14.0.7 -->
-## [v14.0.7](https://github.com/chef/cheffish/tree/v14.0.7) (2019-03-01)
+<!-- latest_release 14.0.8 -->
+## [v14.0.8](https://github.com/chef/cheffish/tree/v14.0.8) (2019-03-01)
 
 #### Merged Pull Requests
-- Update travis testing to Ruby 2.6.1 [#145](https://github.com/chef/cheffish/pull/145) ([tas50](https://github.com/tas50))
+- Set the author of the gem to Chef Software [#143](https://github.com/chef/cheffish/pull/143) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=14.0.4 -->
 ### Changes since 14.0.4 release
 
 #### Merged Pull Requests
+- Set the author of the gem to Chef Software [#143](https://github.com/chef/cheffish/pull/143) ([tas50](https://github.com/tas50)) <!-- 14.0.8 -->
 - Update travis testing to Ruby 2.6.1 [#145](https://github.com/chef/cheffish/pull/145) ([tas50](https://github.com/tas50)) <!-- 14.0.7 -->
 - Add empty? to Cheffish::MergedConfig [#134](https://github.com/chef/cheffish/pull/134) ([josh-barker](https://github.com/josh-barker)) <!-- 14.0.6 -->
 - Resolve chefstyle warnings and test on Ruby 2.6 [#141](https://github.com/chef/cheffish/pull/141) ([tas50](https://github.com/tas50)) <!-- 14.0.5 -->
