@@ -24,6 +24,7 @@ require "chef/resource/chef_role"
 require "chef/resource/chef_user"
 require "chef/resource/private_key"
 require "chef/resource/public_key"
+require "chef/util/path_helper"
 
 class Chef
   module DSL
@@ -123,20 +124,4 @@ class Chef
     run_status.events.register(Cheffish::ChefRunListener.new(run_status.node))
   end
 
-end
-
-# Chef 12 moved Chef::Config.path_join to PathHelper.join
-if Chef::VERSION.to_i >= 12
-  require "chef/util/path_helper"
-else
-  require "chef/config"
-  class Chef
-    class Util
-      class PathHelper
-        def self.join(*args)
-          Chef::Config.path_join(*args)
-        end
-      end
-    end
-  end
 end
