@@ -38,7 +38,7 @@ class Chef
         delete_actor
       end
 
-      action_class.class_eval do
+      action_class do
         def actor_type
           "client"
         end

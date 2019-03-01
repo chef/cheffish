@@ -75,7 +75,7 @@ class Chef
         end
       end
 
-      action_class.class_eval do
+      action_class do
         # Update the ACL if necessary.
         def create_acl(path)
           changed = false
