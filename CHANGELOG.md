@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 14.0.10 -->
-## [v14.0.10](https://github.com/chef/cheffish/tree/v14.0.10) (2019-04-25)
+<!-- latest_release 14.0.11 -->
+## [v14.0.11](https://github.com/chef/cheffish/tree/v14.0.11) (2019-04-25)
 
 #### Merged Pull Requests
-- Add build kite verify config [#147](https://github.com/chef/cheffish/pull/147) ([tas50](https://github.com/tas50))
+- Add github templates [#148](https://github.com/chef/cheffish/pull/148) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=14.0.4 -->
 ### Changes since 14.0.4 release
 
 #### Merged Pull Requests
+- Add github templates [#148](https://github.com/chef/cheffish/pull/148) ([tas50](https://github.com/tas50)) <!-- 14.0.11 -->
 - Add build kite verify config [#147](https://github.com/chef/cheffish/pull/147) ([tas50](https://github.com/tas50)) <!-- 14.0.10 -->
 - Remove the Boolean magic type [#144](https://github.com/chef/cheffish/pull/144) ([tas50](https://github.com/tas50)) <!-- 14.0.9 -->
 - Set the author of the gem to Chef Software [#143](https://github.com/chef/cheffish/pull/143) ([tas50](https://github.com/tas50)) <!-- 14.0.8 -->
