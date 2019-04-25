@@ -26,13 +26,12 @@ You'd use these in recipes/cookbooks. They are documented on the [main Chef docs
 - [chef_resolved_cookbooks](https://docs.chef.io/resource_chef_resolved_cookbooks.html)
 - [chef_role](https://docs.chef.io/resource_chef_role.html)
 - [chef_user](https://docs.chef.io/resource_chef_user.html)
-- [private_key](https://docs.chef.io/resource_private_key.html)
-- [public_key](https://docs.chef.io/resource_public_key.html)
+- [private_key](https://docs.chef.io/resource_private_key.html) - DEPRECATED
+- [public_key](https://docs.chef.io/resource_public_key.html) - DEPRECATED
 
 ## Base/Helper Classes
 
 To support the resource/provider pairs.
-
 
 ## RSpec Support
 
