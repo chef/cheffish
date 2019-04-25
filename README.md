@@ -1,6 +1,6 @@
 # Cheffish
 
-[![Status](https://travis-ci.org/chef/cheffish.svg?branch=master)](https://travis-ci.org/chef/cheffish)
+[![Build Status](https://badge.buildkite.com/3faec2ae5810e1b2f530e478b63859554663fc023b3ad6c3d4.svg?branch=master)](https://buildkite.com/chef-oss/chef-cheffish-master-verify)
 [![Gem Version](https://badge.fury.io/rb/cheffish.svg)](http://badge.fury.io/rb/cheffish)
 
 This library provides a variety of convergent resources for interacting with the Chef Server; along the way, it happens to provide some very useful and sophisticated ways of running Chef resources as recipes in RSpec examples.
