@@ -1,10 +1,9 @@
 # Documentation available at https://expeditor.chef.io/docs/getting-started/
-
+---
 # Slack channel in Chef Software slack to send notifications about build failures, etc
 slack:
-  notify_channel: chef-notify
+  notify_channel: chef-infra-notify
 
-# Which Ruby Gems, built when the Omnibus package is built, to publish to rubygems.org
 # This publish is triggered by the `built_in:publish_rubygems` artifact_action.
 rubygems:
   - cheffish
@@ -20,6 +19,10 @@ github:
   # allow bumping the major release via label
   major_bump_labels:
     - "Expeditor: Bump Version Major"
+
+changelog:
+  rollup_header: Changes not yet released to rubygems.org
+
 promote:
   actions:
     - built_in:rollover_changelog
@@ -39,3 +42,8 @@ merge_actions:
         - "Expeditor: Skip All"
   - built_in:build_gem:
       only_if: built_in:bump_version
+
+pipelines:
+  - verify:
+      description: Pull Request validation tests
+      public: true
