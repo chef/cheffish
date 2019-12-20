@@ -1,5 +1,5 @@
-require "cheffish/key_formatter"
-require "cheffish/base_resource"
+require_relative "key_formatter"
+require_relative "base_resource"
 
 module Cheffish
   class ChefActorBase < Cheffish::BaseResource

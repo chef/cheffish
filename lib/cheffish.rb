@@ -121,11 +121,11 @@ end
 # Include all recipe objects so require 'cheffish' brings in the whole recipe DSL
 
 require "chef/run_list/run_list_item"
-require "cheffish/basic_chef_client"
-require "cheffish/server_api"
+require_relative "cheffish/basic_chef_client"
+require_relative "cheffish/server_api"
 require "chef/knife"
 require "chef/config_fetcher"
 require "chef/log"
 require "chef/application"
-require "cheffish/recipe_dsl"
-require "cheffish/node_properties"
+require_relative "cheffish/recipe_dsl"
+require_relative "cheffish/node_properties"

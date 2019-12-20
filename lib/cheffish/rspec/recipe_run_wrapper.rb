@@ -1,4 +1,4 @@
-require "cheffish/chef_run"
+require_relative "../chef_run"
 require "forwardable"
 
 module Cheffish

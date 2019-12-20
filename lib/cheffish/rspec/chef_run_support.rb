@@ -1,10 +1,10 @@
 require "chef_zero/rspec"
 require "chef/server_api"
-require "cheffish/rspec/repository_support"
+require_relative "repository_support"
 require "uri"
-require "cheffish/chef_run"
-require "cheffish/rspec/recipe_run_wrapper"
-require "cheffish/rspec/matchers"
+require_relative "../chef_run"
+require_relative "recipe_run_wrapper"
+require_relative "matchers"
 
 module Cheffish
   module RSpec

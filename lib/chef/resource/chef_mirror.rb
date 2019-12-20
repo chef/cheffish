@@ -1,5 +1,5 @@
-require "cheffish"
-require "cheffish/base_resource"
+require_relative "../../cheffish"
+require_relative "../../cheffish/base_resource"
 require "chef/chef_fs/file_pattern"
 require "chef/chef_fs/file_system"
 require "chef/chef_fs/parallelizer"

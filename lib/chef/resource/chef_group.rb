@@ -1,5 +1,5 @@
-require "cheffish"
-require "cheffish/base_resource"
+require_relative "../../cheffish"
+require_relative "../../cheffish/base_resource"
 require "chef/run_list/run_list_item"
 require "chef/chef_fs/data_handler/group_data_handler"
 

@@ -1,7 +1,7 @@
 require "openssl/cipher"
-require "cheffish/base_resource"
+require_relative "../../cheffish/base_resource"
 require "openssl"
-require "cheffish/key_formatter"
+require_relative "../../cheffish/key_formatter"
 
 class Chef
   class Resource

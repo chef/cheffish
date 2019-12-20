@@ -1,5 +1,5 @@
-require "cheffish"
-require "cheffish/base_resource"
+require_relative "../../cheffish"
+require_relative "../../cheffish/base_resource"
 require "chef/chef_fs/data_handler/container_data_handler"
 
 class Chef

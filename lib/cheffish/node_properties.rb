@@ -1,4 +1,4 @@
-require "cheffish/base_properties"
+require_relative "base_properties"
 
 module Cheffish
   module NodeProperties
