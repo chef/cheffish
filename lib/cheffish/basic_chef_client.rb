@@ -1,4 +1,4 @@
-require "cheffish/version"
+require_relative "version"
 require "chef/dsl/recipe"
 require "chef/event_dispatch/base"
 require "chef/event_dispatch/dispatcher"

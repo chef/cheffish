@@ -1,6 +1,6 @@
-require "cheffish"
+require_relative "../../cheffish"
 require "chef/config"
-require "cheffish/base_resource"
+require_relative "../../cheffish/base_resource"
 require "chef/chef_fs/data_handler/data_bag_item_data_handler"
 require "chef/encrypted_data_bag_item"
 

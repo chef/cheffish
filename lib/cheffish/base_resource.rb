@@ -1,5 +1,5 @@
 require "chef/resource"
-require "cheffish/base_properties"
+require_relative "base_properties"
 
 module Cheffish
   class BaseResource < Chef::Resource

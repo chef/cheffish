@@ -1,4 +1,4 @@
-require "cheffish/base_resource"
+require_relative "../../cheffish/base_resource"
 require "chef_zero"
 
 class Chef

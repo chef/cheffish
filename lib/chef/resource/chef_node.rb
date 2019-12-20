@@ -1,7 +1,7 @@
-require "cheffish"
-require "cheffish/base_resource"
+require_relative "../../cheffish"
+require_relative "../../cheffish/base_resource"
 require "chef/chef_fs/data_handler/node_data_handler"
-require "cheffish/node_properties"
+require_relative "../../cheffish/node_properties"
 
 class Chef
   class Resource

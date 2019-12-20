@@ -1,5 +1,5 @@
-require "cheffish"
-require "cheffish/chef_actor_base"
+require_relative "../../cheffish"
+require_relative "../../cheffish/chef_actor_base"
 
 class Chef
   class Resource

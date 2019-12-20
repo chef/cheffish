@@ -1,4 +1,4 @@
-require "cheffish/rspec/matchers/have_updated"
-require "cheffish/rspec/matchers/be_idempotent"
-require "cheffish/rspec/matchers/partially_match"
-require "cheffish/rspec/matchers/emit_no_warnings_or_errors"
+require_relative "matchers/have_updated"
+require_relative "matchers/be_idempotent"
+require_relative "matchers/partially_match"
+require_relative "matchers/emit_no_warnings_or_errors"

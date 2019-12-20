@@ -1,4 +1,4 @@
-require "cheffish/basic_chef_client"
+require_relative "basic_chef_client"
 
 module Cheffish
   class ChefRun
