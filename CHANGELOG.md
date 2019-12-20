@@ -1,35 +1,32 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 14.0.13 -->
-## [v14.0.13](https://github.com/chef/cheffish/tree/v14.0.13) (2019-12-20)
-
-#### Merged Pull Requests
-- Substitute require for require_relative [#153](https://github.com/chef/cheffish/pull/153) ([tas50](https://github.com/tas50))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=14.0.4 -->
-### Changes since 14.0.4 release
-
-#### Merged Pull Requests
-- Substitute require for require_relative [#153](https://github.com/chef/cheffish/pull/153) ([tas50](https://github.com/tas50)) <!-- 14.0.13 -->
-- Update ownership for the new OSS Guidelines [#150](https://github.com/chef/cheffish/pull/150) ([tas50](https://github.com/tas50)) <!-- 14.0.12 -->
-- Add github templates [#148](https://github.com/chef/cheffish/pull/148) ([tas50](https://github.com/tas50)) <!-- 14.0.11 -->
-- Add build kite verify config [#147](https://github.com/chef/cheffish/pull/147) ([tas50](https://github.com/tas50)) <!-- 14.0.10 -->
-- Remove the Boolean magic type [#144](https://github.com/chef/cheffish/pull/144) ([tas50](https://github.com/tas50)) <!-- 14.0.9 -->
-- Set the author of the gem to Chef Software [#143](https://github.com/chef/cheffish/pull/143) ([tas50](https://github.com/tas50)) <!-- 14.0.8 -->
-- Update travis testing to Ruby 2.6.1 [#145](https://github.com/chef/cheffish/pull/145) ([tas50](https://github.com/tas50)) <!-- 14.0.7 -->
-- Add empty? to Cheffish::MergedConfig [#134](https://github.com/chef/cheffish/pull/134) ([josh-barker](https://github.com/josh-barker)) <!-- 14.0.6 -->
-- Resolve chefstyle warnings and test on Ruby 2.6 [#141](https://github.com/chef/cheffish/pull/141) ([tas50](https://github.com/tas50)) <!-- 14.0.5 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v14.0.13](https://github.com/chef/cheffish/tree/v14.0.13) (2019-12-20)
+
+#### Merged Pull Requests
+- Resolve chefstyle warnings and test on Ruby 2.6 [#141](https://github.com/chef/cheffish/pull/141) ([tas50](https://github.com/tas50))
+- Add empty? to Cheffish::MergedConfig [#134](https://github.com/chef/cheffish/pull/134) ([josh-barker](https://github.com/josh-barker))
+- Update travis testing to Ruby 2.6.1 [#145](https://github.com/chef/cheffish/pull/145) ([tas50](https://github.com/tas50))
+- Set the author of the gem to Chef Software [#143](https://github.com/chef/cheffish/pull/143) ([tas50](https://github.com/tas50))
+- Remove the Boolean magic type [#144](https://github.com/chef/cheffish/pull/144) ([tas50](https://github.com/tas50))
+- Add build kite verify config [#147](https://github.com/chef/cheffish/pull/147) ([tas50](https://github.com/tas50))
+- Add github templates [#148](https://github.com/chef/cheffish/pull/148) ([tas50](https://github.com/tas50))
+- Update ownership for the new OSS Guidelines [#150](https://github.com/chef/cheffish/pull/150) ([tas50](https://github.com/tas50))
+- Substitute require for require_relative [#153](https://github.com/chef/cheffish/pull/153) ([tas50](https://github.com/tas50))
+<!-- latest_stable_release -->
+
 ## [v14.0.4](https://github.com/chef/cheffish/tree/v14.0.4) (2018-11-14)
 #### Merged Pull Requests
 - Test on the latest Ruby releases in Travis [#138](https://github.com/chef/cheffish/pull/138) ([tas50](https://github.com/tas50))
 - Skip shipping the readme in the gem + add a license [#139](https://github.com/chef/cheffish/pull/139) ([tas50](https://github.com/tas50))
 - private_key: Fix cipher comparison to ignore case [#137](https://github.com/chef/cheffish/pull/137) ([tas50](https://github.com/tas50))
-<!-- latest_stable_release -->
 
 ## [v13.1.0](https://github.com/chef/cheffish/tree/v13.1.0) (2017-10-23)
 [Full Changelog](https://github.com/chef/cheffish/compare/v13.0.0...v13.1.0)
