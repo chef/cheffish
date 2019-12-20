@@ -3,6 +3,14 @@
 [![Status](https://travis-ci.org/chef/cheffish.svg?branch=master)](https://travis-ci.org/chef/cheffish)
 [![Gem Version](https://badge.fury.io/rb/cheffish.svg)](http://badge.fury.io/rb/cheffish)
 
+**Umbrella Project**: [Chef Infra](https://github.com/chef/chef-oss-practices/blob/master/projects/chef-infra.md)
+
+**Project State**: [Active](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md#active)
+
+**Issues [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md)**: 14 days
+
+**Pull Request [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md)**: 14 days
+
 This library provides a variety of convergent resources for interacting with the Chef Server; along the way, it happens to provide some very useful and sophisticated ways of running Chef resources as recipes in RSpec examples.
 
 **This document may have errors, but it should have enough pointers to get you oriented.**
