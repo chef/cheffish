@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 14.0.12 -->
-## [v14.0.12](https://github.com/chef/cheffish/tree/v14.0.12) (2019-12-20)
+<!-- latest_release 14.0.13 -->
+## [v14.0.13](https://github.com/chef/cheffish/tree/v14.0.13) (2019-12-20)
 
 #### Merged Pull Requests
-- Update ownership for the new OSS Guidelines [#150](https://github.com/chef/cheffish/pull/150) ([tas50](https://github.com/tas50))
+- Substitute require for require_relative [#153](https://github.com/chef/cheffish/pull/153) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=14.0.4 -->
 ### Changes since 14.0.4 release
 
 #### Merged Pull Requests
+- Substitute require for require_relative [#153](https://github.com/chef/cheffish/pull/153) ([tas50](https://github.com/tas50)) <!-- 14.0.13 -->
 - Update ownership for the new OSS Guidelines [#150](https://github.com/chef/cheffish/pull/150) ([tas50](https://github.com/tas50)) <!-- 14.0.12 -->
 - Add github templates [#148](https://github.com/chef/cheffish/pull/148) ([tas50](https://github.com/tas50)) <!-- 14.0.11 -->
 - Add build kite verify config [#147](https://github.com/chef/cheffish/pull/147) ([tas50](https://github.com/tas50)) <!-- 14.0.10 -->
