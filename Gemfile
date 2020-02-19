@@ -14,8 +14,8 @@ if ENV["GEMFILE_MOD"]
   instance_eval(ENV["GEMFILE_MOD"])
 else
   group :development do
-    gem "chef", "~> 14"
-    gem "ohai", "~> 14"
+    gem "chef", "~> 15"
+    gem "ohai", "~> 15"
   end
 end
 
