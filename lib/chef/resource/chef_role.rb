@@ -62,6 +62,7 @@ class Chef
         if recipes.size == 0
           raise ArgumentError, "At least one recipe must be specified"
         end
+
         @run_list_modifiers ||= []
         @run_list_modifiers += recipes.map { |recipe| Chef::RunList::RunListItem.new("recipe[#{recipe}]") }
       end
@@ -70,6 +71,7 @@ class Chef
         if roles.size == 0
           raise ArgumentError, "At least one role must be specified"
         end
+
         @run_list_modifiers ||= []
         @run_list_modifiers += roles.map { |role| Chef::RunList::RunListItem.new("role[#{role}]") }
       end
@@ -78,6 +80,7 @@ class Chef
         if recipes.size == 0
           raise ArgumentError, "At least one recipe must be specified"
         end
+
         @run_list_removers ||= []
         @run_list_removers += recipes.map { |recipe| Chef::RunList::RunListItem.new("recipe[#{recipe}]") }
       end
@@ -86,6 +89,7 @@ class Chef
         if roles.size == 0
           raise ArgumentError, "At least one role must be specified"
         end
+
         @run_list_removers ||= []
         @run_list_removers += roles.map { |recipe| Chef::RunList::RunListItem.new("role[#{role}]") }
       end

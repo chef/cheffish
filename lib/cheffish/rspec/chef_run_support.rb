@@ -58,7 +58,7 @@ module Cheffish
         end
 
         def recipe(str = nil, file = nil, line = nil, &recipe)
-          if !recipe
+          unless recipe
             if file && line
               recipe = proc { eval(str, nil, file, line) } # rubocop:disable Security/Eval
             else

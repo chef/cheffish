@@ -27,7 +27,7 @@ module Cheffish
         result_configs = []
         configs.each do |config|
           value = config[name]
-          if !value.nil?
+          unless value.nil?
             if value.respond_to?(:keys)
               result_configs << value
             elsif result_configs.size > 0
@@ -63,7 +63,7 @@ module Cheffish
     alias_method :has_key?, :key?
 
     def keys
-      configs.flat_map { |c| c.keys }.uniq
+      configs.flat_map(&:keys).uniq
     end
 
     def values

@@ -160,7 +160,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
           it 'Converging chef_acl "nodes/x" with rights [ :read, :create, :update, :delete, :grant ] modifies all rights' do
             expect_recipe do
               chef_acl "nodes/x" do
-                rights [ :create, :read, :update, :delete, :grant ], users: %w{u1 u2}, clients: %w{c1}, groups: %w{g1}
+                rights %i{create read update delete grant}, users: %w{u1 u2}, clients: %w{c1}, groups: %w{g1}
               end
             end.to be_updated
             expect(get("nodes/x/_acl")).to partially_match(
@@ -229,11 +229,11 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
             end
           end.to be_updated
           expect(get("nodes/x/_acl")).to partially_match(
-                           "create" => { "actors" => exclude("foo") },
-                           "read"   => { "actors" => exclude("foo") },
-                           "update" => { "actors" => exclude("foo") },
-                           "delete" => { "actors" => exclude("foo") },
-                           "grant"  => { "actors" => exclude("foo") }
+            "create" => { "actors" => exclude("foo") },
+            "read"   => { "actors" => exclude("foo") },
+            "update" => { "actors" => exclude("foo") },
+            "delete" => { "actors" => exclude("foo") },
+            "grant"  => { "actors" => exclude("foo") }
           )
         end
       end
@@ -361,7 +361,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
               end.to be_updated
               %w{clients containers cookbooks data environments groups nodes roles}.each do |type|
                 expect(get("/organizations/foo/#{type}/x/_acl")).to partially_match(
-                                 "read" => { "actors" => %w{u} })
+                  "read" => { "actors" => %w{u} }
+                )
               end
             end
           end
@@ -408,7 +409,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
               end.to be_updated
               %w{clients containers cookbooks data environments groups nodes roles sandboxes}.each do |type|
                 expect(get("/organizations/foo/#{type}/x/_acl")).to partially_match(
-                                 "read" => { "actors" => %w{u} })
+                  "read" => { "actors" => %w{u} }
+                )
               end
             end
 
@@ -420,7 +422,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
               end.to be_updated
               %w{clients containers cookbooks data environments groups nodes roles}.each do |type|
                 expect(get("/organizations/foo/#{type}/x/_acl")).to partially_match(
-                                 "read" => { "actors" => %w{u} })
+                  "read" => { "actors" => %w{u} }
+                )
               end
             end
 
@@ -447,7 +450,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
                 chef_acl "/organizations/foo/cookbooks/x/1.0.0" do
                   rights :read, users: %w{u}
                 end
-              end.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/cookbooks\/x/)
+              end.to raise_error(%r{ACLs cannot be set on children of /organizations/foo/cookbooks/x})
             end
 
             it "chef_acl '/organizations/foo/cookbooks/*/*' raises an error" do
@@ -456,7 +459,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
                 chef_acl "/organizations/foo/cookbooks/*/*" do
                   rights :read, users: %w{u}
                 end
-              end.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/cookbooks\/*/)
+              end.to raise_error(%r{ACLs cannot be set on children of /organizations/foo/cookbooks/*})
             end
 
             it 'chef_acl "/organizations/foo/data/x/y" raises an error' do
@@ -464,7 +467,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
                 chef_acl "/organizations/foo/data/x/y" do
                   rights :read, users: %w{u}
                 end
-              end.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/data\/x/)
+              end.to raise_error(%r{ACLs cannot be set on children of /organizations/foo/data/x})
             end
 
             it 'chef_acl "/organizations/foo/data/*/*" raises an error' do
@@ -473,7 +476,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
                 chef_acl "/organizations/foo/data/*/*" do
                   rights :read, users: %w{u}
                 end
-              end.to raise_error(/ACLs cannot be set on children of \/organizations\/foo\/data\/*/)
+              end.to raise_error(%r{ACLs cannot be set on children of /organizations/foo/data/*})
             end
 
             it 'chef_acl "/organizations/foo" changes the acl' do
@@ -609,7 +612,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
           end.to be_updated
           %w{clients containers cookbooks data environments groups nodes roles sandboxes}.each do |type|
             expect(get("#{type}/x/_acl")).to partially_match(
-                             "read" => { "actors" => %w{u} })
+              "read" => { "actors" => %w{u} }
+            )
           end
         end
 
@@ -621,7 +625,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
           end.to be_updated
           %w{clients containers cookbooks data environments groups nodes roles}.each do |type|
             expect(get("#{type}/x/_acl")).to partially_match(
-                             "read" => { "actors" => %w{u} })
+              "read" => { "actors" => %w{u} }
+            )
           end
         end
 
@@ -633,7 +638,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
           end.to be_updated
           %w{admins billing-admins clients users x}.each do |n|
             expect(get("groups/#{n}/_acl")).to partially_match(
-                             "read" => { "actors" => %w{u} })
+              "read" => { "actors" => %w{u} }
+            )
           end
         end
 
@@ -713,7 +719,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
           end.to be_updated
           %w{clients containers cookbooks data environments groups nodes roles sandboxes}.each do |type|
             expect(get("/organizations/foo/containers/#{type}/_acl")).to partially_match(
-                             "read" => { "actors" => %w{u} })
+              "read" => { "actors" => %w{u} }
+            )
           end
         end
 
@@ -768,7 +775,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
           end.to be_updated
           %w{clients containers cookbooks data environments groups nodes roles sandboxes}.each do |type|
             expect(get("containers/#{type}/_acl")).to partially_match(
-                             "read" => { "actors" => %w{u} })
+              "read" => { "actors" => %w{u} }
+            )
           end
         end
       end
@@ -820,7 +828,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
         it 'chef_acl with remove_rights [ :create, :read ], "u", "c", "g" removes all three' do
           expect_recipe do
             chef_acl "nodes/x" do
-              remove_rights [ :create, :read ], users: %w{u}, clients: %w{c}, groups: %w{g}
+              remove_rights %i{create read}, users: %w{u}, clients: %w{c}, groups: %w{g}
             end
           end.to be_updated
           expect(get("nodes/x/_acl")).to partially_match(

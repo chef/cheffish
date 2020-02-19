@@ -34,15 +34,14 @@ module Cheffish
     def client
       @client ||= begin
         chef_config = self.chef_config.dup
-        chef_config[:log_level] ||= :debug if !chef_config.key?(:log_level)
-        chef_config[:verbose_logging] = false if !chef_config.key?(:verbose_logging)
+        chef_config[:log_level] ||= :debug unless chef_config.key?(:log_level)
+        chef_config[:verbose_logging] = false unless chef_config.key?(:verbose_logging)
         chef_config[:stdout] = StringIOTee.new(chef_config[:stdout])
         chef_config[:stderr] = StringIOTee.new(chef_config[:stderr])
         chef_config[:log_location] = StringIOTee.new(chef_config[:log_location])
         @client = ::Cheffish::BasicChefClient.new(nil,
           [ event_sink, Chef::Formatters.new(:doc, chef_config[:stdout], chef_config[:stderr]) ],
-          chef_config
-        )
+          chef_config)
       end
     end
 
@@ -125,14 +124,14 @@ module Cheffish
         message << "--- Chef Client Output ---\n"
         message << "---                    ---\n"
         message << stdout
-        message << "\n" if !stdout.end_with?("\n")
+        message << "\n" unless stdout.end_with?("\n")
       end
       if stderr && !stderr.empty?
         message << "---                          ---\n"
         message << "--- Chef Client Error Output ---\n"
         message << "---                          ---\n"
         message << stderr
-        message << "\n" if !stderr.end_with?("\n")
+        message << "\n" unless stderr.end_with?("\n")
       end
       if logs && !logs.empty?
         message << "---                  ---\n"

@@ -14,7 +14,7 @@ module Cheffish
       attr_reader :example
 
       def client
-        if !@client
+        unless @client
           super
           example = self.example
 

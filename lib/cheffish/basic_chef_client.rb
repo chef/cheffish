@@ -14,7 +14,7 @@ module Cheffish
     include Chef::DSL::Recipe
 
     def initialize(node = nil, events = nil, **chef_config)
-      if !node
+      unless node
         node = Chef::Node.new
         node.name "basic_chef_client"
         node.automatic[:platform] = "basic_chef_client"
@@ -31,7 +31,7 @@ module Cheffish
         case events
         when Array
           events.each { |e| dispatcher.register(e) } if events
-        when !nil
+        when !nil # rubocop: disable Lint/LiteralAsCondition
           dispatcher.register(events)
         end
         @run_context = Chef::RunContext.new(node, {}, dispatcher)

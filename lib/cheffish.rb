@@ -98,6 +98,7 @@ module Cheffish
     elsif config[:private_key_paths]
       config[:private_key_paths].each do |private_key_path|
         next unless File.exist?(private_key_path)
+
         Dir.entries(private_key_path).sort.each do |key|
           ext = File.extname(key)
           if key == name || ext == "" || ext == ".pem"

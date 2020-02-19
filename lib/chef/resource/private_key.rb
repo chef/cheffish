@@ -13,11 +13,11 @@ class Chef
 
       # Path to private key.  Set to :none to create the key in memory and not on disk.
       property :path, [ String, :none ], name_property: true
-      property :format, [ :pem, :der ], default: :pem
-      property :type, [ :rsa, :dsa ], default: :rsa # TODO support :ec
+      property :format, %i{pem der}, default: :pem
+      property :type, %i{rsa dsa}, default: :rsa # TODO support :ec
       # These specify an optional public_key you can spit out if you want.
       property :public_key_path, String
-      property :public_key_format, [ :openssh, :pem, :der ], default: :openssh
+      property :public_key_format, %i{openssh pem der}, default: :openssh
       # Specify this if you want to copy another private key but give it a different format / password
       property :source_key
       property :source_key_path, String
@@ -31,7 +31,7 @@ class Chef
 
       # PEM-only
       property :pass_phrase, String
-      property :cipher, String, equal_to: OpenSSL::Cipher.ciphers.map { |x| x.downcase }, default: "des-ede3-cbc", coerce: proc { |x| x.downcase }
+      property :cipher, String, equal_to: OpenSSL::Cipher.ciphers.map(&:downcase), default: "des-ede3-cbc", coerce: proc { |x| x.downcase }
 
       # Set this to regenerate the key if it does not have the desired characteristics (like size, type, etc.)
       property :regenerate_if_different, [TrueClass, FalseClass]

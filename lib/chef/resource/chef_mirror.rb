@@ -95,6 +95,7 @@ class Chef
           if new_resource.concurrency <= 0
             raise "chef_mirror.concurrency must be above 0!  Was set to #{new_resource.concurrency}"
           end
+
           # Honor concurrency
           Chef::ChefFS::Parallelizer.threads = new_resource.concurrency - 1
 
@@ -103,13 +104,14 @@ class Chef
           if new_resource.path[0] == "/"
             raise "Absolute paths in chef_mirror not yet supported."
           end
+
           # Copy!
           path = Chef::ChefFS::FilePattern.new("/#{new_resource.path}")
           ui = CopyListener.new(self)
           error = Chef::ChefFS::FileSystem.copy_to(path, src_root, dest_root, nil, options, ui, proc { |p| p.path })
 
           if error
-            raise "Errors while copying:#{ui.errors.map { |e| "#{e}\n" }.join('')}"
+            raise "Errors while copying:#{ui.errors.map { |e| "#{e}\n" }.join("")}"
           end
         end
 
@@ -163,7 +165,7 @@ class Chef
         end
 
         def repo_mode
-          new_resource.chef_server[:chef_server_url] =~ /\/organizations\// ? "hosted_everything" : "everything"
+          new_resource.chef_server[:chef_server_url] =~ %r{/organizations/} ? "hosted_everything" : "everything"
         end
 
         def options
@@ -179,8 +181,7 @@ class Chef
           result
         end
 
-        def load_current_resource
-        end
+        def load_current_resource; end
 
         class CopyListener
           def initialize(mirror)
