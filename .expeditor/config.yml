@@ -1,5 +1,6 @@
 # Documentation available at https://expeditor.chef.io/docs/getting-started/
 ---
+
 # Slack channel in Chef Software slack to send notifications about build failures, etc
 slack:
   notify_channel: chef-infra-notify
@@ -23,11 +24,6 @@ github:
 changelog:
   rollup_header: Changes not yet released to rubygems.org
 
-promote:
-  actions:
-    - built_in:rollover_changelog
-    - built_in:publish_rubygems
-
 # These actions are taken, in order they are specified, anytime a Pull Request is merged.
 merge_actions:
   - built_in:bump_version:
@@ -42,6 +38,11 @@ merge_actions:
         - "Expeditor: Skip All"
   - built_in:build_gem:
       only_if: built_in:bump_version
+
+promote:
+  actions:
+    - built_in:rollover_changelog
+    - built_in:publish_rubygems
 
 pipelines:
   - verify:
