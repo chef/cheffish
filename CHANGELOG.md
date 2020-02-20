@@ -1,10 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release -->
+<!-- latest_release 15.0.0 -->
+## [v15.0.0](https://github.com/chef/cheffish/tree/v15.0.0) (2020-02-20)
+
+#### Merged Pull Requests
+- dropping ruby versions and bumping deps [#155](https://github.com/chef/cheffish/pull/155) ([lamont-granquist](https://github.com/lamont-granquist))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=14.0.13 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- dropping ruby versions and bumping deps [#155](https://github.com/chef/cheffish/pull/155) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 15.0.0 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
