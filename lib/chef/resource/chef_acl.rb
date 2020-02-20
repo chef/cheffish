@@ -99,6 +99,7 @@ class Chef
                     # NOTE: if superusers exist, this should turn into a warning.
                     raise "chef_acl attempted to remove all actors from GRANT!  I'm sorry Dave, I can't let you remove access to an object with no hope of recovery."
                   end
+
                   modify[differences] ||= {}
                   modify[differences][permission] = desired_json
                 end
@@ -107,7 +108,7 @@ class Chef
               if modify.size > 0
                 changed = true
                 description = [ "update acl #{path} at #{rest_url(path)}" ] + modify.flat_map do |diffs, permissions|
-                  diffs.map { |diff| "  #{permissions.keys.join(', ')}:#{diff}" }
+                  diffs.map { |diff| "  #{permissions.keys.join(", ")}:#{diff}" }
                 end
                 converge_by description do
                   modify.values.each do |permissions|
@@ -127,11 +128,13 @@ class Chef
             children, _error = list(path, "*")
             Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
               next if child.split("/")[-1] == "containers"
+
               create_acl(child)
             end
             # containers mess up our descent, so we do them last
             Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
               next if child.split("/")[-1] != "containers"
+
               create_acl(child)
             end
 
@@ -141,7 +144,7 @@ class Chef
         # Get the current ACL for the given path
         def current_acl(acl_path)
           @current_acls ||= {}
-          if !@current_acls.key?(acl_path)
+          unless @current_acls.key?(acl_path)
             @current_acls[acl_path] = begin
               rest.get(rest_url(acl_path))
                                       rescue Net::HTTPServerException => e
@@ -252,8 +255,7 @@ class Chef
           end
         end
 
-        def load_current_resource
-        end
+        def load_current_resource; end
 
         #
         # Matches chef_acl paths like nodes, nodes/*.
@@ -270,7 +272,7 @@ class Chef
         def match_paths(path)
           # Turn multiple slashes into one
           # nodes//x -> nodes/x
-          path = path.gsub(/[\/]+/, "/")
+          path = path.gsub(%r{[/]+}, "/")
           # If it's absolute, start the matching with /.  If it's relative, start with '' (relative root).
           if path[0] == "/"
             matches = [ "/" ]
@@ -305,6 +307,7 @@ class Chef
                 if parts[0..index - 1].all? { |p| p != "*" }
                   raise error
                 end
+
                 []
               else
                 found
@@ -421,21 +424,21 @@ class Chef
             when 1
               # /organizations/*, /users/*, roles/*, nodes/*, etc.
               results, error = rest_list(path)
-              if !error
+              unless error
                 results = results.map { |result| ::File.join(path, result) }
               end
 
             when 2
               # /organizations/NAME/*
               results, error = rest_list(::File.join(path, "containers"))
-              if !error
+              unless error
                 results = results.map { |result| ::File.join(path, result) }
               end
 
             when 3
               # /organizations/NAME/TYPE/*
               results, error = rest_list(path)
-              if !error
+              unless error
                 results = results.map { |result| ::File.join(path, result) }
               end
             end

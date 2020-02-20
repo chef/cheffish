@@ -39,7 +39,7 @@ module Cheffish
       attribute "tags" do |existing_tags|
         existing_tags ||= []
         tags.each do |tag|
-          if !existing_tags.include?(tag.to_s)
+          unless existing_tags.include?(tag.to_s)
             existing_tags << tag.to_s
           end
         end
@@ -64,8 +64,8 @@ module Cheffish
       if tags.size == 0
         attribute("tags")
       else
-        tags = tags[0] if tags.size == 1 && tags[0].kind_of?(Array)
-        attribute("tags", tags.map { |tag| tag.to_s })
+        tags = tags[0] if tags.size == 1 && tags[0].is_a?(Array)
+        attribute("tags", tags.map(&:to_s))
       end
     end
 
@@ -80,6 +80,7 @@ module Cheffish
       if recipes.size == 0
         raise ArgumentError, "At least one recipe must be specified"
       end
+
       @run_list_modifiers ||= []
       @run_list_modifiers += recipes.map { |recipe| Chef::RunList::RunListItem.new("recipe[#{recipe}]") }
     end
@@ -88,6 +89,7 @@ module Cheffish
       if roles.size == 0
         raise ArgumentError, "At least one role must be specified"
       end
+
       @run_list_modifiers ||= []
       @run_list_modifiers += roles.map { |role| Chef::RunList::RunListItem.new("role[#{role}]") }
     end
@@ -96,6 +98,7 @@ module Cheffish
       if recipes.size == 0
         raise ArgumentError, "At least one recipe must be specified"
       end
+
       @run_list_removers ||= []
       @run_list_removers += recipes.map { |recipe| Chef::RunList::RunListItem.new("recipe[#{recipe}]") }
     end
@@ -104,6 +107,7 @@ module Cheffish
       if roles.size == 0
         raise ArgumentError, "At least one role must be specified"
       end
+
       @run_list_removers ||= []
       @run_list_removers += roles.map { |role| Chef::RunList::RunListItem.new("role[#{role}]") }
     end

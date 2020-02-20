@@ -43,7 +43,8 @@ class Chef
           new_resource.berksfile.upload(
             server_url: new_resource.chef_server[:chef_server_url],
             client_name: new_resource.chef_server[:options][:client_name],
-            client_key: new_resource.chef_server[:options][:signing_key_filename])
+            client_key: new_resource.chef_server[:options][:signing_key_filename]
+          )
         else
           file = Tempfile.new("privatekey")
           begin
@@ -53,7 +54,8 @@ class Chef
             new_resource.berksfile.upload(
               server_url: new_resource.chef_server[:chef_server_url],
               client_name: new_resource.chef_server[:options][:client_name] || "me",
-              client_key: file.path)
+              client_key: file.path
+            )
 
           ensure
             file.close

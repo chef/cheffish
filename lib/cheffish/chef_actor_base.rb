@@ -24,9 +24,10 @@ module Cheffish
           end
         else
           # Create the actor if it's missing
-          if !new_public_key
+          unless new_public_key
             raise "You must specify a public key to create a #{actor_type}!  Use the private_key resource to create a key, and pass it in with source_key_path."
           end
+
           description = [ "create #{actor_type} #{new_resource.name} at #{actor_path}" ] + differences
           converge_by description do
             result = rest.post((actor_path).to_s, normalize_for_post(new_json))

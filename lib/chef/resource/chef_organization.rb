@@ -68,7 +68,7 @@ class Chef
           end
         end
         new_resource.members.each do |user|
-          if !existing_members.include?(user)
+          unless existing_members.include?(user)
             converge_by "Add #{user} to organization #{new_resource.organization_name}" do
               rest.post("#{rest.root_url}/organizations/#{new_resource.organization_name}/users/", { "username" => user })
             end

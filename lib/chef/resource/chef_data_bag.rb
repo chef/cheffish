@@ -9,7 +9,7 @@ class Chef
       property :data_bag_name, Cheffish::NAME_REGEX, name_property: true
 
       action :create do
-        if !current_resource_exists?
+        unless current_resource_exists?
           converge_by "create data bag #{new_resource.data_bag_name} at #{rest.url}" do
             rest.post("data", { "name" => new_resource.data_bag_name })
           end

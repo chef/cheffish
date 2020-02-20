@@ -52,7 +52,7 @@ class Chef
 
         # Create the data store chef-zero will use
         options[:data_store] ||= begin
-          if !options[:chef_repo_path]
+          unless options[:chef_repo_path]
             raise "chef_repo_path must be specified to with_chef_local_server"
           end
 
@@ -63,7 +63,7 @@ class Chef
             symbol_key = "#{type}_path".to_sym
 
             options[symbol_key] ||= begin
-              if options[:chef_repo_path].kind_of?(String)
+              if options[:chef_repo_path].is_a?(String)
                 Chef::Util::PathHelper.join(options[:chef_repo_path], "#{type}s")
               else
                 options[:chef_repo_path].map { |path| Chef::Util::PathHelper.join(path, "#{type}s") }

@@ -10,7 +10,7 @@ class Chef
       property :chef_container_name, Cheffish::NAME_REGEX, name_property: true
 
       action :create do
-        if !@current_exists
+        unless @current_exists
           converge_by "create container #{new_resource.chef_container_name} at #{rest.url}" do
             rest.post("containers", normalize_for_post(new_json))
           end

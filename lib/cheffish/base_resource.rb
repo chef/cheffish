@@ -91,7 +91,7 @@ module Cheffish
       end
 
       def json_differences_internal(old_json, new_json, print_values, name, result)
-        if old_json.kind_of?(Hash) && new_json.kind_of?(Hash)
+        if old_json.is_a?(Hash) && new_json.is_a?(Hash)
           removed_keys = old_json.keys.inject({}) { |hash, key| hash[key] = true; hash }
           new_json.each_pair do |new_key, new_value|
             if old_json.key?(new_key)
@@ -101,18 +101,18 @@ module Cheffish
               end
             else
               if print_values
-                result << "  add #{name == '' ? new_key : "#{name}.#{new_key}"} = #{new_value.inspect}"
+                result << "  add #{name == "" ? new_key : "#{name}.#{new_key}"} = #{new_value.inspect}"
               else
-                result << "  add #{name == '' ? new_key : "#{name}.#{new_key}"}"
+                result << "  add #{name == "" ? new_key : "#{name}.#{new_key}"}"
               end
             end
           end
           removed_keys.keys.each do |removed_key|
-            result << "  remove #{name == '' ? removed_key : "#{name}.#{removed_key}"}"
+            result << "  remove #{name == "" ? removed_key : "#{name}.#{removed_key}"}"
           end
         else
-          old_json = old_json.to_s if old_json.kind_of?(Symbol)
-          new_json = new_json.to_s if new_json.kind_of?(Symbol)
+          old_json = old_json.to_s if old_json.is_a?(Symbol)
+          new_json = new_json.to_s if new_json.is_a?(Symbol)
           if old_json != new_json
             if print_values
               result << "  update #{name} from #{old_json.inspect} to #{new_json.inspect}"
@@ -134,8 +134,8 @@ module Cheffish
         end
 
         modifiers.each do |path, value|
-          path = [path] if !path.kind_of?(Array)
-          path = path.map { |path_part| path_part.to_s }
+          path = [path] unless path.is_a?(Array)
+          path = path.map(&:to_s)
           parent = 0.upto(path.size - 2).inject(json) do |hash, index|
             if hash.nil?
               nil
@@ -148,6 +148,7 @@ module Cheffish
           if !parent.nil? && !parent.is_a?(Hash)
             raise "Attempt to set #{path} to #{value} when #{path[0..-2]} is not a hash"
           end
+
           existing_value = parent ? parent[path[-1]] : nil
 
           if value.is_a?(Proc)
@@ -158,7 +159,7 @@ module Cheffish
           else
             # Create parent if necessary, overwriting values
             parent = path[0..-2].inject(json) do |hash, path_part|
-              hash[path_part] = {} if !hash[path_part]
+              hash[path_part] = {} unless hash[path_part]
               hash[path_part]
             end
             if path.size > 0
@@ -173,6 +174,7 @@ module Cheffish
 
       def apply_run_list_modifiers(add_to_run_list, delete_from_run_list, run_list)
         return run_list if (!add_to_run_list || add_to_run_list.size == 0) && (!delete_from_run_list || !delete_from_run_list.size)
+
         delete_from_run_list ||= []
         add_to_run_list ||= []
 
@@ -191,7 +193,7 @@ module Cheffish
             # because found_desired will be less than add_to_run_list_index.  The result will
             # be X, A, B, Y, Z.
             if found_desired >= add_to_run_list_index
-              result += add_to_run_list[add_to_run_list_index..found_desired].map { |item| item.to_s }
+              result += add_to_run_list[add_to_run_list_index..found_desired].map(&:to_s)
               add_to_run_list_index = found_desired + 1
             end
           else
@@ -204,7 +206,7 @@ module Cheffish
         end
 
         # Copy any remaining desired items at the end
-        result += add_to_run_list[add_to_run_list_index..-1].map { |item| item.to_s }
+        result += add_to_run_list[add_to_run_list_index..-1].map(&:to_s)
         result
       end
 

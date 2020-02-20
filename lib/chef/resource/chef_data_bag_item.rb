@@ -137,7 +137,7 @@ class Chef
 
               # If the current secret doesn't work, look through the specified old secrets
 
-              if !current_resource.secret
+              unless current_resource.secret
                 old_secrets = []
                 if new_resource.old_secret
                   old_secrets += Array(new_resource.old_secret)
@@ -148,17 +148,17 @@ class Chef
                   end
                 end
                 old_secrets.each do |secret|
-                  begin
-                    Chef::EncryptedDataBagItem::Decryptor.for(first_real_value, secret).for_decrypted_item
-                    current_resource.secret secret
-                  rescue Chef::EncryptedDataBagItem::DecryptionFailure
-                    decrypt_error = $!
-                  end
+
+                  Chef::EncryptedDataBagItem::Decryptor.for(first_real_value, secret).for_decrypted_item
+                  current_resource.secret secret
+                rescue Chef::EncryptedDataBagItem::DecryptionFailure
+                  decrypt_error = $!
+
                 end
 
                 # If we couldn't figure out the secret, emit a warning (this isn't a fatal flaw unless we
                 # need to reuse one of the values from the data bag)
-                if !current_resource.secret
+                unless current_resource.secret
                   if decrypt_error
                     Chef::Log.warn "Existing data bag is encrypted, but could not decrypt: #{decrypt_error.message}."
                   else
@@ -280,9 +280,10 @@ class Chef
             elsif current_resource.encrypt
               # Encryption is different and we can't read the old values.  Only allow the change
               # if we're overwriting the data bag item
-              if !new_resource.complete
+              unless new_resource.complete
                 raise "Cannot encrypt #{new_resource.name} due to failure to decrypt existing resource.  Set 'complete true' to overwrite or add the old secret as old_secret / old_secret_path."
               end
+
               _differences = [ "overwrite data bag item (cannot decrypt old data bag item)"]
               differences = (new_resource.raw_data.keys & current_resource.raw_data.keys).map { |key| "overwrite #{key}" }
               differences += (new_resource.raw_data.keys - current_resource.raw_data.keys).map { |key| "add #{key}" }
