@@ -119,7 +119,7 @@ module Cheffish
         begin
           json = rest.get("#{actor_path}/#{new_resource.name}")
           @current_resource = json_to_resource(json)
-        rescue Net::HTTPServerException => e
+        rescue Net::HTTPClientException => e
           if e.response.code == "404"
             @current_resource = not_found_resource
           else

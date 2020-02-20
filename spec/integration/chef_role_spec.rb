@@ -40,7 +40,7 @@ describe Chef::Resource::ChefRole do
               with_chef_server "http://127.0.0.1:8899"
               chef_role "blah"
             end.to have_updated "chef_role[blah]", :create
-            expect { get("roles/blah") }.to raise_error(Net::HTTPServerException)
+            expect { get("roles/blah") }.to raise_error(Net::HTTPClientException)
             expect(get("http://127.0.0.1:8899/roles/blah")["name"]).to eq("blah")
           end
         end
@@ -53,7 +53,7 @@ describe Chef::Resource::ChefRole do
                 chef_server({ chef_server_url: "http://127.0.0.1:8899" })
               end
             end.to have_updated "chef_role[blah]", :create
-            expect { get("roles/blah") }.to raise_error(Net::HTTPServerException)
+            expect { get("roles/blah") }.to raise_error(Net::HTTPClientException)
             expect(get("http://127.0.0.1:8899/roles/blah")["name"]).to eq("blah")
           end
         end

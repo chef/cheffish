@@ -40,7 +40,7 @@ describe Chef::Resource::ChefNode do
               with_chef_server "http://127.0.0.1:8899"
               chef_node "blah"
             end.to have_updated "chef_node[blah]", :create
-            expect { get("nodes/blah") }.to raise_error(Net::HTTPServerException)
+            expect { get("nodes/blah") }.to raise_error(Net::HTTPClientException)
             expect(get("http://127.0.0.1:8899/nodes/blah")["name"]).to eq("blah")
           end
         end
@@ -53,7 +53,7 @@ describe Chef::Resource::ChefNode do
                 chef_server({ chef_server_url: "http://127.0.0.1:8899" })
               end
             end.to have_updated "chef_node[blah]", :create
-            expect { get("nodes/blah") }.to raise_error(Net::HTTPServerException)
+            expect { get("nodes/blah") }.to raise_error(Net::HTTPClientException)
             expect(get("http://127.0.0.1:8899/nodes/blah")["name"]).to eq("blah")
           end
         end
