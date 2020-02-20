@@ -1,21 +1,19 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 15.0.0 -->
+<!-- latest_release -->
+<!-- latest_release -->
+
+<!-- release_rollup -->
+<!-- release_rollup -->
+
+<!-- latest_stable_release -->
 ## [v15.0.0](https://github.com/chef/cheffish/tree/v15.0.0) (2020-02-20)
 
 #### Merged Pull Requests
 - dropping ruby versions and bumping deps [#155](https://github.com/chef/cheffish/pull/155) ([lamont-granquist](https://github.com/lamont-granquist))
-<!-- latest_release -->
-
-<!-- release_rollup since=14.0.13 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- dropping ruby versions and bumping deps [#155](https://github.com/chef/cheffish/pull/155) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 15.0.0 -->
-<!-- release_rollup -->
-
 <!-- latest_stable_release -->
+
 ## [v14.0.13](https://github.com/chef/cheffish/tree/v14.0.13) (2019-12-20)
 
 #### Merged Pull Requests
@@ -28,7 +26,6 @@
 - Add github templates [#148](https://github.com/chef/cheffish/pull/148) ([tas50](https://github.com/tas50))
 - Update ownership for the new OSS Guidelines [#150](https://github.com/chef/cheffish/pull/150) ([tas50](https://github.com/tas50))
 - Substitute require for require_relative [#153](https://github.com/chef/cheffish/pull/153) ([tas50](https://github.com/tas50))
-<!-- latest_stable_release -->
 
 ## [v14.0.4](https://github.com/chef/cheffish/tree/v14.0.4) (2018-11-14)
 #### Merged Pull Requests
