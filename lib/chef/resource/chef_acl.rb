@@ -7,7 +7,7 @@ require "uri"
 class Chef
   class Resource
     class ChefAcl < Cheffish::BaseResource
-      resource_name :chef_acl
+      provides :chef_acl
 
       # Path of the thing being secured, e.g. nodes, nodes/*, nodes/mynode,
       # */*, **, roles/base, data/secrets, cookbooks/apache2, /users/*,

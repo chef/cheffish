@@ -6,7 +6,7 @@ require_relative "../../cheffish/node_properties"
 class Chef
   class Resource
     class ChefNode < Cheffish::BaseResource
-      resource_name :chef_node
+      provides :chef_node
 
       include Cheffish::NodeProperties
 

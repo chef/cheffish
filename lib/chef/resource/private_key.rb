@@ -6,7 +6,7 @@ require_relative "../../cheffish/key_formatter"
 class Chef
   class Resource
     class PrivateKey < Cheffish::BaseResource
-      resource_name :private_key
+      provides :private_key
 
       allowed_actions :create, :delete, :regenerate, :nothing
       default_action :create

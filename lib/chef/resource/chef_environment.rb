@@ -6,7 +6,7 @@ require "chef/chef_fs/data_handler/environment_data_handler"
 class Chef
   class Resource
     class ChefEnvironment < Cheffish::BaseResource
-      resource_name :chef_environment
+      provides :chef_environment
 
       property :environment_name, Cheffish::NAME_REGEX, name_property: true
       property :description, String

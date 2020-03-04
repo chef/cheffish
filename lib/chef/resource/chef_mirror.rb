@@ -9,7 +9,7 @@ require "chef/chef_fs/file_system/repository/chef_repository_file_system_root_di
 class Chef
   class Resource
     class ChefMirror < Cheffish::BaseResource
-      resource_name :chef_mirror
+      provides :chef_mirror
 
       # Path of the data to mirror, e.g. nodes, nodes/*, nodes/mynode,
       # */*, **, roles/base, data/secrets, cookbooks/apache2, etc.
