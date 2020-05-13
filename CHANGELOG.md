@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 15.0.2 -->
-## [v15.0.2](https://github.com/chef/cheffish/tree/v15.0.2) (2020-03-04)
+<!-- latest_release 15.0.3 -->
+## [v15.0.3](https://github.com/chef/cheffish/tree/v15.0.3) (2020-05-13)
 
 #### Merged Pull Requests
-- convert resource_name to provides [#158](https://github.com/chef/cheffish/pull/158) ([lamont-granquist](https://github.com/lamont-granquist))
+- Remove support for PKCS8 SHA1 fingerprints [#159](https://github.com/chef/cheffish/pull/159) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=15.0.0 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Remove support for PKCS8 SHA1 fingerprints [#159](https://github.com/chef/cheffish/pull/159) ([tas50](https://github.com/tas50)) <!-- 15.0.3 -->
 - convert resource_name to provides [#158](https://github.com/chef/cheffish/pull/158) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 15.0.2 -->
 - Update testing and fix Chefstyle warnings [#154](https://github.com/chef/cheffish/pull/154) ([tas50](https://github.com/tas50)) <!-- 15.0.1 -->
 <!-- release_rollup -->
