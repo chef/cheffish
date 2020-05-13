@@ -1,10 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release -->
+<!-- latest_release 16.0.0 -->
+## [v16.0.0](https://github.com/chef/cheffish/tree/v16.0.0) (2020-05-13)
+
+#### Merged Pull Requests
+- Replace HTTPServerException with HTTPClientException [#157](https://github.com/chef/cheffish/pull/157) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=15.0.3 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Replace HTTPServerException with HTTPClientException [#157](https://github.com/chef/cheffish/pull/157) ([tas50](https://github.com/tas50)) <!-- 16.0.0 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
