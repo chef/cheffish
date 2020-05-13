@@ -1,8 +1,8 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 16.0.0 -->
-## [v16.0.0](https://github.com/chef/cheffish/tree/v16.0.0) (2020-05-13)
+<!-- latest_release 17.0.0 -->
+## [v17.0.0](https://github.com/chef/cheffish/tree/v17.0.0) (2020-05-13)
 
 #### Merged Pull Requests
 - Replace HTTPServerException with HTTPClientException [#157](https://github.com/chef/cheffish/pull/157) ([tas50](https://github.com/tas50))
