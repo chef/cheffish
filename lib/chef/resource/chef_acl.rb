@@ -469,7 +469,7 @@ class Chef
         end
 
         def rest_list(path)
-            # All our rest lists are hashes where the keys are the names
+          # All our rest lists are hashes where the keys are the names
           [ rest.get(rest_url(path)).keys, nil ]
         rescue Net::HTTPServerException => e
           if e.response.code == "405" || e.response.code == "404"
