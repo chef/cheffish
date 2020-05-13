@@ -25,7 +25,7 @@ class Chef
         end
       end
 
-      action_class.class_eval do
+      action_class do
         def load_current_resource
           @current_exists = rest.get("containers/#{new_resource.chef_container_name}")
         rescue Net::HTTPClientException => e
