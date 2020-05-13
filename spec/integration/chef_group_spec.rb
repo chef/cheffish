@@ -37,7 +37,7 @@ describe Chef::Resource::ChefGroup do
             action :delete
           end
         end.to not_have_updated("chef_group[x]", :delete).and not_have_updated("chef_group[x]", :create)
-        expect { get("groups/x") }.to raise_error(Net::HTTPServerException)
+        expect { get("groups/x") }.to raise_error(Net::HTTPClientException)
       end
 
       it 'Converging chef_group "x" creates the group with the given members' do
@@ -101,7 +101,7 @@ describe Chef::Resource::ChefGroup do
             action :delete
           end
         end.to have_updated("chef_group[x]", :delete)
-        expect { get("groups/x") }.to raise_error(Net::HTTPServerException)
+        expect { get("groups/x") }.to raise_error(Net::HTTPClientException)
       end
 
       it 'Converging chef_group "x" with existing users changes nothing' do

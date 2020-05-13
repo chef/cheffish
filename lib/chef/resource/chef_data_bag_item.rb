@@ -103,7 +103,7 @@ class Chef
             resource = Chef::Resource::ChefDataBagItem.new(new_resource.name, run_context)
             resource.raw_data json
             @current_resource = resource
-          rescue Net::HTTPServerException => e
+          rescue Net::HTTPClientException => e
             if e.response.code == "404"
               @current_resource = not_found_resource
             else

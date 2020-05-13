@@ -147,7 +147,7 @@ class Chef
           unless @current_acls.key?(acl_path)
             @current_acls[acl_path] = begin
               rest.get(rest_url(acl_path))
-                                      rescue Net::HTTPServerException => e
+                                      rescue Net::HTTPClientException => e
                                         unless e.response.code == "404" && new_resource.path.split("/").any? { |p| p == "*" }
                                           raise
                                         end
@@ -471,7 +471,7 @@ class Chef
         def rest_list(path)
           # All our rest lists are hashes where the keys are the names
           [ rest.get(rest_url(path)).keys, nil ]
-        rescue Net::HTTPServerException => e
+        rescue Net::HTTPClientException => e
           if e.response.code == "405" || e.response.code == "404"
             parts = path.split("/").select { |p| p != "" }.to_a
 

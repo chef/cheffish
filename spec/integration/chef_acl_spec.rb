@@ -191,7 +191,7 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
         it 'Converging chef_acl "nodes/y" throws a 404' do
           expect_converge do
             chef_acl "nodes/y"
-          end.to raise_error(Net::HTTPServerException)
+          end.to raise_error(Net::HTTPClientException)
         end
       end
 
