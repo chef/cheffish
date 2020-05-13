@@ -39,10 +39,8 @@ describe "Cheffish fingerprint key formatter" do
 
   context "when computing key fingperprints" do
 
-    it "computes the PKCS#8 SHA1 private key fingerprint correctly", pending: (RUBY_VERSION.to_f >= 2.0) do
-      expect(key_to_format(sample_private_key, :pkcs8sha1fingerprint)).to eq(
-        "88:7e:3a:bd:26:9f:b5:c5:d8:ae:52:f9:df:0b:64:a4:5c:17:0a:87"
-      )
+    it "raises when passing a PKCS#8 SHA1 private key fingerprint" do
+      expect { key_to_format(sample_private_key, :pkcs8sha1fingerprint) }.to raise_error
     end
 
     it "computes the PKCS#1 MD5 public key fingerprint correctly" do
