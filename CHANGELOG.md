@@ -1,8 +1,8 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 17.0.1 -->
-## [v17.0.1](https://github.com/chef/cheffish/tree/v17.0.1) (2020-05-13)
+<!-- latest_release 16.0.1 -->
+## [v16.0.1](https://github.com/chef/cheffish/tree/v16.0.1) (2020-05-13)
 
 #### Merged Pull Requests
 - Don&#39;t eval the action_class [#146](https://github.com/chef/cheffish/pull/146) ([tas50](https://github.com/tas50))
@@ -12,7 +12,7 @@
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
-- Don&#39;t eval the action_class [#146](https://github.com/chef/cheffish/pull/146) ([tas50](https://github.com/tas50)) <!-- 17.0.1 -->
+- Don&#39;t eval the action_class [#146](https://github.com/chef/cheffish/pull/146) ([tas50](https://github.com/tas50)) <!-- 16.0.1 -->
 - Replace HTTPServerException with HTTPClientException [#157](https://github.com/chef/cheffish/pull/157) ([tas50](https://github.com/tas50)) <!-- 16.0.0 -->
 <!-- release_rollup -->
 
