@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gemspec
 
 group :development do
-  gem "chefstyle", git: "https://github.com/chef/chefstyle.git", branch: "master"
+  gem "chefstyle", "= 1.0.5"
   gem "rake"
   gem "rspec", "~> 3.0"
 end
@@ -14,8 +14,8 @@ if ENV["GEMFILE_MOD"]
   instance_eval(ENV["GEMFILE_MOD"])
 else
   group :development do
-    gem "chef", "~> 15"
-    gem "ohai", "~> 15"
+    gem "chef", "~> 16"
+    gem "ohai", "~> 16"
   end
 end
 
