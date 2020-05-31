@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version = Cheffish::VERSION
   s.platform = Gem::Platform::RUBY
   s.license = "Apache-2.0"
-  s.summary = "A set of Chef resources for configuring Chef."
+  s.summary = "A set of Chef resources for configuring Chef Infra."
   s.description = s.summary
   s.author = "Chef Software Inc."
   s.email = "oss@chef.io"
