@@ -112,7 +112,7 @@ class Chef
           end
 
           # Determine if data bag is encrypted and if so, what its version is
-          _first_real_key, first_real_value = (current_resource.raw_data || {}).select { |key, value| key != "id" && !value.nil? }.first
+          _first_real_key, first_real_value = (current_resource.raw_data || {}).find { |key, value| key != "id" && !value.nil? }
           if first_real_value
             if first_real_value.is_a?(Hash) &&
                 first_real_value["version"].is_a?(Integer) &&
