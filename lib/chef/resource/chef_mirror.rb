@@ -165,7 +165,7 @@ class Chef
         end
 
         def repo_mode
-          new_resource.chef_server[:chef_server_url] =~ %r{/organizations/} ? "hosted_everything" : "everything"
+          %r{/organizations/}.match?(new_resource.chef_server[:chef_server_url]) ? "hosted_everything" : "everything"
         end
 
         def options
