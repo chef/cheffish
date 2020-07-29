@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 16.0.3 -->
-## [v16.0.3](https://github.com/chef/cheffish/tree/v16.0.3) (2020-07-07)
+<!-- latest_release 16.0.4 -->
+## [v16.0.4](https://github.com/chef/cheffish/tree/v16.0.4) (2020-07-29)
 
 #### Merged Pull Requests
-- Minor performance optimizations [#163](https://github.com/chef/cheffish/pull/163) ([tas50](https://github.com/tas50))
+- Test on Chef 16 unless using gemfile_mod [#161](https://github.com/chef/cheffish/pull/161) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=16.0.2 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Test on Chef 16 unless using gemfile_mod [#161](https://github.com/chef/cheffish/pull/161) ([tas50](https://github.com/tas50)) <!-- 16.0.4 -->
 - Minor performance optimizations [#163](https://github.com/chef/cheffish/pull/163) ([tas50](https://github.com/tas50)) <!-- 16.0.3 -->
 <!-- release_rollup -->
 
