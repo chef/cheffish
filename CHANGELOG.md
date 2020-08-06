@@ -1,29 +1,26 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 16.0.6 -->
-## [v16.0.6](https://github.com/chef/cheffish/tree/v16.0.6) (2020-08-06)
-
-#### Merged Pull Requests
-- Resolve Style/RedundantAssignment violation [#165](https://github.com/chef/cheffish/pull/165) ([tas50](https://github.com/tas50))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=16.0.2 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Resolve Style/RedundantAssignment violation [#165](https://github.com/chef/cheffish/pull/165) ([tas50](https://github.com/tas50)) <!-- 16.0.6 -->
-- Update chefstyle requirement from = 1.0.5 to 1.2.0 [#164](https://github.com/chef/cheffish/pull/164) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.5 -->
-- Test on Chef 16 unless using gemfile_mod [#161](https://github.com/chef/cheffish/pull/161) ([tas50](https://github.com/tas50)) <!-- 16.0.4 -->
-- Minor performance optimizations [#163](https://github.com/chef/cheffish/pull/163) ([tas50](https://github.com/tas50)) <!-- 16.0.3 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v16.0.6](https://github.com/chef/cheffish/tree/v16.0.6) (2020-08-06)
+
+#### Merged Pull Requests
+- Minor performance optimizations [#163](https://github.com/chef/cheffish/pull/163) ([tas50](https://github.com/tas50))
+- Test on Chef 16 unless using gemfile_mod [#161](https://github.com/chef/cheffish/pull/161) ([tas50](https://github.com/tas50))
+- Update chefstyle requirement from = 1.0.5 to 1.2.0 [#164](https://github.com/chef/cheffish/pull/164) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Resolve Style/RedundantAssignment violation [#165](https://github.com/chef/cheffish/pull/165) ([tas50](https://github.com/tas50))
+<!-- latest_stable_release -->
+
 ## [v16.0.2](https://github.com/chef/cheffish/tree/v16.0.2) (2020-06-01)
 
 #### Merged Pull Requests
 - Improve expeditor setup to test on windows + cache gems [#162](https://github.com/chef/cheffish/pull/162) ([tas50](https://github.com/tas50))
-<!-- latest_stable_release -->
 
 ## [v16.0.1](https://github.com/chef/cheffish/tree/v16.0.1) (2020-06-01)
 
