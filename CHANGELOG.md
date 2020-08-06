@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 16.0.5 -->
-## [v16.0.5](https://github.com/chef/cheffish/tree/v16.0.5) (2020-07-29)
+<!-- latest_release 16.0.6 -->
+## [v16.0.6](https://github.com/chef/cheffish/tree/v16.0.6) (2020-08-06)
 
 #### Merged Pull Requests
-- Update chefstyle requirement from = 1.0.5 to 1.2.0 [#164](https://github.com/chef/cheffish/pull/164) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Resolve Style/RedundantAssignment violation [#165](https://github.com/chef/cheffish/pull/165) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=16.0.2 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Resolve Style/RedundantAssignment violation [#165](https://github.com/chef/cheffish/pull/165) ([tas50](https://github.com/tas50)) <!-- 16.0.6 -->
 - Update chefstyle requirement from = 1.0.5 to 1.2.0 [#164](https://github.com/chef/cheffish/pull/164) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.5 -->
 - Test on Chef 16 unless using gemfile_mod [#161](https://github.com/chef/cheffish/pull/161) ([tas50](https://github.com/tas50)) <!-- 16.0.4 -->
 - Minor performance optimizations [#163](https://github.com/chef/cheffish/pull/163) ([tas50](https://github.com/tas50)) <!-- 16.0.3 -->
