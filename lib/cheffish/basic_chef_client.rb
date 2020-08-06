@@ -80,12 +80,11 @@ module Cheffish
     # add_resource() method.
     def self.build_resource(type, name, created_at = nil, &resource_attrs_block)
       created_at ||= caller[0]
-      result = BasicChefClient.new.tap do |client|
+      BasicChefClient.new.tap do |client|
         client.with_chef_config do
           client.build_resource(type, name, created_at, &resource_attrs_block)
         end
       end
-      result
     end
 
     def self.inline_resource(provider, provider_action, *resources, &block)
