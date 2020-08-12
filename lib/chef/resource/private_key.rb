@@ -1,6 +1,6 @@
 require "openssl/cipher"
 require_relative "../../cheffish/base_resource"
-require "openssl"
+require "openssl" unless defined?(OpenSSL)
 require_relative "../../cheffish/key_formatter"
 
 class Chef
