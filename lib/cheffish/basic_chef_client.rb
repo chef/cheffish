@@ -5,7 +5,7 @@ require "chef/event_dispatch/dispatcher"
 require "chef/node"
 require "chef/run_context"
 require "chef/runner"
-require "forwardable"
+require "forwardable" unless defined?(Forwardable)
 require "chef/providers"
 require "chef/resources"
 

@@ -1,7 +1,7 @@
 require "chef_zero/rspec"
 require "chef/server_api"
 require_relative "repository_support"
-require "uri"
+require "uri" unless defined?(URI)
 require_relative "../chef_run"
 require_relative "recipe_run_wrapper"
 require_relative "matchers"

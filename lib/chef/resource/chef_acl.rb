@@ -2,7 +2,7 @@ require_relative "../../cheffish"
 require_relative "../../cheffish/base_resource"
 require "chef/chef_fs/data_handler/acl_data_handler"
 require "chef/chef_fs/parallelizer"
-require "uri"
+require "uri" unless defined?(URI)
 
 class Chef
   class Resource

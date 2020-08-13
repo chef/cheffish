@@ -1,5 +1,5 @@
 require_relative "../chef_run"
-require "forwardable"
+require "forwardable" unless defined?(Forwardable)
 
 module Cheffish
   module RSpec

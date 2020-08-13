@@ -1,7 +1,7 @@
-require "openssl"
-require "net/ssh"
-require "etc"
-require "socket"
+require "openssl" unless defined?(OpenSSL)
+require "net/ssh" unless defined?(Net::SSH)
+require "etc" unless defined?(Etc)
+require "socket" unless defined?(Socket)
 require "digest/md5"
 require "base64"
 
