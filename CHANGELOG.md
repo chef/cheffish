@@ -1,22 +1,20 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 16.0.8 -->
-## [v16.0.8](https://github.com/chef/cheffish/tree/v16.0.8) (2020-08-13)
-
-#### Merged Pull Requests
-- Optimize requires for non-omnibus installs [#167](https://github.com/chef/cheffish/pull/167) ([tas50](https://github.com/tas50))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=16.0.6 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Optimize requires for non-omnibus installs [#167](https://github.com/chef/cheffish/pull/167) ([tas50](https://github.com/tas50)) <!-- 16.0.8 -->
-- Update chefstyle requirement from 1.2.0 to 1.2.1 [#166](https://github.com/chef/cheffish/pull/166) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.7 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v16.0.8](https://github.com/chef/cheffish/tree/v16.0.8) (2020-08-13)
+
+#### Merged Pull Requests
+- Update chefstyle requirement from 1.2.0 to 1.2.1 [#166](https://github.com/chef/cheffish/pull/166) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Optimize requires for non-omnibus installs [#167](https://github.com/chef/cheffish/pull/167) ([tas50](https://github.com/tas50))
+<!-- latest_stable_release -->
+
 ## [v16.0.6](https://github.com/chef/cheffish/tree/v16.0.6) (2020-08-06)
 
 #### Merged Pull Requests
@@ -24,7 +22,6 @@
 - Test on Chef 16 unless using gemfile_mod [#161](https://github.com/chef/cheffish/pull/161) ([tas50](https://github.com/tas50))
 - Update chefstyle requirement from = 1.0.5 to 1.2.0 [#164](https://github.com/chef/cheffish/pull/164) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 - Resolve Style/RedundantAssignment violation [#165](https://github.com/chef/cheffish/pull/165) ([tas50](https://github.com/tas50))
-<!-- latest_stable_release -->
 
 ## [v16.0.2](https://github.com/chef/cheffish/tree/v16.0.2) (2020-06-01)
 
