@@ -2,8 +2,8 @@ require "openssl" unless defined?(OpenSSL)
 require "net/ssh" unless defined?(Net::SSH)
 require "etc" unless defined?(Etc)
 require "socket" unless defined?(Socket)
-require "digest/md5"
-require "base64"
+require "digest/md5" unless defined?(Digest::MD5)
+require "base64" unless defined?(Base64)
 
 module Cheffish
   class KeyFormatter
