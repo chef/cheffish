@@ -1,10 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release -->
+<!-- latest_release 16.0.10 -->
+## [v16.0.10](https://github.com/chef/cheffish/tree/v16.0.10) (2020-09-28)
+
+#### Merged Pull Requests
+- Update chefstyle requirement from 1.3.2 to 1.4.2 [#171](https://github.com/chef/cheffish/pull/171) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=16.0.9 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Update chefstyle requirement from 1.3.2 to 1.4.2 [#171](https://github.com/chef/cheffish/pull/171) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.10 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
