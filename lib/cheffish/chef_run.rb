@@ -41,7 +41,7 @@ module Cheffish
         chef_config[:log_location] = StringIOTee.new(chef_config[:log_location])
         @client = ::Cheffish::BasicChefClient.new(nil,
           [ event_sink, Chef::Formatters.new(:doc, chef_config[:stdout], chef_config[:stderr]) ],
-          chef_config)
+          **chef_config)
       end
     end
 
