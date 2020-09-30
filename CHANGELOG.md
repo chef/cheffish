@@ -1,28 +1,25 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 16.0.12 -->
-## [v16.0.12](https://github.com/chef/cheffish/tree/v16.0.12) (2020-09-30)
-
-#### Merged Pull Requests
-- address ruby-3 warnings in cheffish [#173](https://github.com/chef/cheffish/pull/173) ([lamont-granquist](https://github.com/lamont-granquist))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=16.0.9 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- address ruby-3 warnings in cheffish [#173](https://github.com/chef/cheffish/pull/173) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 16.0.12 -->
-- Update chefstyle requirement from 1.4.2 to 1.4.3 [#172](https://github.com/chef/cheffish/pull/172) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.11 -->
-- Update chefstyle requirement from 1.3.2 to 1.4.2 [#171](https://github.com/chef/cheffish/pull/171) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.10 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v16.0.12](https://github.com/chef/cheffish/tree/v16.0.12) (2020-09-30)
+
+#### Merged Pull Requests
+- Update chefstyle requirement from 1.3.2 to 1.4.2 [#171](https://github.com/chef/cheffish/pull/171) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.4.2 to 1.4.3 [#172](https://github.com/chef/cheffish/pull/172) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- address ruby-3 warnings in cheffish [#173](https://github.com/chef/cheffish/pull/173) ([lamont-granquist](https://github.com/lamont-granquist))
+<!-- latest_stable_release -->
+
 ## [v16.0.9](https://github.com/chef/cheffish/tree/v16.0.9) (2020-09-02)
 
 #### Merged Pull Requests
 - Update chefstyle requirement from 1.2.1 to 1.3.2 + optimize requires [#169](https://github.com/chef/cheffish/pull/169) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
-<!-- latest_stable_release -->
 
 ## [v16.0.8](https://github.com/chef/cheffish/tree/v16.0.8) (2020-08-13)
 
