@@ -1,3 +1,3 @@
 module Cheffish
-  VERSION = "16.0.13".freeze
+  VERSION = "16.0.14".freeze
 end
