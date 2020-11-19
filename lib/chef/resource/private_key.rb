@@ -78,7 +78,7 @@ class Chef
             desired_output = encode_private_key(new_source_key)
             if current_resource.path == :none || desired_output != IO.read(new_path)
               converge_by "reformat key at #{new_resource.source_key_path} to #{new_resource.format} private key #{new_path} (#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
-                IO.write(new_path, desired_output)
+                IO.binwrite(new_path, desired_output)
               end
             end
 
@@ -137,7 +137,7 @@ class Chef
                 converge_by "change format of #{new_resource.type} private key #{new_path} from #{current_resource.format} to #{new_resource.format}" do
                   write_private_key(current_private_key)
                 end
-              elsif (@current_file_mode & 0077) != 0
+              elsif RUBY_PLATFORM !~ /mswin|mingw32|windows/ && (@current_file_mode & 0077) != 0
                 new_mode = @current_file_mode & 07700
                 converge_by "change mode of private key #{new_path} to #{new_mode.to_s(8)}" do
                   ::File.chmod(new_mode, new_path)
@@ -171,7 +171,7 @@ class Chef
         end
 
         def write_private_key(key)
-          ::File.open(new_path, "w") do |file|
+          ::File.open(new_path, "wb") do |file|
             file.chmod(0600)
             file.write(encode_private_key(key))
           end

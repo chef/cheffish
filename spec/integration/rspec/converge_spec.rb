@@ -4,7 +4,11 @@ require "cheffish/rspec/chef_run_support"
 describe "Cheffish::RSpec::ChefRunSupport" do
   extend Cheffish::RSpec::ChefRunSupport
 
-  let(:temp_file) { Tempfile.new("test") }
+  let(:temp_file) do
+    f = Tempfile.new("test")
+    f.close
+    f
+  end
 
   context "#recipe" do
     it "recipe { file ... } updates the file" do
