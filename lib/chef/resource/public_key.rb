@@ -31,7 +31,7 @@ class Chef
         desired_output = encode_public_key(new_source_key)
         if Array(current_resource.action) == [ :delete ] || desired_output != IO.read(new_resource.path)
           converge_by "write #{new_resource.format} public key #{new_resource.path} from #{new_source_key_publicity} key #{new_resource.source_key_path}" do
-            IO.write(new_resource.path, desired_output)
+            IO.binwrite(new_resource.path, desired_output)
             # TODO permissions on file?
           end
         end
@@ -62,7 +62,7 @@ class Chef
             elsif new_resource.source_key
               source_key = new_resource.source_key
             elsif new_resource.source_key_path
-              source_key, _source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
+              source_key, _source_key_format = Cheffish::KeyFormatter.decode(IO.binread(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
             else
               return nil
             end

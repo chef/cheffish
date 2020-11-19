@@ -224,7 +224,7 @@ describe Chef::Resource::PrivateKey do
         end
       end.to have_updated "private_key[#{repo_path}/blah]", :create
       expect(IO.read("#{repo_path}/blah")).not_to start_with("-----BEGIN")
-      expect(OpenSSL::PKey.read(IO.read("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
+      expect(OpenSSL::PKey.read(IO.binread("#{repo_path}/blah"))).to be_kind_of(OpenSSL::PKey::RSA)
     end
   end
 
