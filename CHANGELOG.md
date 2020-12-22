@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 16.0.17 -->
-## [v16.0.17](https://github.com/chef/cheffish/tree/v16.0.17) (2020-11-19)
+<!-- latest_release 16.0.18 -->
+## [v16.0.18](https://github.com/chef/cheffish/tree/v16.0.18) (2020-12-22)
 
 #### Merged Pull Requests
-- Fix key generation on windows and general test failures on Windows [#179](https://github.com/chef/cheffish/pull/179) ([mwrock](https://github.com/mwrock))
+- Update chefstyle requirement from 1.5.2 to 1.5.8 [#182](https://github.com/chef/cheffish/pull/182) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=16.0.12 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Update chefstyle requirement from 1.5.2 to 1.5.8 [#182](https://github.com/chef/cheffish/pull/182) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.18 -->
 - Fix key generation on windows and general test failures on Windows [#179](https://github.com/chef/cheffish/pull/179) ([mwrock](https://github.com/mwrock)) <!-- 16.0.17 -->
 - Update chefstyle requirement from 1.5.1 to 1.5.2 [#178](https://github.com/chef/cheffish/pull/178) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.16 -->
 - Update chefstyle requirement from 1.5.0 to 1.5.1 [#177](https://github.com/chef/cheffish/pull/177) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.15 -->
