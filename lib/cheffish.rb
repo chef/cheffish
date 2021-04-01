@@ -32,11 +32,13 @@ module Cheffish
   end
 
   def self.load_chef_config(chef_config = Chef::Config)
-    if ::Gem::Version.new(::Chef::VERSION) >= ::Gem::Version.new("12.0.0")
-      chef_config.config_file = ::Chef::Knife.chef_config_dir
-    else
-      chef_config.config_file = ::Chef::Knife.locate_config_file
-    end
+    chef_config.config_file = if ::Gem::Version.new(::Chef::VERSION) >= ::Gem::Version.new("12.0.0")
+                                require "chef/workstation_config_loader"
+                                Chef::WorkstationConfigLoader.new(nil, Chef::Log).chef_config_dir
+                              else
+                                require "chef/knife"
+                                Chef::Knife.locate_config_file
+                              end
     config_fetcher = Chef::ConfigFetcher.new(chef_config.config_file, chef_config.config_file_jail)
     if chef_config.config_file.nil?
       Chef::Log.warn("No config file found or specified on command line, using command line options.")
@@ -120,11 +122,17 @@ module Cheffish
 end
 
 # Include all recipe objects so require 'cheffish' brings in the whole recipe DSL
-
 require "chef/run_list/run_list_item"
 require_relative "cheffish/basic_chef_client"
 require_relative "cheffish/server_api"
-require "chef/knife"
+
+# Starting with the version below, knife is no longer in the chef gem and is
+# not available during a chef-client run.  We'll keep it here for older versions
+# to retain backward-compatibility.
+if ::Gem::Version.new(::Chef::VERSION) < ::Gem::Version.new("17.0.178")
+  require "chef/knife"
+end
+
 require "chef/config_fetcher"
 require "chef/log"
 require "chef/application"
