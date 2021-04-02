@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 16.0.24 -->
-## [v16.0.24](https://github.com/chef/cheffish/tree/v16.0.24) (2021-03-19)
+<!-- latest_release 16.0.25 -->
+## [v16.0.25](https://github.com/chef/cheffish/tree/v16.0.25) (2021-04-02)
 
 #### Merged Pull Requests
-- Test on Ruby 3 [#188](https://github.com/chef/cheffish/pull/188) ([tas50](https://github.com/tas50))
+- Make knife references backward-compatible [#190](https://github.com/chef/cheffish/pull/190) ([marcparadise](https://github.com/marcparadise))
 <!-- latest_release -->
 
 <!-- release_rollup since=16.0.12 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Make knife references backward-compatible [#190](https://github.com/chef/cheffish/pull/190) ([marcparadise](https://github.com/marcparadise)) <!-- 16.0.25 -->
 - Test on Ruby 3 [#188](https://github.com/chef/cheffish/pull/188) ([tas50](https://github.com/tas50)) <!-- 16.0.24 -->
 - Update chefstyle requirement from 1.7.1 to 1.7.2 [#187](https://github.com/chef/cheffish/pull/187) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.23 -->
 - Update chefstyle requirement from 1.6.2 to 1.7.1 [#186](https://github.com/chef/cheffish/pull/186) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.22 -->
