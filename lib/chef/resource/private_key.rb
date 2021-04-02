@@ -178,18 +178,16 @@ class Chef
         end
 
         def new_source_key
-          @new_source_key ||= begin
-                                if new_resource.source_key.is_a?(String)
-                                  source_key, _source_key_format = Cheffish::KeyFormatter.decode(new_resource.source_key, new_resource.source_key_pass_phrase)
-                                  source_key
-                                elsif new_resource.source_key
-                                  new_resource.source_key
-                                elsif new_resource.source_key_path
-                                  source_key, _source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
-                                  source_key
-                                else
-                                  nil
-                                end
+          @new_source_key ||= if new_resource.source_key.is_a?(String)
+                                source_key, _source_key_format = Cheffish::KeyFormatter.decode(new_resource.source_key, new_resource.source_key_pass_phrase)
+                                source_key
+                              elsif new_resource.source_key
+                                new_resource.source_key
+                              elsif new_resource.source_key_path
+                                source_key, _source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
+                                source_key
+                              else
+                                nil
                               end
         end
 
