@@ -196,17 +196,15 @@ class Chef
         end
 
         def new_secret
-          @new_secret ||= begin
-            if new_resource.secret
-              new_resource.secret
-            elsif new_resource.secret_path
-              Chef::EncryptedDataBagItem.load_secret(new_resource.secret_path)
-            elsif new_resource.encrypt.nil?
-              current_resource.secret
-            else
-              raise "Data bag item #{new_resource.name} has encryption on but no secret or secret_path is specified"
-            end
-          end
+          @new_secret ||= if new_resource.secret
+                            new_resource.secret
+                          elsif new_resource.secret_path
+                            Chef::EncryptedDataBagItem.load_secret(new_resource.secret_path)
+                          elsif new_resource.encrypt.nil?
+                            current_resource.secret
+                          else
+                            raise "Data bag item #{new_resource.name} has encryption on but no secret or secret_path is specified"
+                          end
         end
 
         def decrypt(json, secret)
@@ -238,15 +236,13 @@ class Chef
 
         # Get the current json decrypted, for comparison purposes
         def current_decrypted
-          @current_decrypted ||= begin
-            if current_resource.secret
-              decrypt(current_resource.raw_data || { "id" => new_resource.id }, current_resource.secret)
-            elsif current_resource.encrypt
-              raise "Could not decrypt current data bag item #{current_resource.name}"
-            else
-              current_resource.raw_data || { "id" => new_resource.id }
-            end
-          end
+          @current_decrypted ||= if current_resource.secret
+                                   decrypt(current_resource.raw_data || { "id" => new_resource.id }, current_resource.secret)
+                                 elsif current_resource.encrypt
+                                   raise "Could not decrypt current data bag item #{current_resource.name}"
+                                 else
+                                   current_resource.raw_data || { "id" => new_resource.id }
+                                 end
         end
 
         # Figure out the differences between new and current

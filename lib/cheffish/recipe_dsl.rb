@@ -62,13 +62,11 @@ class Chef
             string_key = "#{type}_path"
             symbol_key = "#{type}_path".to_sym
 
-            options[symbol_key] ||= begin
-              if options[:chef_repo_path].is_a?(String)
-                Chef::Util::PathHelper.join(options[:chef_repo_path], "#{type}s")
-              else
-                options[:chef_repo_path].map { |path| Chef::Util::PathHelper.join(path, "#{type}s") }
-              end
-            end
+            options[symbol_key] ||= if options[:chef_repo_path].is_a?(String)
+                                      Chef::Util::PathHelper.join(options[:chef_repo_path], "#{type}s")
+                                    else
+                                      options[:chef_repo_path].map { |path| Chef::Util::PathHelper.join(path, "#{type}s") }
+                                    end
 
             # Copy over to string keys for things that use string keys (ChefFS)...
             # TODO: Fix ChefFS to take symbols or use something that is insensitive to the difference
