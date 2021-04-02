@@ -1,41 +1,38 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 16.0.26 -->
-## [v16.0.26](https://github.com/chef/cheffish/tree/v16.0.26) (2021-04-02)
-
-#### Merged Pull Requests
-- Update chefstyle requirement from 1.7.2 to 1.7.4 [#189](https://github.com/chef/cheffish/pull/189) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=16.0.12 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Update chefstyle requirement from 1.7.2 to 1.7.4 [#189](https://github.com/chef/cheffish/pull/189) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.26 -->
-- Make knife references backward-compatible [#190](https://github.com/chef/cheffish/pull/190) ([marcparadise](https://github.com/marcparadise)) <!-- 16.0.25 -->
-- Test on Ruby 3 [#188](https://github.com/chef/cheffish/pull/188) ([tas50](https://github.com/tas50)) <!-- 16.0.24 -->
-- Update chefstyle requirement from 1.7.1 to 1.7.2 [#187](https://github.com/chef/cheffish/pull/187) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.23 -->
-- Update chefstyle requirement from 1.6.2 to 1.7.1 [#186](https://github.com/chef/cheffish/pull/186) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.22 -->
-- Update chefstyle requirement from 1.6.1 to 1.6.2 [#185](https://github.com/chef/cheffish/pull/185) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.21 -->
-- Update chefstyle requirement from 1.5.9 to 1.6.1 [#184](https://github.com/chef/cheffish/pull/184) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.20 -->
-- Update chefstyle requirement from 1.5.8 to 1.5.9 [#183](https://github.com/chef/cheffish/pull/183) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.19 -->
-- Update chefstyle requirement from 1.5.2 to 1.5.8 [#182](https://github.com/chef/cheffish/pull/182) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.18 -->
-- Fix key generation on windows and general test failures on Windows [#179](https://github.com/chef/cheffish/pull/179) ([mwrock](https://github.com/mwrock)) <!-- 16.0.17 -->
-- Update chefstyle requirement from 1.5.1 to 1.5.2 [#178](https://github.com/chef/cheffish/pull/178) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.16 -->
-- Update chefstyle requirement from 1.5.0 to 1.5.1 [#177](https://github.com/chef/cheffish/pull/177) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.15 -->
-- Update chefstyle requirement from 1.4.5 to 1.5.0 [#176](https://github.com/chef/cheffish/pull/176) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.14 -->
-- Update chefstyle requirement from 1.4.3 to 1.4.5 [#175](https://github.com/chef/cheffish/pull/175) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.13 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v16.0.26](https://github.com/chef/cheffish/tree/v16.0.26) (2021-04-02)
+
+#### Merged Pull Requests
+- Update chefstyle requirement from 1.4.3 to 1.4.5 [#175](https://github.com/chef/cheffish/pull/175) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.4.5 to 1.5.0 [#176](https://github.com/chef/cheffish/pull/176) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.5.0 to 1.5.1 [#177](https://github.com/chef/cheffish/pull/177) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.5.1 to 1.5.2 [#178](https://github.com/chef/cheffish/pull/178) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Fix key generation on windows and general test failures on Windows [#179](https://github.com/chef/cheffish/pull/179) ([mwrock](https://github.com/mwrock))
+- Update chefstyle requirement from 1.5.2 to 1.5.8 [#182](https://github.com/chef/cheffish/pull/182) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.5.8 to 1.5.9 [#183](https://github.com/chef/cheffish/pull/183) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.5.9 to 1.6.1 [#184](https://github.com/chef/cheffish/pull/184) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.6.1 to 1.6.2 [#185](https://github.com/chef/cheffish/pull/185) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.6.2 to 1.7.1 [#186](https://github.com/chef/cheffish/pull/186) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.7.1 to 1.7.2 [#187](https://github.com/chef/cheffish/pull/187) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Test on Ruby 3 [#188](https://github.com/chef/cheffish/pull/188) ([tas50](https://github.com/tas50))
+- Make knife references backward-compatible [#190](https://github.com/chef/cheffish/pull/190) ([marcparadise](https://github.com/marcparadise))
+- Update chefstyle requirement from 1.7.2 to 1.7.4 [#189](https://github.com/chef/cheffish/pull/189) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+<!-- latest_stable_release -->
+
 ## [v16.0.12](https://github.com/chef/cheffish/tree/v16.0.12) (2020-09-30)
 
 #### Merged Pull Requests
 - Update chefstyle requirement from 1.3.2 to 1.4.2 [#171](https://github.com/chef/cheffish/pull/171) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 - Update chefstyle requirement from 1.4.2 to 1.4.3 [#172](https://github.com/chef/cheffish/pull/172) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 - address ruby-3 warnings in cheffish [#173](https://github.com/chef/cheffish/pull/173) ([lamont-granquist](https://github.com/lamont-granquist))
-<!-- latest_stable_release -->
 
 ## [v16.0.9](https://github.com/chef/cheffish/tree/v16.0.9) (2020-09-02)
 
