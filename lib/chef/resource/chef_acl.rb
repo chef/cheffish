@@ -1,8 +1,10 @@
 require_relative "../../cheffish"
 require_relative "../../cheffish/base_resource"
 require "chef/chef_fs/data_handler/acl_data_handler"
-require "chef/chef_fs/parallelizer"
+require "chef-utils/parallel_map" unless defined?(ChefUtils::ParallelMap)
 require "uri" unless defined?(URI)
+
+using ChefUtils::ParallelMap
 
 class Chef
   class Resource
@@ -126,13 +128,13 @@ class Chef
           # the ACL has changed.
           if new_resource.recursive == true || (new_resource.recursive == :on_change && (!acl || changed))
             children, _error = list(path, "*")
-            Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
+            children.parallel_each do |child|
               next if child.split("/")[-1] == "containers"
 
               create_acl(child)
             end
             # containers mess up our descent, so we do them last
-            Chef::ChefFS::Parallelizer.parallel_do(children) do |child|
+            children.parallel_each do |child|
               next if child.split("/")[-1] != "containers"
 
               create_acl(child)
@@ -301,7 +303,7 @@ class Chef
             #
             # Result: /*/foo = [ '/organizations/foo', '/users/foo' ]
             #
-            matches = Chef::ChefFS::Parallelizer.parallelize(matches) do |pth|
+            matches = matches.parallel_map do |pth|
               found, error = list(pth, part)
               if error
                 if parts[0..index - 1].all? { |p| p != "*" }
@@ -312,7 +314,7 @@ class Chef
               else
                 found
               end
-            end.flatten(1).to_a
+            end.flatten.to_a
           end
 
           matches

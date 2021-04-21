@@ -2,9 +2,11 @@ require_relative "../../cheffish"
 require_relative "../../cheffish/base_resource"
 require "chef/chef_fs/file_pattern"
 require "chef/chef_fs/file_system"
-require "chef/chef_fs/parallelizer"
 require "chef/chef_fs/file_system/chef_server/chef_server_root_dir"
 require "chef/chef_fs/file_system/repository/chef_repository_file_system_root_dir"
+require "chef-utils/parallel_map" unless defined?(ChefUtils::ParallelMap)
+
+using ChefUtils::ParallelMap
 
 class Chef
   class Resource
@@ -97,7 +99,7 @@ class Chef
           end
 
           # Honor concurrency
-          Chef::ChefFS::Parallelizer.threads = new_resource.concurrency - 1
+          ChefUtils::DefaultThreadPool.instance.threads = new_resource.concurrency - 1
 
           # We don't let the user pass absolute paths; we want to reserve those for
           # multi-org support (/organizations/foo).
