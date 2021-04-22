@@ -1,24 +1,22 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 17.0.0 -->
-## [v17.0.0](https://github.com/chef/cheffish/tree/v17.0.0) (2021-04-22)
-
-#### Merged Pull Requests
-- bumping major version / drop ruby 2.6 support [#195](https://github.com/chef/cheffish/pull/195) ([lamont-granquist](https://github.com/lamont-granquist))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=16.0.26 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- bumping major version / drop ruby 2.6 support [#195](https://github.com/chef/cheffish/pull/195) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 17.0.0 -->
-- Uncomment GEMFILE_MOD [#194](https://github.com/chef/cheffish/pull/194) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 16.0.29 -->
-- Fixes for Chef-17 [#193](https://github.com/chef/cheffish/pull/193) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 16.0.28 -->
-- Update chefstyle requirement from 1.7.4 to 1.7.5 [#192](https://github.com/chef/cheffish/pull/192) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.27 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v17.0.0](https://github.com/chef/cheffish/tree/v17.0.0) (2021-04-22)
+
+#### Merged Pull Requests
+- Update chefstyle requirement from 1.7.4 to 1.7.5 [#192](https://github.com/chef/cheffish/pull/192) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Fixes for Chef-17 [#193](https://github.com/chef/cheffish/pull/193) ([lamont-granquist](https://github.com/lamont-granquist))
+- Uncomment GEMFILE_MOD [#194](https://github.com/chef/cheffish/pull/194) ([lamont-granquist](https://github.com/lamont-granquist))
+- bumping major version / drop ruby 2.6 support [#195](https://github.com/chef/cheffish/pull/195) ([lamont-granquist](https://github.com/lamont-granquist))
+<!-- latest_stable_release -->
+
 ## [v16.0.26](https://github.com/chef/cheffish/tree/v16.0.26) (2021-04-02)
 
 #### Merged Pull Requests
@@ -36,7 +34,6 @@
 - Test on Ruby 3 [#188](https://github.com/chef/cheffish/pull/188) ([tas50](https://github.com/tas50))
 - Make knife references backward-compatible [#190](https://github.com/chef/cheffish/pull/190) ([marcparadise](https://github.com/marcparadise))
 - Update chefstyle requirement from 1.7.2 to 1.7.4 [#189](https://github.com/chef/cheffish/pull/189) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
-<!-- latest_stable_release -->
 
 ## [v16.0.12](https://github.com/chef/cheffish/tree/v16.0.12) (2020-09-30)
 
