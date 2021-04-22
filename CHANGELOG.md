@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 16.0.28 -->
-## [v16.0.28](https://github.com/chef/cheffish/tree/v16.0.28) (2021-04-21)
+<!-- latest_release 16.0.29 -->
+## [v16.0.29](https://github.com/chef/cheffish/tree/v16.0.29) (2021-04-22)
 
 #### Merged Pull Requests
-- Fixes for Chef-17 [#193](https://github.com/chef/cheffish/pull/193) ([lamont-granquist](https://github.com/lamont-granquist))
+- Uncomment GEMFILE_MOD [#194](https://github.com/chef/cheffish/pull/194) ([lamont-granquist](https://github.com/lamont-granquist))
 <!-- latest_release -->
 
 <!-- release_rollup since=16.0.26 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Uncomment GEMFILE_MOD [#194](https://github.com/chef/cheffish/pull/194) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 16.0.29 -->
 - Fixes for Chef-17 [#193](https://github.com/chef/cheffish/pull/193) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 16.0.28 -->
 - Update chefstyle requirement from 1.7.4 to 1.7.5 [#192](https://github.com/chef/cheffish/pull/192) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 16.0.27 -->
 <!-- release_rollup -->
