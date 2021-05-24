@@ -1,10 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release -->
+<!-- latest_release 17.0.1 -->
+## [v17.0.1](https://github.com/chef/cheffish/tree/v17.0.1) (2021-05-24)
+
+#### Merged Pull Requests
+- Remove testing on Ruby 2.6 [#199](https://github.com/chef/cheffish/pull/199) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=17.0.0 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Remove testing on Ruby 2.6 [#199](https://github.com/chef/cheffish/pull/199) ([tas50](https://github.com/tas50)) <!-- 17.0.1 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
