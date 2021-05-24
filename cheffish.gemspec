@@ -12,14 +12,11 @@ Gem::Specification.new do |s|
   s.email = "oss@chef.io"
   s.homepage = "https://github.com/chef/cheffish"
 
-  s.required_ruby_version = ">= 2.7.0"
+  s.required_ruby_version = ">= 2.7"
 
   s.add_dependency "chef-zero", ">= 14.0"
   s.add_dependency "chef-utils", ">= 17.0"
   s.add_dependency "net-ssh"
-
-  s.bindir       = "bin"
-  s.executables  = %w{ }
 
   s.require_path = "lib"
   s.files = %w{Gemfile Rakefile LICENSE} + Dir.glob("*.gemspec") +
