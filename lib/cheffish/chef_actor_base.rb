@@ -16,9 +16,9 @@ module Cheffish
         if current_resource_exists?
           # Update the actor if it's different
           if differences.size > 0
-            description = [ "update #{actor_type} #{new_resource.name} at #{actor_path}" ] + differences
+            description = [ "update #{actor_type} #{new_resource.identity} at #{actor_path}" ] + differences
             converge_by description do
-              result = rest.put("#{actor_path}/#{new_resource.name}", normalize_for_put(new_json))
+              result = rest.put("#{actor_path}/#{new_resource.identity}", normalize_for_put(new_json))
               current_public_key, _current_public_key_format = Cheffish::KeyFormatter.decode(result["public_key"]) if result["public_key"]
             end
           end
@@ -28,7 +28,7 @@ module Cheffish
             raise "You must specify a public key to create a #{actor_type}!  Use the private_key resource to create a key, and pass it in with source_key_path."
           end
 
-          description = [ "create #{actor_type} #{new_resource.name} at #{actor_path}" ] + differences
+          description = [ "create #{actor_type} #{new_resource.identity} at #{actor_path}" ] + differences
           converge_by description do
             result = rest.post((actor_path).to_s, normalize_for_post(new_json))
             current_public_key, _current_public_key_format = Cheffish::KeyFormatter.decode(result["public_key"]) if result["public_key"]
@@ -61,9 +61,9 @@ module Cheffish
 
       def delete_actor
         if current_resource_exists?
-          converge_by "delete #{actor_type} #{new_resource.name} at #{actor_path}" do
-            rest.delete("#{actor_path}/#{new_resource.name}")
-            Chef::Log.info("#{new_resource} deleted #{actor_type} #{new_resource.name} at #{rest.url}")
+          converge_by "delete #{actor_type} #{new_resource.identity} at #{actor_path}" do
+            rest.delete("#{actor_path}/#{new_resource.identity}")
+            Chef::Log.info("#{new_resource} deleted #{actor_type} #{new_resource.identity} at #{rest.url}")
           end
         end
         if current_resource.output_key_path
@@ -115,7 +115,7 @@ module Cheffish
 
       def load_current_resource
         begin
-          json = rest.get("#{actor_path}/#{new_resource.name}")
+          json = rest.get("#{actor_path}/#{new_resource.identity}")
           @current_resource = json_to_resource(json)
         rescue Net::HTTPClientException => e
           if e.response.code == "404"
