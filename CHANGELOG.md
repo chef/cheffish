@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 17.1.0 -->
-## [v17.1.0](https://github.com/chef/cheffish/tree/v17.1.0) (2021-05-24)
+<!-- latest_release 17.1.1 -->
+## [v17.1.1](https://github.com/chef/cheffish/tree/v17.1.1) (2021-05-24)
 
 #### Merged Pull Requests
-- Require Ruby 3.0 or later [#201](https://github.com/chef/cheffish/pull/201) ([tas50](https://github.com/tas50))
+- Update chefstyle requirement from 1.7.5 to 2.0.3 [#203](https://github.com/chef/cheffish/pull/203) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=17.0.0 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Update chefstyle requirement from 1.7.5 to 2.0.3 [#203](https://github.com/chef/cheffish/pull/203) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 17.1.1 -->
 - Require Ruby 3.0 or later [#201](https://github.com/chef/cheffish/pull/201) ([tas50](https://github.com/tas50)) <!-- 17.1.0 -->
 - Move Chefstyle to GitHub Actions [#200](https://github.com/chef/cheffish/pull/200) ([tas50](https://github.com/tas50)) <!-- 17.0.3 -->
 - Upgrade to GitHub-native Dependabot [#196](https://github.com/chef/cheffish/pull/196) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 17.0.2 -->
