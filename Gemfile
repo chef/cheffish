@@ -8,7 +8,6 @@ group :development do
   gem "rspec", "~> 3.0"
 end
 
-
 # Allow Travis to run tests with different dependency versions
 if ENV["GEMFILE_MOD"]
   puts ENV["GEMFILE_MOD"]
