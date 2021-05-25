@@ -33,8 +33,8 @@ You'd use these in recipes/cookbooks. They are documented on the [main Chef docs
 - [chef_resolved_cookbooks](https://docs.chef.io/resources/chef_resolved_cookbooks)
 - [chef_role](https://docs.chef.io/resources/chef_role)
 - [chef_user](https://docs.chef.io/resources/chef_user)
-- [private_key](https://docs.chef.io/resources/private_key) - DEPRECATED
-- [public_key](https://docs.chef.io/resources/public_key) - DEPRECATED
+- private_key - DEPRECATED
+- public_key - DEPRECATED
 
 ## Base/Helper Classes
 
