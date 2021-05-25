@@ -1,6 +1,5 @@
 # Cheffish
 
-[![Build status](https://badge.buildkite.com/3faec2ae5810e1b2f530e478b63859554663fc023b3ad6c3d4.svg?branch=master)](https://buildkite.com/chef-oss/chef-cheffish-master-verify)
 [![Gem Version](https://badge.fury.io/rb/cheffish.svg)](http://badge.fury.io/rb/cheffish)
 
 **Umbrella Project**: [Chef Infra](https://github.com/chef/chef-oss-practices/blob/master/projects/chef-infra.md)
