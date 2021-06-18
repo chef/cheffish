@@ -1,8 +1,8 @@
-require_relative "../../cheffish"
-require "chef/config"
-require_relative "../../cheffish/base_resource"
-require "chef/chef_fs/data_handler/data_bag_item_data_handler"
-require "chef/encrypted_data_bag_item"
+require_relative '../../cheffish'
+require 'chef/config'
+require_relative '../../cheffish/base_resource'
+require 'chef/chef_fs/data_handler/data_bag_item_data_handler'
+require 'chef/encrypted_data_bag_item'
 
 class Chef
   class Resource
@@ -28,9 +28,9 @@ class Chef
 
       # If data_bag and id are not specified, take them from name.
       # name can either be id, or data_bag/id
-      property :id, String, default: lazy { name.split("/", 2)[-1] }
+      property :id, String, default: lazy { name.split('/', 2)[-1] }
       property :data_bag, String, default: lazy {
-        split = name.split("/", 2)
+        split = name.split('/', 2)
         split.size >= 2 ? split[0] : nil
       }
 
@@ -66,7 +66,7 @@ class Chef
         elsif block
           @raw_data_modifiers << [ raw_data_path, block ]
         else
-          raise "value requires either a value or a block"
+          raise 'value requires either a value or a block'
         end
       end
 
@@ -104,7 +104,7 @@ class Chef
             resource.raw_data json
             @current_resource = resource
           rescue Net::HTTPClientException => e
-            if e.response.code == "404"
+            if e.response.code == '404'
               @current_resource = not_found_resource
             else
               raise
@@ -112,15 +112,15 @@ class Chef
           end
 
           # Determine if data bag is encrypted and if so, what its version is
-          _first_real_key, first_real_value = (current_resource.raw_data || {}).find { |key, value| key != "id" && !value.nil? }
+          _first_real_key, first_real_value = (current_resource.raw_data || {}).find { |key, value| key != 'id' && !value.nil? }
           if first_real_value
             if first_real_value.is_a?(Hash) &&
-                first_real_value["version"].is_a?(Integer) &&
-                first_real_value["version"] > 0 &&
-                first_real_value.key?("encrypted_data")
+               first_real_value['version'].is_a?(Integer) &&
+               first_real_value['version'] > 0 &&
+               first_real_value.key?('encrypted_data')
 
               current_resource.encrypt true
-              current_resource.encryption_version first_real_value["version"]
+              current_resource.encryption_version first_real_value['version']
 
               decrypt_error = nil
 
@@ -143,17 +143,15 @@ class Chef
                   old_secrets += Array(new_resource.old_secret)
                 end
                 if new_resource.old_secret_path
-                  old_secrets += Array(new_resource.old_secret_path).map do |secret_path|
+                  old_secrets += Array(new_resource.old_secret_path).map do |_secret_path|
                     Chef::EncryptedDataBagItem.load_secret(new_resource.old_secret_file)
                   end
                 end
                 old_secrets.each do |secret|
-
                   Chef::EncryptedDataBagItem::Decryptor.for(first_real_value, secret).for_decrypted_item
                   current_resource.secret secret
                 rescue Chef::EncryptedDataBagItem::DecryptionFailure
                   decrypt_error = $!
-
                 end
 
                 # If we couldn't figure out the secret, emit a warning (this isn't a fatal flaw unless we
@@ -162,7 +160,7 @@ class Chef
                   if decrypt_error
                     Chef::Log.warn "Existing data bag is encrypted, but could not decrypt: #{decrypt_error.message}."
                   else
-                    Chef::Log.warn "Existing data bag is encrypted, but no secret was specified."
+                    Chef::Log.warn 'Existing data bag is encrypted, but no secret was specified.'
                   end
                 end
               end
@@ -181,12 +179,12 @@ class Chef
 
         def new_json
           @new_json ||= begin
-            if new_encrypt
-              # Encrypt new stuff
-              result = encrypt(new_decrypted, new_secret, new_resource.encryption_version)
-            else
-              result = new_decrypted
-            end
+            result = if new_encrypt
+                       # Encrypt new stuff
+                       encrypt(new_decrypted, new_secret, new_resource.encryption_version)
+                     else
+                       new_decrypted
+                     end
             result
           end
         end
@@ -224,12 +222,12 @@ class Chef
         # Get the desired (new) json pre-encryption, for comparison purposes
         def new_decrypted
           @new_decrypted ||= begin
-            if new_resource.complete
-              result = new_resource.raw_data || {}
-            else
-              result = current_decrypted.merge(new_resource.raw_data || {})
-            end
-            result["id"] = new_resource.id
+            result = if new_resource.complete
+                       new_resource.raw_data || {}
+                     else
+                       current_decrypted.merge(new_resource.raw_data || {})
+                     end
+            result['id'] = new_resource.id
             _result = apply_modifiers(new_resource.raw_data_modifiers, result)
           end
         end
@@ -237,11 +235,11 @@ class Chef
         # Get the current json decrypted, for comparison purposes
         def current_decrypted
           @current_decrypted ||= if current_resource.secret
-                                   decrypt(current_resource.raw_data || { "id" => new_resource.id }, current_resource.secret)
+                                   decrypt(current_resource.raw_data || { 'id' => new_resource.id }, current_resource.secret)
                                  elsif current_resource.encrypt
                                    raise "Could not decrypt current data bag item #{current_resource.name}"
                                  else
-                                   current_resource.raw_data || { "id" => new_resource.id }
+                                   current_resource.raw_data || { 'id' => new_resource.id }
                                  end
         end
 
@@ -250,21 +248,21 @@ class Chef
           if new_encrypt
             if current_resource.encrypt
               # Both are encrypted, check if the encryption type is the same
-              description = ""
+              description = ''
               if new_secret != current_resource.secret
-                description << " with new secret"
+                description << ' with new secret'
               end
               if new_resource.encryption_version != current_resource.encryption_version
                 description << " from v#{current_resource.encryption_version} to v#{new_resource.encryption_version} encryption"
               end
 
-              if description != ""
-                # Encryption is different, we're reencrypting
-                differences = [ "re-encrypt#{description}"]
-              else
-                # Encryption is the same, we're just updating
-                differences = []
-              end
+              differences = if description != ''
+                              # Encryption is different, we're reencrypting
+                              [ "re-encrypt#{description}"]
+                            else
+                              # Encryption is the same, we're just updating
+                              []
+                            end
             else
               # New stuff should be encrypted, old is not.  Encrypting.
               differences = [ "encrypt with v#{new_resource.encryption_version} encryption" ]
@@ -272,7 +270,7 @@ class Chef
 
             # Get differences in the actual json
             if current_resource.secret
-              json_differences(current_decrypted, new_decrypted, false, "", differences)
+              json_differences(current_decrypted, new_decrypted, false, '', differences)
             elsif current_resource.encrypt
               # Encryption is different and we can't read the old values.  Only allow the change
               # if we're overwriting the data bag item
@@ -280,21 +278,21 @@ class Chef
                 raise "Cannot encrypt #{new_resource.name} due to failure to decrypt existing resource.  Set 'complete true' to overwrite or add the old secret as old_secret / old_secret_path."
               end
 
-              _differences = [ "overwrite data bag item (cannot decrypt old data bag item)"]
+              _differences = [ 'overwrite data bag item (cannot decrypt old data bag item)']
               differences = (new_resource.raw_data.keys & current_resource.raw_data.keys).map { |key| "overwrite #{key}" }
               differences += (new_resource.raw_data.keys - current_resource.raw_data.keys).map { |key| "add #{key}" }
               differences += (current_resource.raw_data.keys - new_resource.raw_data.keys).map { |key| "remove #{key}" }
             else
-              json_differences(current_decrypted, new_decrypted, false, "", differences)
+              json_differences(current_decrypted, new_decrypted, false, '', differences)
             end
           else
-            if current_resource.encrypt
-              # New stuff should not be encrypted, old is.  Decrypting.
-              differences = [ "decrypt data bag item to plaintext" ]
-            else
-              differences = []
-            end
-            json_differences(current_decrypted, new_decrypted, true, "", differences)
+            differences = if current_resource.encrypt
+                            # New stuff should not be encrypted, old is.  Decrypting.
+                            [ 'decrypt data bag item to plaintext' ]
+                          else
+                            []
+                          end
+            json_differences(current_decrypted, new_decrypted, true, '', differences)
           end
           differences
         end
@@ -313,9 +311,9 @@ class Chef
 
         def keys
           {
-            "id" => :id,
-            "data_bag" => :data_bag,
-            "raw_data" => :raw_data,
+            'id' => :id,
+            'data_bag' => :data_bag,
+            'raw_data' => :raw_data,
           }
         end
 

@@ -1,5 +1,5 @@
-require "chef/config"
-require_relative "with_pattern"
+require 'chef/config'
+require_relative 'with_pattern'
 
 module Cheffish
   class ChefRunData

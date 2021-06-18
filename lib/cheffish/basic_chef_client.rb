@@ -1,13 +1,13 @@
-require_relative "version"
-require "chef/dsl/recipe"
-require "chef/event_dispatch/base"
-require "chef/event_dispatch/dispatcher"
-require "chef/node"
-require "chef/run_context"
-require "chef/runner"
-require "forwardable" unless defined?(Forwardable)
-require "chef/providers"
-require "chef/resources"
+require_relative 'version'
+require 'chef/dsl/recipe'
+require 'chef/event_dispatch/base'
+require 'chef/event_dispatch/dispatcher'
+require 'chef/node'
+require 'chef/run_context'
+require 'chef/runner'
+require 'forwardable' unless defined?(Forwardable)
+require 'chef/providers'
+require 'chef/resources'
 
 module Cheffish
   class BasicChefClient
@@ -16,8 +16,8 @@ module Cheffish
     def initialize(node = nil, events = nil, **chef_config)
       unless node
         node = Chef::Node.new
-        node.name "basic_chef_client"
-        node.automatic[:platform] = "basic_chef_client"
+        node.name 'basic_chef_client'
+        node.automatic[:platform] = 'basic_chef_client'
         node.automatic[:platform_version] = Cheffish::VERSION
       end
 
@@ -25,7 +25,7 @@ module Cheffish
       @chef_config = chef_config
 
       with_chef_config do
-        @cookbook_name = "basic_chef_client"
+        @cookbook_name = 'basic_chef_client'
         @event_catcher = BasicChefClientEvents.new
         dispatcher = Chef::EventDispatch::Dispatcher.new(@event_catcher)
         case events
@@ -36,7 +36,7 @@ module Cheffish
         end
         @run_context = Chef::RunContext.new(node, {}, dispatcher)
         @updated = []
-        @cookbook_name = "basic_chef_client"
+        @cookbook_name = 'basic_chef_client'
       end
     end
 
@@ -57,7 +57,7 @@ module Cheffish
 
     def load_block(&block)
       with_chef_config do
-        @recipe_name = "block"
+        @recipe_name = 'block'
         instance_eval(&block)
       end
     end
@@ -107,7 +107,7 @@ module Cheffish
       client.updated?
     end
 
-    def with_chef_config(&block)
+    def with_chef_config
       old_chef_config = Chef::Config.save
       if chef_config[:log_location]
         old_loggers = Chef::Log.loggers
@@ -173,7 +173,7 @@ module Cheffish
       attr_reader :provider
       attr_reader :provider_action
 
-      def resource_update_applied(resource, action, update)
+      def resource_update_applied(_resource, _action, update)
         provider.run_context.events.resource_update_applied(provider.new_resource, provider_action, update)
       end
     end

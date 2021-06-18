@@ -1,7 +1,7 @@
-require_relative "../../cheffish"
-require_relative "../../cheffish/base_resource"
-require "chef/environment"
-require "chef/chef_fs/data_handler/environment_data_handler"
+require_relative '../../cheffish'
+require_relative '../../cheffish/base_resource'
+require 'chef/environment'
+require 'chef/chef_fs/data_handler/environment_data_handler'
 
 class Chef
   class Resource
@@ -11,7 +11,7 @@ class Chef
       property :environment_name, Cheffish::NAME_REGEX, name_property: true
       property :description, String
       property :cookbook_versions, Hash, callbacks: {
-        "should have valid cookbook versions" => lambda { |value| Chef::Environment.validate_cookbook_versions(value) },
+        'should have valid cookbook versions' => ->(value) { Chef::Environment.validate_cookbook_versions(value) },
       }
       property :default_attributes, Hash
       property :override_attributes, Hash
@@ -30,7 +30,7 @@ class Chef
         elsif block
           @default_attribute_modifiers << [ attribute_path, block ]
         else
-          raise "default requires either a value or a block"
+          raise 'default requires either a value or a block'
         end
       end
 
@@ -48,7 +48,7 @@ class Chef
         elsif block
           @override_attribute_modifiers << [ attribute_path, block ]
         else
-          raise "override requires either a value or a block"
+          raise 'override requires either a value or a block'
         end
       end
 
@@ -68,7 +68,7 @@ class Chef
         else
           description = [ "create environment #{new_resource.environment_name} at #{rest.url}" ] + differences
           converge_by description do
-            rest.post("environments", normalize_for_post(new_json))
+            rest.post('environments', normalize_for_post(new_json))
           end
         end
       end
@@ -85,7 +85,7 @@ class Chef
         def load_current_resource
           @current_resource = json_to_resource(rest.get("environments/#{new_resource.environment_name}"))
         rescue Net::HTTPClientException => e
-          if e.response.code == "404"
+          if e.response.code == '404'
             @current_resource = not_found_resource
           else
             raise
@@ -94,8 +94,8 @@ class Chef
 
         def augment_new_json(json)
           # Apply modifiers
-          json["default_attributes"] = apply_modifiers(new_resource.default_attribute_modifiers, json["default_attributes"])
-          json["override_attributes"] = apply_modifiers(new_resource.override_attribute_modifiers, json["override_attributes"])
+          json['default_attributes'] = apply_modifiers(new_resource.default_attribute_modifiers, json['default_attributes'])
+          json['override_attributes'] = apply_modifiers(new_resource.override_attribute_modifiers, json['override_attributes'])
           json
         end
 
@@ -113,11 +113,11 @@ class Chef
 
         def keys
           {
-            "name" => :environment_name,
-            "description" => :description,
-            "cookbook_versions" => :cookbook_versions,
-            "default_attributes" => :default_attributes,
-            "override_attributes" => :override_attributes,
+            'name' => :environment_name,
+            'description' => :description,
+            'cookbook_versions' => :cookbook_versions,
+            'default_attributes' => :default_attributes,
+            'override_attributes' => :override_attributes,
           }
         end
       end

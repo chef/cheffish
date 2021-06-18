@@ -1,5 +1,5 @@
-require "chef/resource"
-require_relative "base_properties"
+require 'chef/resource'
+require_relative 'base_properties'
 
 module Cheffish
   class BaseResource < Chef::Resource
@@ -30,12 +30,12 @@ module Cheffish
 
       def new_json
         @new_json ||= begin
-          if new_resource.complete
-            result = normalize(resource_to_json(new_resource))
-          else
-            # If the resource is incomplete, we use the current json to fill any holes
-            result = current_json.merge(resource_to_json(new_resource))
-          end
+          result = if new_resource.complete
+                     normalize(resource_to_json(new_resource))
+                   else
+                     # If the resource is incomplete, we use the current json to fill any holes
+                     current_json.merge(resource_to_json(new_resource))
+                   end
           augment_new_json(result)
         end
       end
@@ -84,7 +84,7 @@ module Cheffish
         data_handler.normalize(json, fake_entry)
       end
 
-      def json_differences(old_json, new_json, print_values = true, name = "", result = nil)
+      def json_differences(old_json, new_json, print_values = true, name = '', result = nil)
         result ||= []
         json_differences_internal(old_json, new_json, print_values, name, result)
         result
@@ -92,33 +92,33 @@ module Cheffish
 
       def json_differences_internal(old_json, new_json, print_values, name, result)
         if old_json.is_a?(Hash) && new_json.is_a?(Hash)
-          removed_keys = old_json.keys.inject({}) { |hash, key| hash[key] = true; hash }
+          removed_keys = old_json.keys.each_with_object({}) { |key, hash| hash[key] = true; }
           new_json.each_pair do |new_key, new_value|
             if old_json.key?(new_key)
               removed_keys.delete(new_key)
               if new_value != old_json[new_key]
-                json_differences_internal(old_json[new_key], new_value, print_values, name == "" ? new_key : "#{name}.#{new_key}", result)
+                json_differences_internal(old_json[new_key], new_value, print_values, name == '' ? new_key : "#{name}.#{new_key}", result)
               end
             else
-              if print_values
-                result << "  add #{name == "" ? new_key : "#{name}.#{new_key}"} = #{new_value.inspect}"
-              else
-                result << "  add #{name == "" ? new_key : "#{name}.#{new_key}"}"
-              end
+              result << if print_values
+                          "  add #{name == '' ? new_key : "#{name}.#{new_key}"} = #{new_value.inspect}"
+                        else
+                          "  add #{name == '' ? new_key : "#{name}.#{new_key}"}"
+                        end
             end
           end
           removed_keys.keys.each do |removed_key|
-            result << "  remove #{name == "" ? removed_key : "#{name}.#{removed_key}"}"
+            result << "  remove #{name == '' ? removed_key : "#{name}.#{removed_key}"}"
           end
         else
           old_json = old_json.to_s if old_json.is_a?(Symbol)
           new_json = new_json.to_s if new_json.is_a?(Symbol)
           if old_json != new_json
-            if print_values
-              result << "  update #{name} from #{old_json.inspect} to #{new_json.inspect}"
-            else
-              result << "  update #{name}"
-            end
+            result << if print_values
+                        "  update #{name} from #{old_json.inspect} to #{new_json.inspect}"
+                      else
+                        "  update #{name}"
+                      end
           end
         end
       end
@@ -127,11 +127,11 @@ module Cheffish
         return json if !modifiers || modifiers.size == 0
 
         # If the attributes have nothing, set them to {} so we have something to add to
-        if json
-          json = Marshal.load(Marshal.dump(json)) # Deep copy
-        else
-          json = {}
-        end
+        json = if json
+                 Marshal.load(Marshal.dump(json)) # Deep copy
+               else
+                 {}
+               end
 
         modifiers.each do |path, value|
           path = [path] unless path.is_a?(Array)
@@ -215,9 +215,9 @@ module Cheffish
         b_name = b.name
         # Handle "a::default" being the same as "a"
         if a.type == :recipe && a_name =~ /(.+)::default$/
-          a_name = $1
+          a_name = Regexp.last_match(1)
         elsif b.type == :recipe && b_name =~ /(.+)::default$/
-          b_name = $1
+          b_name = Regexp.last_match(1)
         end
 
         a_name == b_name && a.type == b.type # We want to replace things with same name and different version

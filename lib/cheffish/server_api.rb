@@ -16,25 +16,24 @@
 # limitations under the License.
 #
 
-require "chef/version"
-require "chef/http"
-require "chef/http/authenticator"
-require "chef/http/cookie_manager"
-require "chef/http/decompressor"
-require "chef/http/json_input"
-require "chef/http/json_output"
-if Gem::Version.new(Chef::VERSION) >= Gem::Version.new("11.12")
-  require "chef/http/remote_request_id"
+require 'chef/version'
+require 'chef/http'
+require 'chef/http/authenticator'
+require 'chef/http/cookie_manager'
+require 'chef/http/decompressor'
+require 'chef/http/json_input'
+require 'chef/http/json_output'
+if Gem::Version.new(Chef::VERSION) >= Gem::Version.new('11.12')
+  require 'chef/http/remote_request_id'
 end
 
 module Cheffish
   # Exactly like Chef::ServerAPI, but requires you to pass in what keys you want (no defaults)
   class ServerAPI < Chef::HTTP
-
     def initialize(url, options = {})
       super(url, options)
       root_url = URI.parse(url)
-      root_url.path = ""
+      root_url.path = ''
       @root_url = root_url.to_s
     end
 
@@ -45,7 +44,7 @@ module Cheffish
     use Chef::HTTP::CookieManager
     use Chef::HTTP::Decompressor
     use Chef::HTTP::Authenticator
-    if Gem::Version.new(Chef::VERSION) >= Gem::Version.new("11.12")
+    if Gem::Version.new(Chef::VERSION) >= Gem::Version.new('11.12')
       use Chef::HTTP::RemoteRequestID
     end
   end

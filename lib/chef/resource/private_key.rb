@@ -1,7 +1,7 @@
-require "openssl/cipher"
-require_relative "../../cheffish/base_resource"
-require "openssl" unless defined?(OpenSSL)
-require_relative "../../cheffish/key_formatter"
+require 'openssl/cipher'
+require_relative '../../cheffish/base_resource'
+require 'openssl' unless defined?(OpenSSL)
+require_relative '../../cheffish/key_formatter'
 
 class Chef
   class Resource
@@ -13,11 +13,11 @@ class Chef
 
       # Path to private key.  Set to :none to create the key in memory and not on disk.
       property :path, [ String, :none ], name_property: true
-      property :format, %i{pem der}, default: :pem
-      property :type, %i{rsa dsa}, default: :rsa # TODO support :ec
+      property :format, %i(pem der), default: :pem
+      property :type, %i(rsa dsa), default: :rsa # TODO: support :ec
       # These specify an optional public_key you can spit out if you want.
       property :public_key_path, String
-      property :public_key_format, %i{openssh pem der}, default: :openssh
+      property :public_key_format, %i(openssh pem der), default: :openssh
       # Specify this if you want to copy another private key but give it a different format / password
       property :source_key
       property :source_key_path, String
@@ -31,7 +31,7 @@ class Chef
 
       # PEM-only
       property :pass_phrase, String
-      property :cipher, String, equal_to: OpenSSL::Cipher.ciphers.map(&:downcase), default: "des-ede3-cbc", coerce: proc { |x| x.downcase }
+      property :cipher, String, equal_to: OpenSSL::Cipher.ciphers.map(&:downcase), default: 'des-ede3-cbc', coerce: proc { |x| x.downcase }
 
       # Set this to regenerate the key if it does not have the desired characteristics (like size, type, etc.)
       property :regenerate_if_different, [TrueClass, FalseClass]
@@ -42,7 +42,7 @@ class Chef
       end
 
       # We are not interested in Chef's cloning behavior here.
-      def load_prior_resource(*args)
+      def load_prior_resource(*_args)
         Chef::Log.debug("Overloading #{resource_name}.load_prior_resource with NOOP")
       end
 
@@ -77,7 +77,7 @@ class Chef
             #
             desired_output = encode_private_key(new_source_key)
             if current_resource.path == :none || desired_output != IO.read(new_path)
-              converge_by "reformat key at #{new_resource.source_key_path} to #{new_resource.format} private key #{new_path} (#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})" do
+              converge_by "reformat key at #{new_resource.source_key_path} to #{new_resource.format} private key #{new_path} (#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ''})" do
                 IO.binwrite(new_path, desired_output)
               end
             end
@@ -89,18 +89,18 @@ class Chef
             # Generate a new key
             #
             if current_resource.action == [ :delete ] || regenerate ||
-                (new_resource.regenerate_if_different &&
-                 (!current_private_key ||
-                  current_resource.size != new_resource.size ||
-                  current_resource.type != new_resource.type))
+               (new_resource.regenerate_if_different &&
+                (!current_private_key ||
+                 current_resource.size != new_resource.size ||
+                 current_resource.type != new_resource.type))
 
               case new_resource.type
               when :rsa
-                if new_resource.exponent
-                  final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size, new_resource.exponent)
-                else
-                  final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size)
-                end
+                final_private_key = if new_resource.exponent
+                                      OpenSSL::PKey::RSA.generate(new_resource.size, new_resource.exponent)
+                                    else
+                                      OpenSSL::PKey::RSA.generate(new_resource.size)
+                                    end
               when :dsa
                 final_private_key = OpenSSL::PKey::DSA.generate(new_resource.size)
               end
@@ -114,10 +114,10 @@ class Chef
             end
 
             if generated_key
-              generated_description = " (#{new_resource.size} bits#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ""})"
+              generated_description = " (#{new_resource.size} bits#{new_resource.pass_phrase ? ", #{new_resource.cipher} password" : ''})"
 
               if new_path != :none
-                action = current_resource.path == :none ? "create" : "overwrite"
+                action = current_resource.path == :none ? 'create' : 'overwrite'
                 converge_by "#{action} #{new_resource.type} private key #{new_path}#{generated_description}" do
                   write_private_key(final_private_key)
                 end
@@ -171,7 +171,7 @@ class Chef
         end
 
         def write_private_key(key)
-          ::File.open(new_path, "wb") do |file|
+          ::File.open(new_path, 'wb') do |file|
             file.chmod(0600)
             file.write(encode_private_key(key))
           end
@@ -186,8 +186,6 @@ class Chef
                               elsif new_resource.source_key_path
                                 source_key, _source_key_format = Cheffish::KeyFormatter.decode(IO.read(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
                                 source_key
-                              else
-                                nil
                               end
         end
 

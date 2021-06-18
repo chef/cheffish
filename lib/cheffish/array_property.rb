@@ -1,4 +1,4 @@
-require "chef/property"
+require 'chef/property'
 
 module Cheffish
   # A typical array property. Defaults to [], accepts multiple args to setter, accumulates values.

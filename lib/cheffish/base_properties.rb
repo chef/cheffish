@@ -1,6 +1,6 @@
-require "chef/mixin/properties"
-require_relative "array_property"
-require_relative "../cheffish"
+require 'chef/mixin/properties'
+require_relative 'array_property'
+require_relative '../cheffish'
 
 module Cheffish
   module BaseProperties
