@@ -1,4 +1,4 @@
-require "rspec/matchers"
+require 'rspec/matchers'
 
 RSpec::Matchers.define :emit_no_warnings_or_errors do
   match do |recipe|

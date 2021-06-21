@@ -1,5 +1,5 @@
-require_relative "../../cheffish/base_resource"
-require "chef_zero"
+require_relative '../../cheffish/base_resource'
+require 'chef_zero'
 
 class Chef
   class Resource
@@ -8,8 +8,8 @@ class Chef
 
       def initialize(*args)
         super
-        require "berkshelf"
-        berksfile Berkshelf::Berksfile.new("/tmp/Berksfile")
+        require 'berkshelf'
+        berksfile Berkshelf::Berksfile.new('/tmp/Berksfile')
         @cookbooks_from = []
       end
 
@@ -30,7 +30,7 @@ class Chef
       action :resolve do
         new_resource.cookbooks_from.each do |path|
           ::Dir.entries(path).each do |name|
-            if ::File.directory?(::File.join(path, name)) && name != "." && name != ".."
+            if ::File.directory?(::File.join(path, name)) && name != '.' && name != '..'
               new_resource.berksfile.cookbook name, path: ::File.join(path, name)
             end
           end
@@ -46,17 +46,16 @@ class Chef
             client_key: new_resource.chef_server[:options][:signing_key_filename]
           )
         else
-          file = Tempfile.new("privatekey")
+          file = Tempfile.new('privatekey')
           begin
             file.write(ChefZero::PRIVATE_KEY)
             file.close
 
             new_resource.berksfile.upload(
               server_url: new_resource.chef_server[:chef_server_url],
-              client_name: new_resource.chef_server[:options][:client_name] || "me",
+              client_name: new_resource.chef_server[:options][:client_name] || 'me',
               client_key: file.path
             )
-
           ensure
             file.close
             file.unlink

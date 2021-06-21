@@ -1,6 +1,6 @@
-require "cheffish/rspec"
+require 'cheffish/rspec'
 
-require "cheffish"
+require 'cheffish'
 
 RSpec.configure do |config|
   config.filter_run focus: true
@@ -11,4 +11,4 @@ RSpec.configure do |config|
   end
 end
 
-require "chef/providers"
+require 'chef/providers'

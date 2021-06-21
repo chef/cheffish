@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require "cheffish/chef_run"
+require 'cheffish/chef_run'
 
 def post(resource_type, name, properties)
   chef_run = Cheffish::ChefRun.new
@@ -12,7 +12,7 @@ def post(resource_type, name, properties)
     puts "CODE: #{chef_run.updated? ? 201 : 200}"
     puts "STDOUT: #{chef_run.stdout}\nSTDERR: #{chef_run.stderr}\nLOGS: #{chef_run.logs}"
   rescue
-    puts "CODE: 400"
+    puts 'CODE: 400'
     puts "ERROR: #{$!}\nBACKTRACE: #{$!.backtrace}\nSTDOUT: #{chef_run.stdout}\nSTDERR: #{chef_run.stderr}\nLOGS: #{chef_run.logs}"
   end
 end

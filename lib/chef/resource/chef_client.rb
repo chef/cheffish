@@ -1,5 +1,5 @@
-require_relative "../../cheffish"
-require_relative "../../cheffish/chef_actor_base"
+require_relative '../../cheffish'
+require_relative '../../cheffish/chef_actor_base'
 
 class Chef
   class Resource
@@ -18,7 +18,7 @@ class Chef
 
       # Output public key (if so desired)
       property :output_key_path, String
-      property :output_key_format, Symbol, default: :openssh, equal_to: %i{pem der openssh}
+      property :output_key_format, Symbol, default: :openssh, equal_to: %i(pem der openssh)
 
       # Proc that runs just before the resource executes.  Called with (resource)
       def before(&block)
@@ -40,11 +40,11 @@ class Chef
 
       action_class do
         def actor_type
-          "client"
+          'client'
         end
 
         def actor_path
-          "clients"
+          'clients'
         end
 
         #
@@ -61,10 +61,10 @@ class Chef
 
         def keys
           {
-            "name" => :chef_client_name,
-            "admin" => :admin,
-            "validator" => :validator,
-            "public_key" => :source_key,
+            'name' => :chef_client_name,
+            'admin' => :admin,
+            'validator' => :validator,
+            'public_key' => :source_key,
           }
         end
       end

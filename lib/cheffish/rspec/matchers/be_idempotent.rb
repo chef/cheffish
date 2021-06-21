@@ -1,4 +1,4 @@
-require "rspec/matchers"
+require 'rspec/matchers'
 
 RSpec::Matchers.define :be_idempotent do
   match do |recipe|

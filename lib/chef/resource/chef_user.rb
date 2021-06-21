@@ -1,5 +1,5 @@
-require_relative "../../cheffish"
-require_relative "../../cheffish/chef_actor_base"
+require_relative '../../cheffish'
+require_relative '../../cheffish/chef_actor_base'
 
 class Chef
   class Resource
@@ -25,7 +25,7 @@ class Chef
 
       # Output public key (if so desired)
       property :output_key_path, String
-      property :output_key_format, %i{pem der openssh}, default: :openssh
+      property :output_key_format, %i(pem der openssh), default: :openssh
 
       # Proc that runs just before the resource executes.  Called with (resource)
       def before(&block)
@@ -52,7 +52,7 @@ class Chef
         # Gives us new_json, current_json, not_found_json, etc.
 
         def actor_type
-          "user"
+          'user'
         end
 
         def actor_path
@@ -69,15 +69,15 @@ class Chef
 
         def keys
           {
-            "name" => :user_name,
-            "username" => :user_name,
-            "display_name" => :display_name,
-            "admin" => :admin,
-            "email" => :email,
-            "password" => :password,
-            "external_authentication_uid" => :external_authentication_uid,
-            "recovery_authentication_enabled" => :recovery_authentication_enabled,
-            "public_key" => :source_key,
+            'name' => :user_name,
+            'username' => :user_name,
+            'display_name' => :display_name,
+            'admin' => :admin,
+            'email' => :email,
+            'password' => :password,
+            'external_authentication_uid' => :external_authentication_uid,
+            'recovery_authentication_enabled' => :recovery_authentication_enabled,
+            'public_key' => :source_key,
           }
         end
       end

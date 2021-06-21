@@ -1,8 +1,7 @@
-require "cheffish/key_formatter"
-require "support/key_support"
+require 'cheffish/key_formatter'
+require 'support/key_support'
 
-describe "Cheffish fingerprint key formatter" do
-
+describe 'Cheffish fingerprint key formatter' do
   # Sample key: 0x9a6fa4c43b328c3d04c1fbc0498539218b6728e41cd35f6d27d491ef705f0b2083dc1ac977da19f54ba82b044773f20667e9627c543abb3b41b6eb9e4318ca3c68f487bbd0f1c9eea9a3101b7d1d180983c5440ac4183e78e9e256fa687d8aac63b21617a4b02b35bf5e307a3b76961a16cd8493e923536b34cc2b2da8d45220d57ef2243b081b555b84f1da0ade0e896c2aa96911b41430b59eaf75dbffb7eaa7c5b3a686f2d47a24e3b7f1acb0844f84a2fedc63660ae366b800cd9448093d6b1d96503ebb7807b48257e16c3d8a7c9a8cc5dd63116aa673bd9e09754de09358486e743e34c6a3642eeb64b2208efc96df39151572557a75638bd059c21a55 = 0xd6e92677d4e1d2aa6d14f87b5f49ee6916c6b92411536254fae4a21e82eebb0a40600247c701c1c938b21ca9f25b7b330c35fded57b4de3a951e83329a80bdbf2ba138fe2f190bffce43967b5fa93b179367bcd15cb1db7f9e3ab62caca95dc9489b62bc0a10b53841b932455a43409f96eed90dc80abc8cce5593ead8f0a26d * 0xb7f68cd427045788d5e315375f71d3a416784ec2597776a60ed77c821294d9bd66e96658bdcb43072cee0c849d297bd9f94991738f1a0df313ceb51b093a9372f12a61987f40e7a03d773911deb270916a574962ae8ff4f2d8bfcedee1c885e9c3e54212471636a6330b05b78c3a7ddf96b013be389a08ab7971db2f68fb2689
 
   sample_private_key = <<~EOF
@@ -30,37 +29,34 @@ describe "Cheffish fingerprint key formatter" do
     AUcSSKTvw+PobCpXhdkiw4TgJhFNuZnoC63FOjNqA5mu1ICZYBb4ZVlgUAgSmDQxSIgK
     -----END RSA PRIVATE KEY-----
   EOF
-  sample_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCab6TEOzKMPQTB+8BJhTkhi2co5BzTX20n1JHvcF8LIIPcGsl32hn1S6grBEdz8gZn6WJ8VDq7O0G2655DGMo8aPSHu9Dxye6poxAbfR0YCYPFRArEGD546eJW+mh9iqxjshYXpLArNb9eMHo7dpYaFs2Ek+kjU2s0zCstqNRSINV+8iQ7CBtVW4Tx2greDolsKqlpEbQUMLWer3Xb/7fqp8Wzpoby1Hok47fxrLCET4Si/txjZgrjZrgAzZRICT1rHZZQPrt4B7SCV+FsPYp8mozF3WMRaqZzvZ4JdU3gk1hIbnQ+NMajZC7rZLIgjvyW3zkVFXJVenVji9BZwhpV"
+  sample_public_key = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCab6TEOzKMPQTB+8BJhTkhi2co5BzTX20n1JHvcF8LIIPcGsl32hn1S6grBEdz8gZn6WJ8VDq7O0G2655DGMo8aPSHu9Dxye6poxAbfR0YCYPFRArEGD546eJW+mh9iqxjshYXpLArNb9eMHo7dpYaFs2Ek+kjU2s0zCstqNRSINV+8iQ7CBtVW4Tx2greDolsKqlpEbQUMLWer3Xb/7fqp8Wzpoby1Hok47fxrLCET4Si/txjZgrjZrgAzZRICT1rHZZQPrt4B7SCV+FsPYp8mozF3WMRaqZzvZ4JdU3gk1hIbnQ+NMajZC7rZLIgjvyW3zkVFXJVenVji9BZwhpV'
 
   def key_to_format(key, format)
     keyobj, _f = Cheffish::KeyFormatter.decode(key)
     Cheffish::KeyFormatter.encode(keyobj, { format: format })
   end
 
-  context "when computing key fingperprints" do
-
-    it "raises when passing a PKCS#8 SHA1 private key fingerprint" do
+  context 'when computing key fingperprints' do
+    it 'raises when passing a PKCS#8 SHA1 private key fingerprint' do
       expect { key_to_format(sample_private_key, :pkcs8sha1fingerprint) }.to raise_error
     end
 
-    it "computes the PKCS#1 MD5 public key fingerprint correctly" do
+    it 'computes the PKCS#1 MD5 public key fingerprint correctly' do
       expect(key_to_format(sample_public_key, :pkcs1md5fingerprint)).to eq(
-        "1f:e8:da:c1:16:c3:72:7d:90:e2:b7:64:c4:b4:55:20"
+        '1f:e8:da:c1:16:c3:72:7d:90:e2:b7:64:c4:b4:55:20'
       )
     end
 
-    it "computes the RFC4716 MD5 public key fingerprint correctly" do
+    it 'computes the RFC4716 MD5 public key fingerprint correctly' do
       expect(key_to_format(sample_public_key, :rfc4716md5fingerprint)).to eq(
-        "b0:13:4f:da:cf:8c:dc:a7:4a:1f:d2:3a:51:92:cf:6b"
+        'b0:13:4f:da:cf:8c:dc:a7:4a:1f:d2:3a:51:92:cf:6b'
       )
     end
 
-    it "defaults to the PKCS#1 MD5 public key fingerprint" do
+    it 'defaults to the PKCS#1 MD5 public key fingerprint' do
       expect(key_to_format(sample_public_key, :fingerprint)).to eq(
         key_to_format(sample_public_key, :pkcs1md5fingerprint)
       )
     end
-
   end
-
 end

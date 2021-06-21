@@ -1,30 +1,30 @@
-require_relative "../cheffish"
+require_relative '../cheffish'
 
-require "chef/version"
-require "chef_zero/server"
-require "chef/chef_fs/chef_fs_data_store"
-require "chef/chef_fs/config"
-require_relative "chef_run_data"
-require_relative "chef_run_listener"
-require "chef/client"
-require "chef/config"
-require "chef_zero/version"
-require_relative "merged_config"
-require_relative "../chef/resource/chef_acl"
-require_relative "../chef/resource/chef_client"
-require_relative "../chef/resource/chef_container"
-require_relative "../chef/resource/chef_data_bag"
-require_relative "../chef/resource/chef_data_bag_item"
-require_relative "../chef/resource/chef_environment"
-require_relative "../chef/resource/chef_group"
-require_relative "../chef/resource/chef_mirror"
-require_relative "../chef/resource/chef_node"
-require_relative "../chef/resource/chef_organization"
-require_relative "../chef/resource/chef_role"
-require_relative "../chef/resource/chef_user"
-require_relative "../chef/resource/private_key"
-require_relative "../chef/resource/public_key"
-require "chef/util/path_helper"
+require 'chef/version'
+require 'chef_zero/server'
+require 'chef/chef_fs/chef_fs_data_store'
+require 'chef/chef_fs/config'
+require_relative 'chef_run_data'
+require_relative 'chef_run_listener'
+require 'chef/client'
+require 'chef/config'
+require 'chef_zero/version'
+require_relative 'merged_config'
+require_relative '../chef/resource/chef_acl'
+require_relative '../chef/resource/chef_client'
+require_relative '../chef/resource/chef_container'
+require_relative '../chef/resource/chef_data_bag'
+require_relative '../chef/resource/chef_data_bag_item'
+require_relative '../chef/resource/chef_environment'
+require_relative '../chef/resource/chef_group'
+require_relative '../chef/resource/chef_mirror'
+require_relative '../chef/resource/chef_node'
+require_relative '../chef/resource/chef_organization'
+require_relative '../chef/resource/chef_role'
+require_relative '../chef/resource/chef_user'
+require_relative '../chef/resource/private_key'
+require_relative '../chef/resource/public_key'
+require 'chef/util/path_helper'
 
 class Chef
   module DSL
@@ -46,18 +46,18 @@ class Chef
       end
 
       def with_chef_local_server(options, &block)
-        options[:host] ||= "127.0.0.1"
+        options[:host] ||= '127.0.0.1'
         options[:log_level] ||= Chef::Log.level
         options[:port] ||= ChefZero::VERSION.to_f >= 2.2 ? 8901.upto(9900) : 8901
 
         # Create the data store chef-zero will use
         options[:data_store] ||= begin
           unless options[:chef_repo_path]
-            raise "chef_repo_path must be specified to with_chef_local_server"
+            raise 'chef_repo_path must be specified to with_chef_local_server'
           end
 
           # Ensure all paths are given
-          %w{acl client cookbook container data_bag environment group node role}.each do |type|
+          %w(acl client cookbook container data_bag environment group node role).each do |type|
             # Set the options as symbol keys and then copy to string keys
             string_key = "#{type}_path"
             symbol_key = "#{type}_path".to_sym
@@ -95,9 +95,9 @@ class Chef
   end
 
   class Config
-    default(:profile) { ENV["CHEF_PROFILE"] || "default" }
+    default(:profile) { ENV['CHEF_PROFILE'] || 'default' }
     configurable(:private_keys)
-    default(:private_key_paths) { [ Chef::Util::PathHelper.join(config_dir, "keys"), Chef::Util::PathHelper.join(user_home, ".ssh") ] }
+    default(:private_key_paths) { [ Chef::Util::PathHelper.join(config_dir, 'keys'), Chef::Util::PathHelper.join(user_home, '.ssh') ] }
     default(:private_key_write_path) { private_key_paths.first }
   end
 
@@ -121,5 +121,4 @@ class Chef
     run_status.node.run_state[:cheffish] = Cheffish::ChefRunData.new(config)
     run_status.events.register(Cheffish::ChefRunListener.new(run_status.node))
   end
-
 end

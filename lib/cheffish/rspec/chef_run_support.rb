@@ -1,10 +1,10 @@
-require "chef_zero/rspec"
-require "chef/server_api"
-require_relative "repository_support"
-require "uri" unless defined?(URI)
-require_relative "../chef_run"
-require_relative "recipe_run_wrapper"
-require_relative "matchers"
+require 'chef_zero/rspec'
+require 'chef/server_api'
+require_relative 'repository_support'
+require 'uri' unless defined?(URI)
+require_relative '../chef_run'
+require_relative 'recipe_run_wrapper'
+require_relative 'matchers'
 
 module Cheffish
   module RSpec
@@ -19,7 +19,7 @@ module Cheffish
       end
 
       def when_the_chef_12_server(*args, **options, &block)
-        if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
+        if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new('3.1')
           when_the_chef_server(*args, osc_compat: false, single_org: false, **options, &block)
         end
       end
@@ -33,11 +33,11 @@ module Cheffish
 
       module ChefRunSupportInstanceMethods
         def rest
-          ::Chef::ServerAPI.new(Chef::Config.chef_server_url, api_version: "0")
+          ::Chef::ServerAPI.new(Chef::Config.chef_server_url, api_version: '0')
         end
 
         def get(path, *args)
-          if path[0] == "/"
+          if path[0] == '/'
             path = URI.join(rest.url, path)
           end
           rest.get(path, *args)
@@ -59,11 +59,11 @@ module Cheffish
 
         def recipe(str = nil, file = nil, line = nil, &recipe)
           unless recipe
-            if file && line
-              recipe = proc { eval(str, nil, file, line) } # rubocop:disable Security/Eval
-            else
-              recipe = proc { eval(str) } # rubocop:disable Security/Eval
-            end
+            recipe = if file && line
+                       proc { eval(str, nil, file, line) } # rubocop:disable Security/Eval
+                     else
+                       proc { eval(str) } # rubocop:disable Security/Eval
+                     end
           end
           RecipeRunWrapper.new(chef_config, &recipe)
         end
