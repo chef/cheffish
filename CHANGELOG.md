@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 17.1.2 -->
-## [v17.1.2](https://github.com/chef/cheffish/tree/v17.1.2) (2021-05-24)
+<!-- latest_release 17.1.3 -->
+## [v17.1.3](https://github.com/chef/cheffish/tree/v17.1.3) (2021-07-26)
 
 #### Merged Pull Requests
-- Move all unit tests to GH Actions [#202](https://github.com/chef/cheffish/pull/202) ([tas50](https://github.com/tas50))
+- Update chefstyle requirement from 2.0.3 to 2.0.7 [#210](https://github.com/chef/cheffish/pull/210) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=17.0.0 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Update chefstyle requirement from 2.0.3 to 2.0.7 [#210](https://github.com/chef/cheffish/pull/210) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 17.1.3 -->
 - Move all unit tests to GH Actions [#202](https://github.com/chef/cheffish/pull/202) ([tas50](https://github.com/tas50)) <!-- 17.1.2 -->
 - Update chefstyle requirement from 1.7.5 to 2.0.3 [#203](https://github.com/chef/cheffish/pull/203) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 17.1.1 -->
 - Require Ruby 3.0 or later [#201](https://github.com/chef/cheffish/pull/201) ([tas50](https://github.com/tas50)) <!-- 17.1.0 -->
