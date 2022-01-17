@@ -1,4 +1,4 @@
-require "chef/event_dispatch/base"
+require 'chef/event_dispatch/base'
 
 module Cheffish
   class ChefRunListener < Chef::EventDispatch::Base
@@ -8,11 +8,11 @@ module Cheffish
 
     attr_reader :node
 
-    def run_complete(node)
+    def run_complete(_node)
       disconnect
     end
 
-    def run_failed(exception)
+    def run_failed(_exception)
       disconnect
     end
 

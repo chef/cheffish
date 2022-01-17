@@ -1,4 +1,4 @@
-require_relative "basic_chef_client"
+require_relative 'basic_chef_client'
 
 module Cheffish
   class ChefRun
@@ -118,7 +118,7 @@ module Cheffish
     end
 
     def output_for_failure_message
-      message = ""
+      message = ''
       if stdout && !stdout.empty?
         message << "---                    ---\n"
         message << "--- Chef Client Output ---\n"
@@ -153,7 +153,7 @@ module Cheffish
         @events << [ method, *args ]
       end
 
-      def respond_to_missing?(method_name, include_private = false)
+      def respond_to_missing?(_method_name, _include_private = false)
         # Chef::EventDispatch::Dispatcher calls #respond_to? to see (basically) if we'll accept an event;
         # obviously, per above #method_missing, we'll accept whatever we're given. if there's a problem, it
         # will surface higher up the stack.

@@ -1,4 +1,4 @@
-require_relative "base_properties"
+require_relative 'base_properties'
 
 module Cheffish
   module NodeProperties
@@ -29,14 +29,14 @@ module Cheffish
       elsif block
         @attribute_modifiers << [ attribute_path, block ]
       else
-        raise "attribute requires either a value or a block"
+        raise 'attribute requires either a value or a block'
       end
     end
 
     # Patchy tags
     # tag 'webserver', 'apache', 'myenvironment'
     def tag(*tags)
-      attribute "tags" do |existing_tags|
+      attribute 'tags' do |existing_tags|
         existing_tags ||= []
         tags.each do |tag|
           unless existing_tags.include?(tag.to_s)
@@ -48,7 +48,7 @@ module Cheffish
     end
 
     def remove_tag(*tags)
-      attribute "tags" do |existing_tags|
+      attribute 'tags' do |existing_tags|
         if existing_tags
           tags.each do |tag|
             existing_tags.delete(tag.to_s)
@@ -62,10 +62,10 @@ module Cheffish
     # tags :a, :b, :c # removes all other tags
     def tags(*tags)
       if tags.size == 0
-        attribute("tags")
+        attribute('tags')
       else
         tags = tags[0] if tags.size == 1 && tags[0].is_a?(Array)
-        attribute("tags", tags.map(&:to_s))
+        attribute('tags', tags.map(&:to_s))
       end
     end
 
@@ -78,7 +78,7 @@ module Cheffish
     attr_accessor :run_list_removers
     def recipe(*recipes)
       if recipes.size == 0
-        raise ArgumentError, "At least one recipe must be specified"
+        raise ArgumentError, 'At least one recipe must be specified'
       end
 
       @run_list_modifiers ||= []
@@ -87,7 +87,7 @@ module Cheffish
 
     def role(*roles)
       if roles.size == 0
-        raise ArgumentError, "At least one role must be specified"
+        raise ArgumentError, 'At least one role must be specified'
       end
 
       @run_list_modifiers ||= []
@@ -96,7 +96,7 @@ module Cheffish
 
     def remove_recipe(*recipes)
       if recipes.size == 0
-        raise ArgumentError, "At least one recipe must be specified"
+        raise ArgumentError, 'At least one recipe must be specified'
       end
 
       @run_list_removers ||= []
@@ -105,7 +105,7 @@ module Cheffish
 
     def remove_role(*roles)
       if roles.size == 0
-        raise ArgumentError, "At least one role must be specified"
+        raise ArgumentError, 'At least one role must be specified'
       end
 
       @run_list_removers ||= []

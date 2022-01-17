@@ -1,7 +1,7 @@
-require "openssl/cipher"
-require_relative "../../cheffish/base_resource"
-require "openssl" unless defined?(OpenSSL)
-require_relative "../../cheffish/key_formatter"
+require 'openssl/cipher'
+require_relative '../../cheffish/base_resource'
+require 'openssl' unless defined?(OpenSSL)
+require_relative '../../cheffish/key_formatter'
 
 class Chef
   class Resource
@@ -12,27 +12,27 @@ class Chef
       default_action :create
 
       property :path, String, name_property: true
-      property :format, %i{pem der openssh}, default: :openssh
+      property :format, %i(pem der openssh), default: :openssh
 
       property :source_key
       property :source_key_path, String
       property :source_key_pass_phrase
 
       # We are not interested in Chef's cloning behavior here.
-      def load_prior_resource(*args)
+      def load_prior_resource(*_args)
         Chef::Log.debug("Overloading #{resource_name}.load_prior_resource with NOOP")
       end
 
       action :create do
         unless new_source_key
-          raise "No source key specified"
+          raise 'No source key specified'
         end
 
         desired_output = encode_public_key(new_source_key)
         if Array(current_resource.action) == [ :delete ] || desired_output != IO.read(new_resource.path)
           converge_by "write #{new_resource.format} public key #{new_resource.path} from #{new_source_key_publicity} key #{new_resource.source_key_path}" do
             IO.binwrite(new_resource.path, desired_output)
-            # TODO permissions on file?
+            # TODO: permissions on file?
           end
         end
       end
@@ -64,14 +64,14 @@ class Chef
             elsif new_resource.source_key_path
               source_key, _source_key_format = Cheffish::KeyFormatter.decode(IO.binread(new_resource.source_key_path), new_resource.source_key_pass_phrase, new_resource.source_key_path)
             else
-              return nil
+              return
             end
 
             if source_key.private?
-              @new_source_key_publicity = "private"
+              @new_source_key_publicity = 'private'
               source_key.public_key
             else
-              @new_source_key_publicity = "public"
+              @new_source_key_publicity = 'public'
               source_key
             end
           end
@@ -98,7 +98,6 @@ class Chef
           end
         end
       end
-
     end
   end
 end

@@ -1,9 +1,8 @@
-require_relative "key_formatter"
-require_relative "base_resource"
+require_relative 'key_formatter'
+require_relative 'base_resource'
 
 module Cheffish
   class ChefActorBase < Cheffish::BaseResource
-
     action_class.class_eval do
       def create_actor
         if new_resource.before
@@ -11,7 +10,7 @@ module Cheffish
         end
 
         # Create or update the client/user
-        current_public_key = new_json["public_key"]
+        current_public_key = new_json['public_key']
         differences = json_differences(current_json, new_json)
         if current_resource_exists?
           # Update the actor if it's different
@@ -19,7 +18,7 @@ module Cheffish
             description = [ "update #{actor_type} #{new_resource.name} at #{actor_path}" ] + differences
             converge_by description do
               result = rest.put("#{actor_path}/#{new_resource.name}", normalize_for_put(new_json))
-              current_public_key, _current_public_key_format = Cheffish::KeyFormatter.decode(result["public_key"]) if result["public_key"]
+              current_public_key, _current_public_key_format = Cheffish::KeyFormatter.decode(result['public_key']) if result['public_key']
             end
           end
         else
@@ -30,28 +29,26 @@ module Cheffish
 
           description = [ "create #{actor_type} #{new_resource.name} at #{actor_path}" ] + differences
           converge_by description do
-            result = rest.post((actor_path).to_s, normalize_for_post(new_json))
-            current_public_key, _current_public_key_format = Cheffish::KeyFormatter.decode(result["public_key"]) if result["public_key"]
+            result = rest.post(actor_path.to_s, normalize_for_post(new_json))
+            current_public_key, _current_public_key_format = Cheffish::KeyFormatter.decode(result['public_key']) if result['public_key']
           end
         end
 
         # Write out the public key
         if new_resource.output_key_path
-          # TODO use inline_resource
+          # TODO: use inline_resource
           key_content = Cheffish::KeyFormatter.encode(current_public_key, { format: new_resource.output_key_format })
-          if !current_resource.output_key_path
-            action = "create"
-          elsif key_content != IO.read(current_resource.output_key_path)
-            action = "overwrite"
-          else
-            action = nil
-          end
+          action = if !current_resource.output_key_path
+                     'create'
+                   elsif key_content != IO.read(current_resource.output_key_path)
+                     'overwrite'
+                   end
           if action
             converge_by "#{action} public key #{new_resource.output_key_path}" do
               IO.write(new_resource.output_key_path, key_content)
             end
           end
-          # TODO permissions?
+          # TODO: permissions?
         end
 
         if new_resource.after
@@ -101,14 +98,12 @@ module Cheffish
                               else
                                 source_key
                               end
-                            else
-                              nil
                             end
       end
 
       def augment_new_json(json)
         if new_public_key
-          json["public_key"] = new_public_key.to_pem
+          json['public_key'] = new_public_key.to_pem
         end
         json
       end
@@ -118,7 +113,7 @@ module Cheffish
           json = rest.get("#{actor_path}/#{new_resource.name}")
           @current_resource = json_to_resource(json)
         rescue Net::HTTPClientException => e
-          if e.response.code == "404"
+          if e.response.code == '404'
             @current_resource = not_found_resource
           else
             raise

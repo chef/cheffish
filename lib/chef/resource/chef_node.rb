@@ -1,7 +1,7 @@
-require_relative "../../cheffish"
-require_relative "../../cheffish/base_resource"
-require "chef/chef_fs/data_handler/node_data_handler"
-require_relative "../../cheffish/node_properties"
+require_relative '../../cheffish'
+require_relative '../../cheffish/base_resource'
+require 'chef/chef_fs/data_handler/node_data_handler'
+require_relative '../../cheffish/node_properties'
 
 class Chef
   class Resource
@@ -23,7 +23,7 @@ class Chef
         else
           description = [ "create node #{new_resource.name} at #{rest.url}" ] + differences
           converge_by description do
-            rest.post("nodes", normalize_for_post(new_json))
+            rest.post('nodes', normalize_for_post(new_json))
           end
         end
       end
@@ -40,7 +40,7 @@ class Chef
         def load_current_resource
           @current_resource = json_to_resource(rest.get("nodes/#{new_resource.name}"))
         rescue Net::HTTPClientException => e
-          if e.response.code == "404"
+          if e.response.code == '404'
             @current_resource = not_found_resource
           else
             raise
@@ -49,14 +49,14 @@ class Chef
 
         def augment_new_json(json)
           # Preserve tags even if "attributes" was overwritten directly
-          json["normal"]["tags"] = current_json["normal"]["tags"] unless json["normal"]["tags"]
+          json['normal']['tags'] = current_json['normal']['tags'] unless json['normal']['tags']
           # Apply modifiers
-          json["run_list"] = apply_run_list_modifiers(new_resource.run_list_modifiers, new_resource.run_list_removers, json["run_list"])
-          json["normal"] = apply_modifiers(new_resource.attribute_modifiers, json["normal"])
+          json['run_list'] = apply_run_list_modifiers(new_resource.run_list_modifiers, new_resource.run_list_removers, json['run_list'])
+          json['normal'] = apply_modifiers(new_resource.attribute_modifiers, json['normal'])
           # Preserve default/override/automatic even when "complete true"
-          json["default"] = current_json["default"]
-          json["override"] = current_json["override"]
-          json["automatic"] = current_json["automatic"]
+          json['default'] = current_json['default']
+          json['override'] = current_json['override']
+          json['automatic'] = current_json['automatic']
           json
         end
 
@@ -74,10 +74,10 @@ class Chef
 
         def keys
           {
-            "name" => :name,
-            "chef_environment" => :chef_environment,
-            "run_list" => :run_list,
-            "normal" => :attributes,
+            'name' => :name,
+            'chef_environment' => :chef_environment,
+            'run_list' => :run_list,
+            'normal' => :attributes,
           }
         end
       end

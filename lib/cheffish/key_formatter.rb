@@ -1,14 +1,14 @@
-require "openssl" unless defined?(OpenSSL)
-require "net/ssh" unless defined?(Net::SSH)
-require "etc" unless defined?(Etc)
-require "socket" unless defined?(Socket)
-require "digest/md5" unless defined?(Digest::MD5)
-require "base64" unless defined?(Base64)
+require 'openssl' unless defined?(OpenSSL)
+require 'net/ssh' unless defined?(Net::SSH)
+require 'etc' unless defined?(Etc)
+require 'socket' unless defined?(Socket)
+require 'digest/md5' unless defined?(Digest::MD5)
+require 'base64' unless defined?(Base64)
 
 module Cheffish
   class KeyFormatter
     # Returns nil or key, format
-    def self.decode(str, pass_phrase = nil, filename = "")
+    def self.decode(str, pass_phrase = nil, filename = '')
       key_format = {}
       key_format[:format] = format_of(str)
 
@@ -19,14 +19,14 @@ module Cheffish
         begin
           key = OpenSSL::PKey.read(str) { pass_phrase }
         rescue
-          return nil
+          return
         end
       end
 
       key_format[:type] = type_of(key) if type_of(key)
       key_format[:size] = size_of(key) if size_of(key)
       key_format[:pass_phrase] = pass_phrase if pass_phrase
-      # TODO cipher, exponent
+      # TODO: cipher, exponent
 
       [key, key_format]
     end
@@ -38,7 +38,7 @@ module Cheffish
         encode_openssh_key(key)
       when :pem
         if key_format[:pass_phrase]
-          cipher = key_format[:cipher] || "DES-EDE3-CBC"
+          cipher = key_format[:cipher] || 'DES-EDE3-CBC'
           key.to_pem(OpenSSL::Cipher.new(cipher), key_format[:pass_phrase])
         else
           key.to_pem
@@ -48,34 +48,34 @@ module Cheffish
       when :fingerprint, :pkcs1md5fingerprint
         hexes = Digest::MD5.hexdigest(key.to_der)
         # Put : between every pair of hexes
-        hexes.scan(/../).join(":")
+        hexes.scan(/../).join(':')
       when :rfc4716md5fingerprint
         _type, base64_data, _etc = encode_openssh_key(key).split
         data = Base64.decode64(base64_data)
         hexes = Digest::MD5.hexdigest(data)
-        hexes.scan(/../).join(":")
+        hexes.scan(/../).join(':')
       when :pkcs8sha1fingerprint
-        raise "PKCS8 SHA1 not supported by Ruby 2.0 and later"
+        raise 'PKCS8 SHA1 not supported by Ruby 2.0 and later'
       else
         raise "Unrecognized key format #{format}"
       end
     end
 
     def self.encode_openssh_key(key)
-      # TODO there really isn't a method somewhere in net/ssh or openssl that does this??
+      # TODO: there really isn't a method somewhere in net/ssh or openssl that does this??
       type = key.ssh_type
-      data = [ key.to_blob ].pack("m0")
+      data = [ key.to_blob ].pack('m0')
       "#{type} #{data} #{Etc.getlogin}@#{Socket.gethostname}"
     end
 
-    def self.decode_openssh_key(str, filename = "")
+    def self.decode_openssh_key(str, filename = '')
       Net::SSH::KeyFactory.load_data_public_key(str, filename)
     end
 
     def self.format_of(key_contents)
-      if key_contents.start_with?("-----BEGIN ")
+      if key_contents.start_with?('-----BEGIN ')
         :pem
-      elsif key_contents.start_with?("ssh-rsa ", "ssh-dss ")
+      elsif key_contents.start_with?('ssh-rsa ', 'ssh-dss ')
         :openssh
       else
         :der
@@ -84,21 +84,17 @@ module Cheffish
 
     def self.type_of(key)
       case key.class
-        when OpenSSL::PKey::RSA
-          :rsa
-        when OpenSSL::PKey::DSA
-          :dsa
-        else
-          nil
+      when OpenSSL::PKey::RSA
+        :rsa
+      when OpenSSL::PKey::DSA
+        :dsa
       end
     end
 
     def self.size_of(key)
       case key.class
-        when OpenSSL::PKey::RSA
-          key.n.num_bytes * 8
-        else
-          nil
+      when OpenSSL::PKey::RSA
+        key.n.num_bytes * 8
       end
     end
   end
