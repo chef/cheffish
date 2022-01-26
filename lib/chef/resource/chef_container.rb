@@ -1,6 +1,6 @@
-require_relative "../../cheffish"
-require_relative "../../cheffish/base_resource"
-require "chef/chef_fs/data_handler/container_data_handler"
+require_relative '../../cheffish'
+require_relative '../../cheffish/base_resource'
+require 'chef/chef_fs/data_handler/container_data_handler'
 
 class Chef
   class Resource
@@ -12,7 +12,7 @@ class Chef
       action :create do
         unless @current_exists
           converge_by "create container #{new_resource.chef_container_name} at #{rest.url}" do
-            rest.post("containers", normalize_for_post(new_json))
+            rest.post('containers', normalize_for_post(new_json))
           end
         end
       end
@@ -29,7 +29,7 @@ class Chef
         def load_current_resource
           @current_exists = rest.get("containers/#{new_resource.chef_container_name}")
         rescue Net::HTTPClientException => e
-          if e.response.code == "404"
+          if e.response.code == '404'
             @current_exists = false
           else
             raise
@@ -45,7 +45,7 @@ class Chef
         end
 
         def keys
-          { "containername" => :chef_container_name, "containerpath" => :chef_container_name }
+          { 'containername' => :chef_container_name, 'containerpath' => :chef_container_name }
         end
       end
     end

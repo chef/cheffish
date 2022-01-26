@@ -25,9 +25,9 @@ module Cheffish
         protected
 
         def partially_matches_values(expected, actual)
-          if Hash === actual
-            return partially_matches_hashes(expected, actual) if Hash === expected || Array === expected
-          elsif Array === expected && Enumerable === actual && !(Struct === actual)
+          if actual.is_a?(Hash)
+            return partially_matches_hashes(expected, actual) if expected.is_a?(Hash) || expected.is_a?(Array)
+          elsif expected.is_a?(Array) && actual.is_a?(Enumerable) && !actual.is_a?(Struct)
             return partially_matches_arrays(expected, actual)
           end
 

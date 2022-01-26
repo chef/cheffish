@@ -1,10 +1,10 @@
-require_relative "../../cheffish"
-require_relative "../../cheffish/base_resource"
-require "chef/chef_fs/file_pattern"
-require "chef/chef_fs/file_system"
-require "chef/chef_fs/file_system/chef_server/chef_server_root_dir"
-require "chef/chef_fs/file_system/repository/chef_repository_file_system_root_dir"
-require "chef-utils/parallel_map" unless defined?(ChefUtils::ParallelMap)
+require_relative '../../cheffish'
+require_relative '../../cheffish/base_resource'
+require 'chef/chef_fs/file_pattern'
+require 'chef/chef_fs/file_system'
+require 'chef/chef_fs/file_system/chef_server/chef_server_root_dir'
+require 'chef/chef_fs/file_system/repository/chef_repository_file_system_root_dir'
+require 'chef-utils/parallel_map' unless defined?(ChefUtils::ParallelMap)
 
 using ChefUtils::ParallelMap
 
@@ -41,8 +41,8 @@ class Chef
       # a deprecation warning. `freeze` has been renamed to `freeze_on_upload` and this method
       # is here to log a deprecation warning.
       def freeze(arg = nil)
-        Chef::Log.warn("Property `freeze` on the `chef_mirror` resource has changed to `freeze_on_upload`." \
-          "Please use `freeze_on_upload` instead. This will raise an exception in a future version of the cheffish gem.")
+        Chef::Log.warn('Property `freeze` on the `chef_mirror` resource has changed to `freeze_on_upload`.' \
+          'Please use `freeze_on_upload` instead. This will raise an exception in a future version of the cheffish gem.')
 
         set_or_return(
           :freeze_on_upload,
@@ -71,7 +71,6 @@ class Chef
       end
 
       action_class.class_eval do
-
         def with_modified_config
           # pre-Chef-12 ChefFS reads versioned_cookbooks out of Chef::Config instead of
           # taking it as an input, so we need to modify it for the duration of copy_to
@@ -103,8 +102,8 @@ class Chef
 
           # We don't let the user pass absolute paths; we want to reserve those for
           # multi-org support (/organizations/foo).
-          if new_resource.path[0] == "/"
-            raise "Absolute paths in chef_mirror not yet supported."
+          if new_resource.path[0] == '/'
+            raise 'Absolute paths in chef_mirror not yet supported.'
           end
 
           # Copy!
@@ -113,7 +112,7 @@ class Chef
           error = Chef::ChefFS::FileSystem.copy_to(path, src_root, dest_root, nil, options, ui, proc { |p| p.path })
 
           if error
-            raise "Errors while copying:#{ui.errors.map { |e| "#{e}\n" }.join("")}"
+            raise "Errors while copying:#{ui.errors.map { |e| "#{e}\n" }.join('')}"
           end
         end
 
@@ -133,21 +132,21 @@ class Chef
           chef_repo_path = Array(chef_repo_path).flatten
 
           # Go through the expected object paths and figure out the local paths for each.
-          case repo_mode
-          when "hosted_everything"
-            object_names = %w{acls clients cookbooks containers data_bags environments groups nodes roles}
-          else
-            object_names = %w{clients cookbooks data_bags environments nodes roles users}
-          end
+          object_names = case repo_mode
+                         when 'hosted_everything'
+                           %w(acls clients cookbooks containers data_bags environments groups nodes roles)
+                         else
+                           %w(clients cookbooks data_bags environments nodes roles users)
+                         end
 
           object_paths = {}
           object_names.each do |object_name|
             variable_name = "#{object_name[0..-2]}_path" # cookbooks -> cookbook_path
-            if path_config[variable_name.to_sym]
-              paths = Array(path_config[variable_name.to_sym]).flatten
-            else
-              paths = chef_repo_path.map { |path| ::File.join(path, object_name) }
-            end
+            paths = if path_config[variable_name.to_sym]
+                      Array(path_config[variable_name.to_sym]).flatten
+                    else
+                      chef_repo_path.map { |path| ::File.join(path, object_name) }
+                    end
             object_paths[object_name] = paths.map { |path| ::File.expand_path(path) }
           end
 
@@ -163,11 +162,11 @@ class Chef
             repo_mode: repo_mode,
             versioned_cookbooks: Chef::Config.versioned_cookbooks,
           }
-          Chef::ChefFS::FileSystem::ChefServer::ChefServerRootDir.new("remote", config)
+          Chef::ChefFS::FileSystem::ChefServer::ChefServerRootDir.new('remote', config)
         end
 
         def repo_mode
-          %r{/organizations/}.match?(new_resource.chef_server[:chef_server_url]) ? "hosted_everything" : "everything"
+          %r{/organizations/}.match?(new_resource.chef_server[:chef_server_url]) ? 'hosted_everything' : 'everything'
         end
 
         def options
@@ -194,7 +193,7 @@ class Chef
           attr_reader :mirror
           attr_reader :errors
 
-          # TODO output is not *always* indicative of a change.  We may want to give
+          # TODO: output is not *always* indicative of a change.  We may want to give
           # ChefFS the ability to tell us that info.  For now though, assuming any output
           # means change is pretty damn close to the truth.
           def output(str)

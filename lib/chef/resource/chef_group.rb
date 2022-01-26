@@ -1,7 +1,7 @@
-require_relative "../../cheffish"
-require_relative "../../cheffish/base_resource"
-require "chef/run_list/run_list_item"
-require "chef/chef_fs/data_handler/group_data_handler"
+require_relative '../../cheffish'
+require_relative '../../cheffish/base_resource'
+require 'chef/run_list/run_list_item'
+require 'chef/chef_fs/data_handler/group_data_handler'
 
 class Chef
   class Resource
@@ -29,7 +29,7 @@ class Chef
         else
           description = [ "create group #{new_resource.group_name} at #{rest.url}" ] + differences
           converge_by description do
-            rest.post("groups", normalize_for_post(new_json))
+            rest.post('groups', normalize_for_post(new_json))
           end
         end
       end
@@ -46,7 +46,7 @@ class Chef
         def load_current_resource
           @current_resource = json_to_resource(rest.get("groups/#{new_resource.group_name}"))
         rescue Net::HTTPClientException => e
-          if e.response.code == "404"
+          if e.response.code == '404'
             @current_resource = not_found_resource
           else
             raise
@@ -55,12 +55,12 @@ class Chef
 
         def augment_new_json(json)
           # Apply modifiers
-          json["users"]   |= new_resource.users
-          json["clients"] |= new_resource.clients
-          json["groups"]  |= new_resource.groups
-          json["users"]   -= new_resource.remove_users
-          json["clients"] -= new_resource.remove_clients
-          json["groups"]  -= new_resource.remove_groups
+          json['users']   |= new_resource.users
+          json['clients'] |= new_resource.clients
+          json['groups']  |= new_resource.groups
+          json['users']   -= new_resource.remove_users
+          json['clients'] -= new_resource.remove_clients
+          json['groups']  -= new_resource.remove_groups
           json
         end
 
@@ -78,8 +78,8 @@ class Chef
 
         def keys
           {
-            "name" => :group_name,
-            "groupname" => :group_name,
+            'name' => :group_name,
+            'groupname' => :group_name,
           }
         end
       end

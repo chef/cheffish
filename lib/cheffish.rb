@@ -19,7 +19,7 @@ module Cheffish
     # Pin the server api version to 0 until https://github.com/chef/cheffish/issues/56
     # gets the correct compatibility fix.
     chef_server[:options] ||= {}
-    chef_server[:options][:api_version] = "0"
+    chef_server[:options][:api_version] = '0'
     Cheffish::ServerAPI.new(chef_server[:chef_server_url], chef_server[:options])
   end
 
@@ -32,16 +32,16 @@ module Cheffish
   end
 
   def self.load_chef_config(chef_config = Chef::Config)
-    chef_config.config_file = if ::Gem::Version.new(::Chef::VERSION) >= ::Gem::Version.new("12.0.0")
-                                require "chef/workstation_config_loader"
+    chef_config.config_file = if ::Gem::Version.new(::Chef::VERSION) >= ::Gem::Version.new('12.0.0')
+                                require 'chef/workstation_config_loader'
                                 Chef::WorkstationConfigLoader.new(nil, Chef::Log).chef_config_dir
                               else
-                                require "chef/knife"
+                                require 'chef/knife'
                                 Chef::Knife.locate_config_file
                               end
     config_fetcher = Chef::ConfigFetcher.new(chef_config.config_file, chef_config.config_file_jail)
     if chef_config.config_file.nil?
-      Chef::Log.warn("No config file found or specified on command line, using command line options.")
+      Chef::Log.warn('No config file found or specified on command line, using command line options.')
     elsif config_fetcher.config_missing?
       Chef::Log.warn("Did not find config file: #{chef_config.config_file}, using command line options.")
     else
@@ -52,7 +52,7 @@ module Cheffish
       rescue Exception => error
         Chef::Log.fatal("Configuration error #{error.class}: #{error.message}")
         filtered_trace = error.backtrace.grep(/#{Regexp.escape(config_file_path)}/)
-        filtered_trace.each { |line| Chef::Log.fatal("  " + line ) }
+        filtered_trace.each { |line| Chef::Log.fatal('  ' + line) }
         Chef::Application.fatal!("Aborting due to error in '#{config_file_path}'", 2)
       end
     end
@@ -67,9 +67,8 @@ module Cheffish
       Chef::Config.chef_repo_path = Chef::Config.find_chef_repo_path(Dir.pwd)
     end
     begin
-      require "chef/local_mode"
+      require 'chef/local_mode'
       Chef::LocalMode.with_server_connectivity(&block)
-
     rescue LoadError
       Chef::Application.setup_server_connectivity
       if block_given?
@@ -103,12 +102,11 @@ module Cheffish
 
         Dir.entries(private_key_path).sort.each do |key|
           ext = File.extname(key)
-          if key == name || ext == "" || ext == ".pem"
-            key_name = key[0..-(ext.length + 1)]
-            if key_name == name || key == name
-              Chef::Log.info("Reading key #{name} from file #{private_key_path}/#{key}")
-              return [ IO.read("#{private_key_path}/#{key}"), "#{private_key_path}/#{key}" ]
-            end
+          next unless key == name || ext == '' || ext == '.pem'
+          key_name = key[0..-(ext.length + 1)]
+          if key_name == name || key == name
+            Chef::Log.info("Reading key #{name} from file #{private_key_path}/#{key}")
+            return [ IO.read("#{private_key_path}/#{key}"), "#{private_key_path}/#{key}" ]
           end
         end
       end
@@ -122,19 +120,19 @@ module Cheffish
 end
 
 # Include all recipe objects so require 'cheffish' brings in the whole recipe DSL
-require "chef/run_list/run_list_item"
-require_relative "cheffish/basic_chef_client"
-require_relative "cheffish/server_api"
+require 'chef/run_list/run_list_item'
+require_relative 'cheffish/basic_chef_client'
+require_relative 'cheffish/server_api'
 
 # Starting with the version below, knife is no longer in the chef gem and is
 # not available during a chef-client run.  We'll keep it here for older versions
 # to retain backward-compatibility.
-if ::Gem::Version.new(::Chef::VERSION) < ::Gem::Version.new("17.0.178")
-  require "chef/knife"
+if ::Gem::Version.new(::Chef::VERSION) < ::Gem::Version.new('17.0.178')
+  require 'chef/knife'
 end
 
-require "chef/config_fetcher"
-require "chef/log"
-require "chef/application"
-require_relative "cheffish/recipe_dsl"
-require_relative "cheffish/node_properties"
+require 'chef/config_fetcher'
+require 'chef/log'
+require 'chef/application'
+require_relative 'cheffish/recipe_dsl'
+require_relative 'cheffish/node_properties'

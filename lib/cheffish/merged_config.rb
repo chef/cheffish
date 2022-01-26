@@ -1,4 +1,4 @@
-require "chef/mash"
+require 'chef/mash'
 
 module Cheffish
   class MergedConfig
@@ -41,14 +41,12 @@ module Cheffish
           MergedConfig.new(*result_configs)
         elsif result_configs.size == 1
           result_configs[0]
-        else
-          nil
         end
       end
     end
 
     def method_missing(name, *args)
-      $stderr.puts "WARN: deprecated use of method_missing on a Cheffish::MergedConfig object at #{caller[0]}"
+      warn "WARN: deprecated use of method_missing on a Cheffish::MergedConfig object at #{caller[0]}"
       if args.count > 0
         raise NoMethodError, "Unexpected method #{name} for MergedConfig with arguments #{args}"
       else

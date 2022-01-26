@@ -1,7 +1,7 @@
-require_relative "../../cheffish"
-require_relative "../../cheffish/base_resource"
-require "chef/run_list/run_list_item"
-require "chef/chef_fs/data_handler/role_data_handler"
+require_relative '../../cheffish'
+require_relative '../../cheffish/base_resource'
+require 'chef/run_list/run_list_item'
+require 'chef/chef_fs/data_handler/role_data_handler'
 
 class Chef
   class Resource
@@ -29,7 +29,7 @@ class Chef
         elsif block
           @default_attribute_modifiers << [ attribute_path, block ]
         else
-          raise "default_attribute requires either a value or a block"
+          raise 'default_attribute requires either a value or a block'
         end
       end
 
@@ -47,7 +47,7 @@ class Chef
         elsif block
           @override_attribute_modifiers << [ attribute_path, block ]
         else
-          raise "override_attribute requires either a value or a block"
+          raise 'override_attribute requires either a value or a block'
         end
       end
 
@@ -60,7 +60,7 @@ class Chef
       attr_reader :run_list_removers
       def recipe(*recipes)
         if recipes.size == 0
-          raise ArgumentError, "At least one recipe must be specified"
+          raise ArgumentError, 'At least one recipe must be specified'
         end
 
         @run_list_modifiers ||= []
@@ -69,7 +69,7 @@ class Chef
 
       def role(*roles)
         if roles.size == 0
-          raise ArgumentError, "At least one role must be specified"
+          raise ArgumentError, 'At least one role must be specified'
         end
 
         @run_list_modifiers ||= []
@@ -78,7 +78,7 @@ class Chef
 
       def remove_recipe(*recipes)
         if recipes.size == 0
-          raise ArgumentError, "At least one recipe must be specified"
+          raise ArgumentError, 'At least one recipe must be specified'
         end
 
         @run_list_removers ||= []
@@ -87,11 +87,11 @@ class Chef
 
       def remove_role(*roles)
         if roles.size == 0
-          raise ArgumentError, "At least one role must be specified"
+          raise ArgumentError, 'At least one role must be specified'
         end
 
         @run_list_removers ||= []
-        @run_list_removers += roles.map { |recipe| Chef::RunList::RunListItem.new("role[#{role}]") }
+        @run_list_removers += roles.map { |_recipe| Chef::RunList::RunListItem.new("role[#{role}]") }
       end
 
       action :create do
@@ -107,7 +107,7 @@ class Chef
         else
           description = [ "create role #{new_resource.role_name} at #{rest.url}" ] + differences
           converge_by description do
-            rest.post("roles", normalize_for_post(new_json))
+            rest.post('roles', normalize_for_post(new_json))
           end
         end
       end
@@ -124,7 +124,7 @@ class Chef
         def load_current_resource
           @current_resource = json_to_resource(rest.get("roles/#{new_resource.role_name}"))
         rescue Net::HTTPClientException => e
-          if e.response.code == "404"
+          if e.response.code == '404'
             @current_resource = not_found_resource
           else
             raise
@@ -133,9 +133,9 @@ class Chef
 
         def augment_new_json(json)
           # Apply modifiers
-          json["run_list"] = apply_run_list_modifiers(new_resource.run_list_modifiers, new_resource.run_list_removers, json["run_list"])
-          json["default_attributes"] = apply_modifiers(new_resource.default_attribute_modifiers, json["default_attributes"])
-          json["override_attributes"] = apply_modifiers(new_resource.override_attribute_modifiers, json["override_attributes"])
+          json['run_list'] = apply_run_list_modifiers(new_resource.run_list_modifiers, new_resource.run_list_removers, json['run_list'])
+          json['default_attributes'] = apply_modifiers(new_resource.default_attribute_modifiers, json['default_attributes'])
+          json['override_attributes'] = apply_modifiers(new_resource.override_attribute_modifiers, json['override_attributes'])
           json
         end
 
@@ -153,12 +153,12 @@ class Chef
 
         def keys
           {
-            "name" => :role_name,
-            "description" => :description,
-            "run_list" => :run_list,
-            "env_run_lists" => :env_run_lists,
-            "default_attributes" => :default_attributes,
-            "override_attributes" => :override_attributes,
+            'name' => :role_name,
+            'description' => :description,
+            'run_list' => :run_list,
+            'env_run_lists' => :env_run_lists,
+            'default_attributes' => :default_attributes,
+            'override_attributes' => :override_attributes,
           }
         end
       end
