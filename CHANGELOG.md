@@ -1,29 +1,27 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 17.1.5 -->
-## [v17.1.5](https://github.com/chef/cheffish/tree/v17.1.5) (2023-01-03)
-
-#### Merged Pull Requests
-- Update FileSystem.copy_to [#220](https://github.com/chef/cheffish/pull/220) ([vinay-satish](https://github.com/vinay-satish))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=17.0.0 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Update FileSystem.copy_to [#220](https://github.com/chef/cheffish/pull/220) ([vinay-satish](https://github.com/vinay-satish)) <!-- 17.1.5 -->
-- Update chefstyle requirement from 2.0.7 to 2.0.8 [#211](https://github.com/chef/cheffish/pull/211) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 17.1.4 -->
-- Update chefstyle requirement from 2.0.3 to 2.0.7 [#210](https://github.com/chef/cheffish/pull/210) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 17.1.3 -->
-- Move all unit tests to GH Actions [#202](https://github.com/chef/cheffish/pull/202) ([tas50](https://github.com/tas50)) <!-- 17.1.2 -->
-- Update chefstyle requirement from 1.7.5 to 2.0.3 [#203](https://github.com/chef/cheffish/pull/203) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 17.1.1 -->
-- Require Ruby 3.0 or later [#201](https://github.com/chef/cheffish/pull/201) ([tas50](https://github.com/tas50)) <!-- 17.1.0 -->
-- Move Chefstyle to GitHub Actions [#200](https://github.com/chef/cheffish/pull/200) ([tas50](https://github.com/tas50)) <!-- 17.0.3 -->
-- Upgrade to GitHub-native Dependabot [#196](https://github.com/chef/cheffish/pull/196) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 17.0.2 -->
-- Remove testing on Ruby 2.6 [#199](https://github.com/chef/cheffish/pull/199) ([tas50](https://github.com/tas50)) <!-- 17.0.1 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v17.1.5](https://github.com/chef/cheffish/tree/v17.1.5) (2023-01-03)
+
+#### Merged Pull Requests
+- Remove testing on Ruby 2.6 [#199](https://github.com/chef/cheffish/pull/199) ([tas50](https://github.com/tas50))
+- Upgrade to GitHub-native Dependabot [#196](https://github.com/chef/cheffish/pull/196) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Move Chefstyle to GitHub Actions [#200](https://github.com/chef/cheffish/pull/200) ([tas50](https://github.com/tas50))
+- Require Ruby 3.0 or later [#201](https://github.com/chef/cheffish/pull/201) ([tas50](https://github.com/tas50))
+- Update chefstyle requirement from 1.7.5 to 2.0.3 [#203](https://github.com/chef/cheffish/pull/203) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Move all unit tests to GH Actions [#202](https://github.com/chef/cheffish/pull/202) ([tas50](https://github.com/tas50))
+- Update chefstyle requirement from 2.0.3 to 2.0.7 [#210](https://github.com/chef/cheffish/pull/210) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Update chefstyle requirement from 2.0.7 to 2.0.8 [#211](https://github.com/chef/cheffish/pull/211) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Update FileSystem.copy_to [#220](https://github.com/chef/cheffish/pull/220) ([vinay-satish](https://github.com/vinay-satish))
+<!-- latest_stable_release -->
+
 ## [v17.0.0](https://github.com/chef/cheffish/tree/v17.0.0) (2021-04-22)
 
 #### Merged Pull Requests
@@ -31,7 +29,6 @@
 - Fixes for Chef-17 [#193](https://github.com/chef/cheffish/pull/193) ([lamont-granquist](https://github.com/lamont-granquist))
 - Uncomment GEMFILE_MOD [#194](https://github.com/chef/cheffish/pull/194) ([lamont-granquist](https://github.com/lamont-granquist))
 - bumping major version / drop ruby 2.6 support [#195](https://github.com/chef/cheffish/pull/195) ([lamont-granquist](https://github.com/lamont-granquist))
-<!-- latest_stable_release -->
 
 ## [v16.0.26](https://github.com/chef/cheffish/tree/v16.0.26) (2021-04-02)
 
