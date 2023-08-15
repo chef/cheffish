@@ -5,16 +5,16 @@ name: unit_specs
   pull_request:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   unit:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, windows-2016, macos-10.15]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-        ruby: ['3.0']
+        ruby: ['3.0', '3.1']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
