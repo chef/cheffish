@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gemspec
 
 group :development do
-  gem "chefstyle", "2.0.8"
+  gem "cookstyle" #, "2.0.8"
   gem "rake"
   gem "rspec", "~> 3.0"
 end
@@ -16,6 +16,10 @@ else
   group :development do
     # temporarily we only support building against main
     if RUBY_VERSION =~ /^3\.1/
+      gem "date", "= 3.2.2"
+      gem "racc", "= 1.6.0"
+      gem "bigdecimal", "= 3.1.1"
+      gem "json", "= 2.6.1"
       gem "chef", "~> 18.0"
       gem "ohai", "~> 18.0"
     else
