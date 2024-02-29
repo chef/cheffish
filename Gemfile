@@ -16,11 +16,11 @@ else
   group :development do
     # temporarily we only support building against main
     if RUBY_VERSION =~ /^3\.1/
-      gem "chef", github: "chef/chef", branch: "tp/cheffish-3.1"
-      gem "ohai", github: "chef/ohai", branch: "main"
+      gem "chef", "~> 18.0"
+      gem "ohai", "~> 18.0"
     else
-      gem "chef", github: "chef/chef", branch: "chef-17"
-      gem "ohai", github: "chef/ohai", branch: "17-stable"
+      gem "chef", "~> 17.0"
+      gem "ohai", "~> 17.0"
     end
   end
 end
