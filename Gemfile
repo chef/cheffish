@@ -17,9 +17,10 @@ else
     # temporarily we only support building against main
     if RUBY_VERSION =~ /^3\.1/
       gem "chef", github: "chef/chef", branch: "tp/cheffish-3.1"
+      gem "ohai", github: "chef/ohai", branch: "main"
     else
       gem "chef", github: "chef/chef", branch: "chef-17"
+      gem "ohai", github: "chef/ohai", branch: "17-stable"
     end
-    gem "ohai", github: "chef/ohai", branch: "main"
   end
 end
