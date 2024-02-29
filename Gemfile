@@ -15,7 +15,11 @@ if ENV["GEMFILE_MOD"]
 else
   group :development do
     # temporarily we only support building against main
-    gem "chef", github: "chef/chef", branch: "tp/cheffish-3.1"
+    if RUBY_VERSION =~ /^3\.1/
+      gem "chef", github: "chef/chef", branch: "tp/cheffish-3.1"
+    else
+      gem "chef", github: "chef/chef", branch: "chef-17"
+    end
     gem "ohai", github: "chef/ohai", branch: "main"
   end
 end
