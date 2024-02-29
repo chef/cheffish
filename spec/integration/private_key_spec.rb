@@ -41,7 +41,9 @@ describe Chef::Resource::PrivateKey do
 
     context "and the private key already exists somewhere not in the write path" do
       before :each do
+        puts 'before each pre-converge'
         recipe { private_key "#{repo_path}/other_keys/blah" }.converge
+        puts 'before each post-converge'
       end
 
       it "the private expect(key).to not update" do
