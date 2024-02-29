@@ -96,15 +96,18 @@ class Chef
                  (!current_private_key ||
                   current_resource.size != new_resource.size ||
                   current_resource.type != new_resource.type))
-
+              puts 'generate a new key if'
               case new_resource.type
               when :rsa
                 if new_resource.exponent
+                  puts 'rsa new_resource.exponent'
                   final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size, new_resource.exponent)
                 else
+                  puts 'rsa else new_resource.exponent'
                   final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size)
                 end
               when :dsa
+                puts 'dsa new_resource.exponent'
                 final_private_key = OpenSSL::PKey::DSA.generate(new_resource.size)
               end
 
