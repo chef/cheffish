@@ -64,7 +64,6 @@ class Chef
 
       action_class.class_eval do
         def create_key(regenerate, action)
-          puts "@should_create_directory #{@should_create_directory}"
           if @should_create_directory
             Cheffish.inline_resource(self, action) do
               directory run_context.config[:private_key_write_path]
@@ -73,7 +72,6 @@ class Chef
 
           final_private_key = nil
           if new_source_key
-            puts 'new_source_key'
             #
             # Create private key from source
             #
@@ -87,7 +85,6 @@ class Chef
             final_private_key = new_source_key
 
           else
-            puts 'else'
             #
             # Generate a new key
             #
@@ -96,27 +93,21 @@ class Chef
                  (!current_private_key ||
                   current_resource.size != new_resource.size ||
                   current_resource.type != new_resource.type))
-              puts 'generate a new key if'
               case new_resource.type
               when :rsa
                 if new_resource.exponent
-                  puts 'rsa new_resource.exponent'
                   final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size, new_resource.exponent)
                 else
-                  puts 'rsa else new_resource.exponent'
                   final_private_key = OpenSSL::PKey::RSA.generate(new_resource.size)
                 end
               when :dsa
-                puts 'dsa new_resource.exponent'
                 final_private_key = OpenSSL::PKey::DSA.generate(new_resource.size)
               end
 
               generated_key = true
             elsif !current_private_key
-              puts 'elsif'
               raise "Could not read private key from #{current_resource.path}: missing pass phrase?"
             else
-              puts 'final_private_key else'
               final_private_key = current_private_key
               generated_key = false
             end
