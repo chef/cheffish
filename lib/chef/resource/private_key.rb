@@ -210,6 +210,7 @@ class Chef
           elsif Pathname.new(path).relative?
             puts ">> relative"
             private_key, private_key_path = Cheffish.get_private_key_with_path(path, run_context.config)
+            puts "private_key, private_key_path = #{private_key}, #{private_key_path} "
             if private_key
               puts ">> private_key"
               [ private_key, (private_key_path || :none) ]
