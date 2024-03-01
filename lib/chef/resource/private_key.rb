@@ -228,7 +228,7 @@ class Chef
             puts ">> else nil"
             [ nil, path ]
           end
-          things.tap { |x| puts "new_key_with_path #{x}" }
+          things.tap { |x| puts "new_key_with_path #{x}"; puts caller }
         end
 
         def load_current_resource
