@@ -93,7 +93,6 @@ class Chef
                  (!current_private_key ||
                   current_resource.size != new_resource.size ||
                   current_resource.type != new_resource.type))
-
               case new_resource.type
               when :rsa
                 if new_resource.exponent
@@ -137,7 +136,7 @@ class Chef
                 converge_by "change format of #{new_resource.type} private key #{new_path} from #{current_resource.format} to #{new_resource.format}" do
                   write_private_key(current_private_key)
                 end
-              elsif RUBY_PLATFORM !~ /mswin|mingw32|windows/ && (@current_file_mode & 0077) != 0
+              elsif RUBY_PLATFORM !~ /mswin|mingw|windows/ && (@current_file_mode & 0077) != 0
                 new_mode = @current_file_mode & 07700
                 converge_by "change mode of private key #{new_path} to #{new_mode.to_s(8)}" do
                   ::File.chmod(new_mode, new_path)
@@ -249,7 +248,6 @@ class Chef
           else
             resource.action :delete
           end
-
           @current_resource = resource
         end
       end
