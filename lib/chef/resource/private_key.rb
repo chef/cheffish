@@ -136,7 +136,7 @@ class Chef
                 converge_by "change format of #{new_resource.type} private key #{new_path} from #{current_resource.format} to #{new_resource.format}" do
                   write_private_key(current_private_key)
                 end
-              elsif RUBY_PLATFORM !~ /mswin|mingw32|windows/ && (@current_file_mode & 0077) != 0
+              elsif RUBY_PLATFORM !~ /mswin|mingw|windows/ && (@current_file_mode & 0077) != 0
                 new_mode = @current_file_mode & 07700
                 converge_by "change mode of private key #{new_path} to #{new_mode.to_s(8)}" do
                   ::File.chmod(new_mode, new_path)
@@ -197,22 +197,14 @@ class Chef
         end
 
         def new_key_with_path
-          puts caller
-          puts "<<<< new resource >>>>"
-          puts new_resource.inspect
           path = new_resource.path
           things = if path.is_a?(Symbol)
-                     puts ">> is a symbol"
             [ nil, path ]
           elsif Pathname.new(path).relative?
-            puts ">> relative"
             private_key, private_key_path = Cheffish.get_private_key_with_path(path, run_context.config)
-            puts "private_key, private_key_path = #{private_key}, #{private_key_path} "
             if private_key
-              puts ">> private_key"
               [ private_key, (private_key_path || :none) ]
             elsif run_context.config[:private_key_write_path]
-              puts ">> else private_key"
               @should_create_directory = true
               path = ::File.join(run_context.config[:private_key_write_path], path)
               [ nil, path ]
@@ -220,13 +212,10 @@ class Chef
               raise "Could not find key #{path} and Chef::Config.private_key_write_path is not set."
             end
           elsif ::File.exist?(path)
-            puts ">> file exist"
             [ IO.read(path), path ]
           else
-            puts ">> else nil"
             [ nil, path ]
           end
-#          things.tap { |x| puts "new_key_with_path #{x}"; puts caller }
         end
 
         def load_current_resource
@@ -259,9 +248,6 @@ class Chef
           else
             resource.action :delete
           end
-          puts caller
-          puts "<<<<  current resource >>>>"
-          puts resource.inspect
           @current_resource = resource
         end
       end
