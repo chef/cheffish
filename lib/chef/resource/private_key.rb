@@ -197,6 +197,8 @@ class Chef
         end
 
         def new_key_with_path
+          puts "<<<< new resource >>>>"
+          puts new_resource.inspect
           path = new_resource.path
           things = if path.is_a?(Symbol)
                      puts ">> is a symbol"
@@ -257,6 +259,7 @@ class Chef
             resource.action :delete
           end
 
+          puts "<<<<  current resource >>>>"
           puts resource.inspect
           @current_resource = resource
         end
