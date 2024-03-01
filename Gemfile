@@ -14,8 +14,10 @@ if ENV["GEMFILE_MOD"]
   instance_eval(ENV["GEMFILE_MOD"])
 else
   group :development do
-    # temporarily we only support building against main
+    # chef 17 is on 3.0
+    # chef 18 is on 3.1
     if RUBY_VERSION =~ /^3\.1/
+      # some magic was required for default gems for 18
       gem "date", "= 3.2.2"
       gem "racc", "= 1.6.0"
       gem "bigdecimal", "= 3.1.1"
