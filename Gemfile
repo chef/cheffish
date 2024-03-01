@@ -16,12 +16,12 @@ else
   group :development do
     # chef 17 is on 3.0
     # chef 18 is on 3.1
-    if RUBY_VERSION =~ /^3\.1/
-      gem "chef", "~> 18.0"
-      gem "ohai", "~> 18.0"
-    else
+    if RUBY_VERSION =~ /^3\.0/
       gem "chef", "~> 17.0"
       gem "ohai", "~> 17.0"
+    else
+      gem "chef"
+      gem "ohai"
     end
   end
 end
