@@ -259,7 +259,7 @@ class Chef
           else
             resource.action :delete
           end
-
+          puts caller
           puts "<<<<  current resource >>>>"
           puts resource.inspect
           @current_resource = resource
