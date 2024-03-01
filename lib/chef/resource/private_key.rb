@@ -198,7 +198,7 @@ class Chef
 
         def new_key_with_path
           path = new_resource.path
-          things = if path.is_a?(Symbol)
+          if path.is_a?(Symbol)
             [ nil, path ]
           elsif Pathname.new(path).relative?
             private_key, private_key_path = Cheffish.get_private_key_with_path(path, run_context.config)
