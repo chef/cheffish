@@ -1,10 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release -->
+<!-- latest_release 17.1.6 -->
+## [v17.1.6](https://github.com/chef/cheffish/tree/v17.1.6) (2024-03-01)
+
+#### Merged Pull Requests
+- Use chef 17 for 3.0 tests, chef 18 for 3.1 tests [#221](https://github.com/chef/cheffish/pull/221) ([tpowell-progress](https://github.com/tpowell-progress))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=17.1.5 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Use chef 17 for 3.0 tests, chef 18 for 3.1 tests [#221](https://github.com/chef/cheffish/pull/221) ([tpowell-progress](https://github.com/tpowell-progress)) <!-- 17.1.6 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
