@@ -197,6 +197,7 @@ class Chef
         end
 
         def new_key_with_path
+          puts caller
           puts "<<<< new resource >>>>"
           puts new_resource.inspect
           path = new_resource.path
