@@ -204,13 +204,17 @@ class Chef
 
         def new_key_with_path
           path = new_resource.path
-          if path.is_a?(Symbol)
+          things = if path.is_a?(Symbol)
+                     puts ">> is a symbol"
             [ nil, path ]
           elsif Pathname.new(path).relative?
+            puts ">> relative"
             private_key, private_key_path = Cheffish.get_private_key_with_path(path, run_context.config)
             if private_key
+              puts ">> private_key"
               [ private_key, (private_key_path || :none) ]
             elsif run_context.config[:private_key_write_path]
+              puts ">> else private_key"
               @should_create_directory = true
               path = ::File.join(run_context.config[:private_key_write_path], path)
               [ nil, path ]
@@ -218,10 +222,13 @@ class Chef
               raise "Could not find key #{path} and Chef::Config.private_key_write_path is not set."
             end
           elsif ::File.exist?(path)
+            puts ">> file exist"
             [ IO.read(path), path ]
           else
+            puts ">> else nil"
             [ nil, path ]
           end
+          things.tap { |x| puts "new_key_with_path #{x}" }
         end
 
         def load_current_resource
