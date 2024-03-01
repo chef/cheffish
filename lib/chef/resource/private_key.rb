@@ -176,6 +176,12 @@ class Chef
           end
         end
 
+        def updated_by_last_action(true_or_false)
+          puts caller
+          @updated ||= true_or_false
+          @updated_by_last_action = true_or_false
+        end
+
         def new_source_key
           @new_source_key ||= if new_resource.source_key.is_a?(String)
                                 source_key, _source_key_format = Cheffish::KeyFormatter.decode(new_resource.source_key, new_resource.source_key_pass_phrase)

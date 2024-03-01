@@ -110,7 +110,6 @@ module Cheffish
     end
 
     def updated?
-      puts client.updated?
       client.updated?
     end
 

@@ -73,7 +73,6 @@ module Cheffish
     end
 
     def updated?
-      puts @event_catcher.inspect
       @event_catcher.updates.size > 0
     end
 
