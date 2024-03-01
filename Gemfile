@@ -18,10 +18,12 @@ else
     # chef 18 is on 3.1
     if RUBY_VERSION =~ /^3\.1/
       # some magic was required for default gems for 18
+=begin
       gem "date", "= 3.2.2"
       gem "racc", "= 1.6.0"
       gem "bigdecimal", "= 3.1.1"
       gem "json", "= 2.6.1"
+=end
       gem "chef", "~> 18.0"
       gem "ohai", "~> 18.0"
     else
