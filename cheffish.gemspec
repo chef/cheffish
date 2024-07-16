@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "chef-zero", ">= 14.0"
   s.add_dependency "chef-utils", ">= 17.0"
+  s.add_dependency "logger", "< 1.6.0"
   s.add_dependency "net-ssh"
 
   s.require_path = "lib"
