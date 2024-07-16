@@ -1,22 +1,20 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 17.1.7 -->
-## [v17.1.7](https://github.com/chef/cheffish/tree/v17.1.7) (2024-07-16)
-
-#### Merged Pull Requests
-- Prevent logger 1.6 from installing due to init methods [#222](https://github.com/chef/cheffish/pull/222) ([tpowell-progress](https://github.com/tpowell-progress))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=17.1.5 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Prevent logger 1.6 from installing due to init methods [#222](https://github.com/chef/cheffish/pull/222) ([tpowell-progress](https://github.com/tpowell-progress)) <!-- 17.1.7 -->
-- Use chef 17 for 3.0 tests, chef 18 for 3.1 tests [#221](https://github.com/chef/cheffish/pull/221) ([tpowell-progress](https://github.com/tpowell-progress)) <!-- 17.1.6 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v17.1.7](https://github.com/chef/cheffish/tree/v17.1.7) (2024-07-16)
+
+#### Merged Pull Requests
+- Use chef 17 for 3.0 tests, chef 18 for 3.1 tests [#221](https://github.com/chef/cheffish/pull/221) ([tpowell-progress](https://github.com/tpowell-progress))
+- Prevent logger 1.6 from installing due to init methods [#222](https://github.com/chef/cheffish/pull/222) ([tpowell-progress](https://github.com/tpowell-progress))
+<!-- latest_stable_release -->
+
 ## [v17.1.5](https://github.com/chef/cheffish/tree/v17.1.5) (2023-01-03)
 
 #### Merged Pull Requests
@@ -29,7 +27,6 @@
 - Update chefstyle requirement from 2.0.3 to 2.0.7 [#210](https://github.com/chef/cheffish/pull/210) ([dependabot[bot]](https://github.com/dependabot[bot]))
 - Update chefstyle requirement from 2.0.7 to 2.0.8 [#211](https://github.com/chef/cheffish/pull/211) ([dependabot[bot]](https://github.com/dependabot[bot]))
 - Update FileSystem.copy_to [#220](https://github.com/chef/cheffish/pull/220) ([vinay-satish](https://github.com/vinay-satish))
-<!-- latest_stable_release -->
 
 ## [v17.0.0](https://github.com/chef/cheffish/tree/v17.0.0) (2021-04-22)
 
