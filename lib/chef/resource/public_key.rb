@@ -6,7 +6,7 @@ require_relative "../../cheffish/key_formatter"
 class Chef
   class Resource
     class PublicKey < Cheffish::BaseResource
-      provides :public_key
+      provides :public_key, target_mode: true
 
       allowed_actions :create, :delete, :nothing
       default_action :create

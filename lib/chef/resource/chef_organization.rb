@@ -6,7 +6,7 @@ require "chef/chef_fs/data_handler/data_handler_base"
 class Chef
   class Resource
     class ChefOrganization < Cheffish::BaseResource
-      provides :chef_organization
+      provides :chef_organization, target_mode: true
 
       property :organization_name, Cheffish::NAME_REGEX, name_property: true
       property :full_name, String

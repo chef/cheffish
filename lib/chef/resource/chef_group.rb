@@ -6,7 +6,7 @@ require "chef/chef_fs/data_handler/group_data_handler"
 class Chef
   class Resource
     class ChefGroup < Cheffish::BaseResource
-      provides :chef_group
+      provides :chef_group, target_mode: true
 
       property :group_name, Cheffish::NAME_REGEX, name_property: true
       property :users, ArrayType

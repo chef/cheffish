@@ -9,7 +9,7 @@ using ChefUtils::ParallelMap
 class Chef
   class Resource
     class ChefAcl < Cheffish::BaseResource
-      provides :chef_acl
+      provides :chef_acl, target_mode: true
 
       # Path of the thing being secured, e.g. nodes, nodes/*, nodes/mynode,
       # */*, **, roles/base, data/secrets, cookbooks/apache2, /users/*,
