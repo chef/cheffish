@@ -1,10 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release -->
+<!-- latest_release 17.1.8 -->
+## [v17.1.8](https://github.com/chef/cheffish/tree/v17.1.8) (2024-08-14)
+
+#### Merged Pull Requests
+- Enable REST-based resources for Target Mode [#223](https://github.com/chef/cheffish/pull/223) ([thheinen](https://github.com/thheinen))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=17.1.7 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Enable REST-based resources for Target Mode [#223](https://github.com/chef/cheffish/pull/223) ([thheinen](https://github.com/thheinen)) <!-- 17.1.8 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
