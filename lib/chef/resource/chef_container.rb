@@ -5,7 +5,7 @@ require "chef/chef_fs/data_handler/container_data_handler"
 class Chef
   class Resource
     class ChefContainer < Cheffish::BaseResource
-      provides :chef_container
+      provides :chef_container, target_mode: true
 
       property :chef_container_name, Cheffish::NAME_REGEX, name_property: true
 

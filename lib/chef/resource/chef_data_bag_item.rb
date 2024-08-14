@@ -7,7 +7,7 @@ require "chef/encrypted_data_bag_item"
 class Chef
   class Resource
     class ChefDataBagItem < Cheffish::BaseResource
-      provides :chef_data_bag_item
+      provides :chef_data_bag_item, target_mode: true
 
       def initialize(*args)
         super

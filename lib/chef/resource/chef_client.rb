@@ -4,7 +4,7 @@ require_relative "../../cheffish/chef_actor_base"
 class Chef
   class Resource
     class ChefClient < Cheffish::ChefActorBase
-      provides :chef_client
+      provides :chef_client, target_mode: true
 
       # Client attributes
       property :chef_client_name, Cheffish::NAME_REGEX, name_property: true

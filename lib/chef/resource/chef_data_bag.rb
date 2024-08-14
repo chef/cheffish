@@ -4,7 +4,7 @@ require_relative "../../cheffish/base_resource"
 class Chef
   class Resource
     class ChefDataBag < Cheffish::BaseResource
-      provides :chef_data_bag
+      provides :chef_data_bag, target_mode: true
 
       property :data_bag_name, Cheffish::NAME_REGEX, name_property: true
 

@@ -4,7 +4,7 @@ require "chef_zero"
 class Chef
   class Resource
     class ChefResolvedCookbooks < Cheffish::BaseResource
-      provides :chef_resolved_cookbooks
+      provides :chef_resolved_cookbooks, target_mode: true
 
       def initialize(*args)
         super

@@ -11,7 +11,7 @@ using ChefUtils::ParallelMap
 class Chef
   class Resource
     class ChefMirror < Cheffish::BaseResource
-      provides :chef_mirror
+      provides :chef_mirror, target_mode: true
 
       # Path of the data to mirror, e.g. nodes, nodes/*, nodes/mynode,
       # */*, **, roles/base, data/secrets, cookbooks/apache2, etc.

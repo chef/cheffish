@@ -6,7 +6,7 @@ require "chef/chef_fs/data_handler/role_data_handler"
 class Chef
   class Resource
     class ChefRole < Cheffish::BaseResource
-      provides :chef_role
+      provides :chef_role, target_mode: true
 
       property :role_name, Cheffish::NAME_REGEX, name_property: true
       property :description, String
