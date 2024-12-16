@@ -1,27 +1,24 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 17.1.8 -->
-## [v17.1.8](https://github.com/chef/cheffish/tree/v17.1.8) (2024-08-14)
-
-#### Merged Pull Requests
-- Enable REST-based resources for Target Mode [#223](https://github.com/chef/cheffish/pull/223) ([thheinen](https://github.com/thheinen))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=17.1.7 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Enable REST-based resources for Target Mode [#223](https://github.com/chef/cheffish/pull/223) ([thheinen](https://github.com/thheinen)) <!-- 17.1.8 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v17.1.8](https://github.com/chef/cheffish/tree/v17.1.8) (2024-12-16)
+
+#### Merged Pull Requests
+- Enable REST-based resources for Target Mode [#223](https://github.com/chef/cheffish/pull/223) ([thheinen](https://github.com/thheinen))
+<!-- latest_stable_release -->
+
 ## [v17.1.7](https://github.com/chef/cheffish/tree/v17.1.7) (2024-07-16)
 
 #### Merged Pull Requests
 - Use chef 17 for 3.0 tests, chef 18 for 3.1 tests [#221](https://github.com/chef/cheffish/pull/221) ([tpowell-progress](https://github.com/tpowell-progress))
 - Prevent logger 1.6 from installing due to init methods [#222](https://github.com/chef/cheffish/pull/222) ([tpowell-progress](https://github.com/tpowell-progress))
-<!-- latest_stable_release -->
 
 ## [v17.1.5](https://github.com/chef/cheffish/tree/v17.1.5) (2023-01-03)
 
