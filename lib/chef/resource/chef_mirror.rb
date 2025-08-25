@@ -110,7 +110,7 @@ class Chef
           # Copy!
           path = Chef::ChefFS::FilePattern.new("/#{new_resource.path}")
           ui = CopyListener.new(self)
-          error, _result = Chef::ChefFS::FileSystem.copy_to(path, src_root, dest_root, nil, options, ui, proc { |p| p.path })
+          error, _result = Chef::ChefFS::FileSystem.copy_to(path, src_root, dest_root, nil, options, ui, proc(&:path))
 
           if error
             raise "Errors while copying:#{ui.errors.map { |e| "#{e}\n" }.join("")}"

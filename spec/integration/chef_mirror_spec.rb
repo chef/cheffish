@@ -184,8 +184,8 @@ describe Chef::Resource::ChefMirror do
           expect_recipe do
             chef_mirror "" do
               chef_repo_path chef_repo_path: "/blahblah",
-                             node_path: "#{repo_path}/nodes",
-                             role_path: "#{repo2_path}/roles"
+                node_path: "#{repo_path}/nodes",
+                role_path: "#{repo2_path}/roles"
               action :upload
             end
           end.to have_updated("chef_mirror[]", :upload)
@@ -202,7 +202,7 @@ describe Chef::Resource::ChefMirror do
           expect_recipe do
             chef_mirror "" do
               chef_repo_path chef_repo_path: repo_path,
-                             role_path: "#{repo2_path}/roles"
+                role_path: "#{repo2_path}/roles"
               action :upload
             end
           end.to have_updated("chef_mirror[]", :upload)
@@ -219,8 +219,8 @@ describe Chef::Resource::ChefMirror do
           expect_recipe do
             chef_mirror "" do
               chef_repo_path chef_repo_path: %w{foo bar},
-                             node_path: [ "#{repo_path}/nodes", "#{repo2_path}/nodes" ],
-                             role_path: [ "#{repo_path}/roles", "#{repo2_path}/roles" ]
+                node_path: [ "#{repo_path}/nodes", "#{repo2_path}/nodes" ],
+                role_path: [ "#{repo_path}/roles", "#{repo2_path}/roles" ]
               action :upload
             end
           end.to have_updated("chef_mirror[]", :upload)

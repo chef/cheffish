@@ -31,7 +31,7 @@ class Chef
 
       # PEM-only
       property :pass_phrase, String
-      property :cipher, String, equal_to: OpenSSL::Cipher.ciphers.map(&:downcase), default: "des-ede3-cbc", coerce: proc { |x| x.downcase }
+      property :cipher, String, equal_to: OpenSSL::Cipher.ciphers.map(&:downcase), default: "des-ede3-cbc", coerce: proc(&:downcase)
 
       # Set this to regenerate the key if it does not have the desired characteristics (like size, type, etc.)
       property :regenerate_if_different, [TrueClass, FalseClass]

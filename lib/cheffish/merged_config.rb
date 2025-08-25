@@ -49,7 +49,7 @@ module Cheffish
 
     def method_missing(name, *args)
       $stderr.puts "WARN: deprecated use of method_missing on a Cheffish::MergedConfig object at #{caller[0]}"
-      if args.count > 0
+      if args.any?
         raise NoMethodError, "Unexpected method #{name} for MergedConfig with arguments #{args}"
       else
         self[name]
