@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gemspec
 
 group :style do
-  gem "cookstyle", "~> 8.2"
+  gem "cookstyle", "~> 8.4"
 end
 
 # Allow Travis to run tests with different dependency versions
