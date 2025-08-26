@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency "chef-utils", ">= 17.0"
   s.add_dependency "logger", "< 1.6.0"
   s.add_dependency "net-ssh"
+  s.add_dependency "syslog"
 
   s.require_path = "lib"
   s.files = %w{Gemfile Rakefile LICENSE} + Dir.glob("*.gemspec") +
