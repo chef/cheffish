@@ -25,8 +25,8 @@ else
       gem "ohai", "~> 18.0"
     else
       # go with the latest, unbounded
-      gem "chef"
-      gem "ohai"
+      gem "chef", git: "https://github.com/chef/chef.git"
+      gem "ohai", git: "https://github.com/chef/ohai.git"
     end
   end
 end
