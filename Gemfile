@@ -21,10 +21,12 @@ else
       gem "chef", "~> 17.0"
       gem "ohai", "~> 17.0"
     when /^3\.1/
+      # Ruby 3.1+ should use Chef 18 for now until Chef 19 gem is released
       gem "chef", "~> 18.0"
       gem "ohai", "~> 18.0"
     else
       # go with the latest, unbounded
+      gem "chef-utils", git: "https://github.com/chef/chef.git", glob: "chef-utils/*.gemspec"
       gem "chef", git: "https://github.com/chef/chef.git"
       gem "ohai", git: "https://github.com/chef/ohai.git"
     end
