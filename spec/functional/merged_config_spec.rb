@@ -44,7 +44,7 @@ describe "merged_config" do
   end
 
   it "has an informative string representation" do
-    expect(config.to_hash).to eq({"test" => "val"})
+    expect(config.to_hash).to eq({ "test" => "val" })
   end
 
   it "has indifferent str/sym access" do
