@@ -1,17 +1,18 @@
 # Cheffish Change Log
 
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
-<!-- latest_release 17.1.9 -->
-## [v17.1.9](https://github.com/chef/cheffish/tree/v17.1.9) (2025-08-27)
+<!-- latest_release 17.1.10 -->
+## [v17.1.10](https://github.com/chef/cheffish/tree/v17.1.10) (2025-08-27)
 
 #### Merged Pull Requests
-- Add GitHub Security Actions Workflow [#224](https://github.com/chef/cheffish/pull/224) ([sean-sype-simmons](https://github.com/sean-sype-simmons))
+- Tweaking for Ruby 3.4.2 [#225](https://github.com/chef/cheffish/pull/225) ([johnmccrae](https://github.com/johnmccrae))
 <!-- latest_release -->
 
 <!-- release_rollup since=17.1.8 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Tweaking for Ruby 3.4.2 [#225](https://github.com/chef/cheffish/pull/225) ([johnmccrae](https://github.com/johnmccrae)) <!-- 17.1.10 -->
 - Add GitHub Security Actions Workflow [#224](https://github.com/chef/cheffish/pull/224) ([sean-sype-simmons](https://github.com/sean-sype-simmons)) <!-- 17.1.9 -->
 <!-- release_rollup -->
 
