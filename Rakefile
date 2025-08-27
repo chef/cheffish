@@ -13,15 +13,25 @@ rescue LoadError
   end
 end
 
-begin
-  require "cookstyle/chefstyle"
-  require "rubocop/rake_task"
-  desc "Run Chefstyle tests"
-  RuboCop::RakeTask.new(:style) do |task|
-    task.options += ["--display-cop-names", "--no-color"]
-  end
+def require_gem(gem_name)
+  require gem_name
 rescue LoadError
-  puts "cookstyle gem is not installed. bundle install first to make sure all dependencies are installed."
+  puts "#{gem_name} gem is not installed. Please run 'bundle install' first to make sure all dependencies are installed."
+  exit 1
+end
+
+desc "Check Linting and code style."
+task :style do
+  require_gem "rubocop/rake_task"
+  require_gem "cookstyle/chefstyle"
+
+  if RbConfig::CONFIG["host_os"] =~ /mswin|mingw|cygwin/
+    # Windows-specific command, rubocop erroneously reports the CRLF in each file which is removed when your PR is uploaeded to GitHub.
+    # This is a workaround to ignore the CRLF from the files before running cookstyle.
+    sh "cookstyle --chefstyle -c .rubocop.yml --except Layout/EndOfLine"
+  else
+    sh "cookstyle --chefstyle -c .rubocop.yml"
+  end
 end
 
 begin

@@ -216,10 +216,10 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
         user "bar", {}
         node "x", {} do
           acl "create" => { "actors" => %w{foo bar} },
-              "read" => { "actors" => %w{foo bar} },
-              "update" => { "actors" => %w{foo bar} },
-              "delete" => { "actors" => %w{foo bar} },
-              "grant" => { "actors" => %w{foo bar} }
+            "read" => { "actors" => %w{foo bar} },
+            "update" => { "actors" => %w{foo bar} },
+            "delete" => { "actors" => %w{foo bar} },
+            "grant" => { "actors" => %w{foo bar} }
         end
 
         it 'Converging chef_acl "nodes/x" with remove_rights :all removes foo from everything' do
@@ -792,8 +792,8 @@ if Gem::Version.new(ChefZero::VERSION) >= Gem::Version.new("3.1")
         group "g2", {}
         node "x", {} do
           acl "create" => { "actors" => %w{u c}, "groups" => [ "g" ] },
-              "read"   => { "actors" => %w{u c}, "groups" => [ "g" ] },
-              "update" => { "actors" => %w{u c}, "groups" => [ "g" ] }
+            "read"   => { "actors" => %w{u c}, "groups" => [ "g" ] },
+            "update" => { "actors" => %w{u c}, "groups" => [ "g" ] }
         end
 
         it 'chef_acl with remove_rights "u" removes the user\'s rights' do
