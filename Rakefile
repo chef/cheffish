@@ -13,10 +13,17 @@ rescue LoadError
   end
 end
 
+def require_gem(gem_name)
+  require gem_name
+rescue LoadError
+  puts "#{gem_name} gem is not installed. Please run 'bundle install' first to make sure all dependencies are installed."
+  exit 1
+end
+
 desc "Check Linting and code style."
 task :style do
-  require "rubocop/rake_task"
-  require "cookstyle/chefstyle"
+  require_gem "rubocop/rake_task"
+  require_gem "cookstyle/chefstyle"
 
   if RbConfig::CONFIG["host_os"] =~ /mswin|mingw|cygwin/
     # Windows-specific command, rubocop erroneously reports the CRLF in each file which is removed when your PR is uploaeded to GitHub.
@@ -25,8 +32,6 @@ task :style do
   else
     sh "cookstyle --chefstyle -c .rubocop.yml"
   end
-rescue LoadError
-  puts "Rubocop or Cookstyle gems are not installed. bundle install first to make sure all dependencies are installed."
 end
 
 begin
