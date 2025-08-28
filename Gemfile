@@ -2,6 +2,11 @@ source "https://rubygems.org"
 
 gemspec
 
+group :development do
+  gem "rake"
+  gem "rspec", "~> 3.0"
+end
+
 group :style do
   gem "cookstyle", "~> 8.4"
 end
