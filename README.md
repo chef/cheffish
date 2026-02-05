@@ -124,3 +124,6 @@ expect_recipe {
 `partially_match`
 
 - TBD
+
+# Copyright
+See [COPYRIGHT.md](./COPYRIGHT.md).
