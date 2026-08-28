@@ -6,7 +6,7 @@ gem "rake"
 gem "rspec", "~> 3.0"
 
 group :style do
-  gem "cookstyle", "~> 8.4"
+  gem "cookstyle", "~> 9.0"
 end
 
 # Allow Travis to run tests with different dependency versions
